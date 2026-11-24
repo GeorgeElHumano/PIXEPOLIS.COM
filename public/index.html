@@ -161,7 +161,7 @@
     <div class="card">
       <h2>PASO A PASO</h2>
       <ol class="steps">
-        <li><span>Seguí a <b>@somoslospixelitos</b>. Tu pixelito aparece en el Reel de las 19:00.</span></li>
+        <li><span>Seguí a <b>@somoslospixelitos</b>. Tu pixelito aparece en el próximo Reel.</span></li>
         <li><span>Mandanos <b>RECLAMAR</b> por mensaje directo.</span></li>
         <li><span>Te llega un link que es solo tuyo: elegí tu isla, armá tu look y reclamalo.</span></li>
       </ol>
@@ -645,12 +645,12 @@ function makeDemoApi(data) {
       if (sigue === false) return { kind: 'nofollow', text: '¡Hola! Para tener tu pixelito primero seguí a @somoslospixelitos 👾 Después mandá RECLAMAR de nuevo.' };
       let p = pix(h);
       if (sigue === true && (!p || p.out)) { store.nuevos[h] = { shirt: pick(OPC.shirt.slice(0, 8)), hair: pick(OPC.hair.slice(0, 6)), skin: pick(OPC.skin.slice(0, 5)), pants: pick(OPC.pants.slice(0, 4)) }; save(); p = pix(h); }
-      if (!p) return { kind: 'none', text: '¡Hola! Todavía no encontramos tu pixelito 👀 Si recién nos seguiste, aparecés en el próximo Reel (19:00, hora de Paraguay). Después mandá RECLAMAR de nuevo.' };
+      if (!p) return { kind: 'none', text: '¡Hola! Todavía no encontramos tu pixelito 👀 Si recién nos seguiste, aparecés en el próximo Reel. Después mandá RECLAMAR de nuevo.' };
       if (p.out) return { kind: 'out', text: 'Tu pixelito salió volando en cohete 🚀 porque dejaste de seguirnos. ¡Volvé a seguirnos y su lugar te espera!' };
       Object.keys(store.links).forEach(k => { if (store.links[k] === h) delete store.links[k]; });
       const t = tok(); store.links[t] = h; save();
       const url = location.origin + location.pathname + '?t=' + t;
-      const hola = p.nuevo ? '¡Hola! Ya sos parte de Los Pixelitos 👾 Tu pixelito llega en el Reel de hoy (19:00), pero ya podés reclamarlo y armarlo:' : `¡Hola! Tu pixelito #${p.num} te está esperando 👾`;
+      const hola = p.nuevo ? '¡Hola! Ya sos parte de Los Pixelitos 👾 Tu pixelito llega en el próximo Reel, pero ya podés reclamarlo y armarlo:' : `¡Hola! Tu pixelito #${p.num} te está esperando 👾`;
       return { kind: 'link', url, text: `${hola}\n${url}\nEl link es solo tuyo y vence en 24 horas.` };
     },
     async yo(t) { const h = store.links[t]; return h ? mine(h) : bad; },
@@ -779,7 +779,7 @@ function renderMine(first) {
   const p = me.pixelito, c = me.claim, isla = curIsla();
   $('mNum').textContent = p.num ? '#' + p.num : 'NUEVO';
   $('mHandle').innerHTML = c ? [...p.handle].map((ch, i) => `<span class="fz" style="color:${RAINBOW[i % RAINBOW.length]};animation-delay:${i * .1}s">${esc(ch)}</span>`).join('') : esc(p.handle);
-  $('mDay').textContent = probando ? `Probándote el traje ${TR[probando].n} (vista previa)` : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el Reel de hoy (19:00)' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
+  $('mDay').textContent = probando ? `Probándote el traje ${TR[probando].n} (vista previa)` : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el próximo Reel' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
   $('mBadge').innerHTML = c ? `<span class="badge">★ FUNDADOR #${c.ord}</span>` : '';
   $('lookTitle').textContent = c ? 'TU PIXELITO' : 'PASO 1 · ARMÁ TU PIXELITO';
   $('islaTitle').textContent = c ? 'TU ISLA' : 'PASO 2 · TU ISLA';

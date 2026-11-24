@@ -130,7 +130,7 @@ async function botReply(db, D, env, handle, origin, sigue) {
     await db.prepare('INSERT OR IGNORE INTO nuevos(handle, t, shirt, hair, skin, pants) VALUES(?,?,?,?,?,?)').bind(handle, now(), pickC(COL.shirt), pickC(COL.hair), pickC(COL.skin), pickC(COL.pants)).run();
     p = await nuevoDe(db, D, handle);
   }
-  if (!p) return { kind: 'none', text: `¡Hola! Todavía no encontramos tu pixelito 👀 Si recién nos seguiste, aparecés en el próximo Reel (19:00, hora de Paraguay). Después mandá RECLAMAR de nuevo.` };
+  if (!p) return { kind: 'none', text: `¡Hola! Todavía no encontramos tu pixelito 👀 Si recién nos seguiste, aparecés en el próximo Reel. Después mandá RECLAMAR de nuevo.` };
   if (p.out) return { kind: 'out', text: `Tu pixelito salió volando en cohete 🚀 porque dejaste de seguirnos. ¡Volvé a seguirnos y su lugar te espera!` };
   const raw = b64url(crypto.getRandomValues(new Uint8Array(18)));
   const t = now();
@@ -139,7 +139,7 @@ async function botReply(db, D, env, handle, origin, sigue) {
     db.prepare('INSERT INTO links(th, handle, created, exp) VALUES(?,?,?,?)').bind(await sha(raw), handle, t, t + LINK_HOURS * 3600e3),
   ]);
   const url = `${origin}/?t=${raw}`;
-  const hola = p.nuevo ? `¡Hola! Ya sos parte de Los Pixelitos 👾 Tu pixelito llega en el Reel de hoy (19:00), pero ya podés reclamarlo y armarlo:` : `¡Hola! Tu pixelito #${p.num} te está esperando 👾`;
+  const hola = p.nuevo ? `¡Hola! Ya sos parte de Los Pixelitos 👾 Tu pixelito llega en el próximo Reel, pero ya podés reclamarlo y armarlo:` : `¡Hola! Tu pixelito #${p.num} te está esperando 👾`;
   return { kind: 'link', url, text: `${hola}\n${url}\nEl link es solo tuyo y vence en ${LINK_HOURS} horas.` };
 }
 
