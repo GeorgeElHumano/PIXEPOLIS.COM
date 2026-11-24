@@ -1,6 +1,6 @@
 # Pixépolis Club · Reclamá tu pixelito
 
-Lista de espera de **Pixépolis Club** (dominio: pixepolis.com). La persona manda **RECLAMAR** por DM, el bot le responde con un link único, y con ese link primero arma su pixelito (piel, peinado, pelo, ropa, pantalón y accesorio) viéndolo siempre arriba, después elige su isla (una por cada Reel) y lo reclama. Al reclamarlo gana la **@ de Fundador** (su nombre con los colores y el salto del logo, arriba de la cabeza) y puede compartirlo en historias como imagen o como video de 6 segundos con la música de los Reels.
+Lista de espera de **Pixépolis Club** (dominio: pixepolis.com). La persona manda **RECLAMAR** por DM, el bot le responde con un link único, y con ese link primero arma su pixelito (piel, peinado, pelo, ropa, pantalón y accesorio) viéndolo siempre arriba, después elige su isla (una por cada Reel) y lo reclama. Los **primeros 1.000** en reclamar son **Fundadores**: ganan la **@ de Fundador** (su nombre con los colores y el salto del logo, arriba de la cabeza) y puede compartirlo en historias como imagen o como video de 6 segundos con la música de los Reels.
 
 En la web el pixelito se dibuja en versión detallada (16×28 píxeles, mismas proporciones que el de los Reels, sin contorno) para que la ropa de la tienda se note; los Reels siguen con el de 6×11. Incluye de muestra el set cowboy (sombrero, chaleco con estrella, jeans y botas con espuelas), una pieza por lugar del cuerpo.
 
@@ -27,7 +27,7 @@ Está armado igual que NOX: Cloudflare Pages + Functions (`functions/api/[[path]
 - **15 trajes** (cowboy, astronauta, pirata, chef, bombero, mago, caballero, ninja, rockero, surfista, explorador, superhéroe, navideño, vampiro y robot), cada uno con 4 piezas: cabeza, torso, piernas y pies. Se pueden probar gratis y comprar con Pixel Coins (las coins del regalo ya se pueden gastar; los paquetes figuran "muy pronto" hasta activar Xsolla).
 - **Pixel Coins:** la moneda del juego. Pieza 100, traje completo 300 (se compran adentro del juego). Afuera solo se venden paquetes de Pixel Coins: 300 ($3), 500 ($5), 1.100 ($10), 3.000 ($25), 6.500 ($50) y 14.000 ($100), por **Xsolla** (comerciante 951393, proyecto 324051; catálogo en `public/tienda/catalogo-xsolla.json`). Lemon Squeezy cerró, Fungies no acepta vendedores nuevos y Dodo no acepta juegos.
 - **Metas:** 2.500 (evento en los Reels), 5.000 (abre Pixépolis).
-- **Regalo de fundador:** los **primeros 1.000 en reclamar** su pixelito reciben **300 Pixel Coins** (un traje completo o 3 piezas sueltas). El servidor lo decide al reclamar (`regaloOk`) y las acredita una sola vez (movimiento `regalo-<@>`). Quien ya había elegido un traje gratis con el sistema anterior lo conserva.
+- **Fundadores = los primeros 1.000 en reclamar:** reciben el @ animado de Fundador y **300 Pixel Coins** (un traje completo o 3 piezas sueltas). El servidor lo decide al reclamar (`regaloOk`) y las acredita una sola vez (movimiento `regalo-<@>`). Quien ya había elegido un traje gratis con el sistema anterior lo conserva.
 - Aviso en la tienda: lo comprado se ve en la web y en el video diario; si sos menor, pedile a un adulto.
 
 ## Cómo se actualiza con cada Reel (automático)

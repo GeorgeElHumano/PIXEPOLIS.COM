@@ -503,7 +503,7 @@ export async function onRequest(ctx) {
       L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
       const look = JSON.stringify(L);
       const t = now();
-      if (!prevRow) av('reclamo', 'Nuevo fundador', `${h} reclamó su pixelito${L.regaloOk ? ' (con 300 Pixel Coins de regalo)' : ''}.`, { url: '/admin/#fundadores' });
+      if (!prevRow) av('reclamo', 'Nuevo fundador', `${h} reclamó su pixelito${L.regaloOk ? ' (Fundador, con 300 Pixel Coins)' : ' (ya no entra entre los 1.000 Fundadores)'}.`, { url: '/admin/#fundadores' });
       await db.prepare(`INSERT INTO reclamos(handle, num, ord, look, t, upd) VALUES(?1, ?2, (SELECT COALESCE(MAX(ord),0)+1 FROM reclamos), ?3, ?4, ?4)
         ON CONFLICT(handle) DO UPDATE SET look=excluded.look, upd=excluded.upd`).bind(h, p.num || 0, look, t).run();
       return json(await mine(db, D, env, h));

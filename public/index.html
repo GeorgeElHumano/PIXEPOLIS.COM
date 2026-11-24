@@ -240,7 +240,7 @@
       <canvas class="scene" id="homeScene" width="200" height="150"></canvas>
       <div class="count"><span id="cntLbl">Reclamados de los seguidores</span><b id="cnt">…</b></div>
       <div class="bar"><i id="bar"></i></div>
-      <p class="muted" style="margin:12px 0 0">Pixépolis Club es el archipiélago de los pixelitos: cada Reel suma una isla nueva. Los que reclaman su pixelito antes de que abra ganan el <b>@ de Fundador</b>: su nombre con los colores y el salto del logo de Los Pixelitos, que después no se va a poder conseguir nunca más.</p>
+      <p class="muted" style="margin:12px 0 0">Pixépolis Club es el archipiélago de los pixelitos: cada Reel suma una isla nueva. Los <b>primeros 1.000</b> en reclamar su pixelito son <b>Fundadores</b>: ganan el @ de Fundador (su nombre con los colores y el salto del logo de Los Pixelitos, que después no se va a poder conseguir nunca más) y 300 Pixel Coins gratis.</p>
     </div>
     <div class="card">
       <h2>METAS</h2>
@@ -284,7 +284,7 @@
       <div class="lbl">PANTALÓN</div><div class="sw" id="oPants"></div>
       <div class="lbl">ACCESORIO</div><div class="chips" id="oAcc"></div>
       <p class="note">★ = como salió en el video.</p>
-      <p class="note" id="crownNote">✨ Cuando reclamás tu pixelito, tu @ pasa a ser de fundador: con los colores y el salto del logo, arriba de tu cabeza.</p>
+      <p class="note" id="crownNote">✨ Los primeros 1.000 en reclamar son Fundadores: su @ salta con los colores del logo, arriba de la cabeza, y reciben 300 Pixel Coins.</p>
       <div class="gap"></div>
       <button class="btn" id="toIsla">Listo, ahora elegí tu isla ↓</button>
     </div>
@@ -381,6 +381,8 @@ const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto'
 // regalo: los primeros META_REGALO en reclamar su pixelito reciben REGALO_COINS Pixel Coins
 const REGALO_COINS = 300, META_REGALO = 1000, METAS = [[2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
 const miles = n => String(Math.round(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // 1.100, 2.500 (con punto, como en Paraguay)
+// Fundadores = los primeros 1.000 en reclamar (el servidor lo marca con regaloOk al reclamar)
+const esFundador = c => !!(c && c.look && c.look.regaloOk);
 const quedan = s => Math.max(0, META_REGALO - (s.reclamos ?? s.claimed ?? 0));
 const PIEZAS = [['c', 'Gorra', '🧢'], ['t', 'Remera', '👕'], ['p', 'Pantalón', '👖'], ['f', 'Zapatos', '👟']];
 const SLOTS = 'ctpf';
@@ -899,8 +901,8 @@ async function refreshCount() {
   $('cntLbl').textContent = s.enVivo ? 'Reclamados · seguidores en vivo' : 'Reclamados de los seguidores';
   const next = METAS.find(([n]) => s.total < n);
   const q = quedan(s), rec = META_REGALO - q;
-  $('metaTxt').innerHTML = (q ? `🎁 Los <b>primeros 1.000</b> en reclamar su pixelito se llevan <b>${REGALO_COINS} Pixel Coins</b> gratis. Quedan <b>${miles(q)}</b>. ` : '') + (next ? `Somos <b>${s.total}</b>. Próxima meta: ${miles(next[0])}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`);
-  $('metas').innerHTML = `<div class="meta ${q ? '' : 'done'}"><div class="mt"><span>${q ? '' : '✓ '}${REGALO_COINS} Pixel Coins gratis · fundadores</span><em>${miles(rec)}/1.000</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, rec / 10))}%"></i></div></div>` + METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${miles(n)}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
+  $('metaTxt').innerHTML = (q ? `🎁 Los <b>primeros 1.000</b> en reclamar su pixelito son <b>Fundadores</b>: @ animado y <b>${REGALO_COINS} Pixel Coins</b> gratis. Quedan <b>${miles(q)}</b>. ` : '') + (next ? `Somos <b>${s.total}</b>. Próxima meta: ${miles(next[0])}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`);
+  $('metas').innerHTML = `<div class="meta ${q ? '' : 'done'}"><div class="mt"><span>${q ? '' : '✓ '}Fundadores: @ animado + ${REGALO_COINS} Pixel Coins</span><em>${miles(rec)}/1.000</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, rec / 10))}%"></i></div></div>` + METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${miles(n)}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
   $('bar').style.width = (s.total ? Math.max(2, 100 * s.claimed / s.total) : 0) + '%';
 }
 
@@ -939,7 +941,7 @@ function puesto() {
 }
 const probandoAlgo = () => SLOTS.split('').some(k => probando[k]);
 function trajeActual(share) { const o = puesto(); if (!share) for (const k of SLOTS) if (probando[k]) o[k] = probando[k]; return o; }
-function curMe(share) { const p = me.pixelito; return { L: { s: look.shirt || p.shirt, pa: look.pants || p.pants, h: look.hair || p.hair, k: look.skin || p.skin, style: look.style, outfit: look.outfit, traje: trajeActual(share) }, acc: look.acc, name: p.handle, founder: me.claim ? me.claim.ord : 0 }; }
+function curMe(share) { const p = me.pixelito; return { L: { s: look.shirt || p.shirt, pa: look.pants || p.pants, h: look.hair || p.hair, k: look.skin || p.skin, style: look.style, outfit: look.outfit, traje: trajeActual(share) }, acc: look.acc, name: p.handle, founder: esFundador(me.claim) ? me.claim.ord : 0 }; }
 function swatches(el, key, orig) {
   el.innerHTML = [`<button data-k="${key}" data-v="" style="background:${orig}" class="${look[key] ? '' : 'on'}" aria-label="Como en el video">★</button>`]
     .concat(OPC[key].filter(c => c !== orig).map(c => `<button data-k="${key}" data-v="${c}" style="background:${c}" class="${look[key] === c ? 'on' : ''}" aria-label="Color ${c}"></button>`)).join('');
@@ -1000,9 +1002,9 @@ function renderShop() {
   // regalo de fundador: 300 Pixel Coins a los primeros 1.000 en reclamar (alcanzan para un traje o 3 piezas sueltas)
   let h = '';
   if (look.regalo) h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>. Sus 4 piezas son tuyas: combinalas con lo que quieras.`;
-  else if (c && c.look && c.look.regaloOk) h = `🎁 Estás entre los primeros 1.000 en reclamar: te regalamos <b>${REGALO_COINS} Pixel Coins</b>. Alcanzan para un traje completo o 3 piezas de trajes distintos.`;
-  else if (!c && quedan(me.stats || {})) h = `🎁 Los primeros 1.000 en reclamar su pixelito se llevan <b>${REGALO_COINS} Pixel Coins gratis</b>: un traje completo o 3 piezas de los que quieras. Quedan ${miles(quedan(me.stats))}.`;
-  else h = c ? `El regalo de ${REGALO_COINS} Pixel Coins era para los primeros 1.000 en reclamar. Igual tenés tu @ de fundador ✨` : `Ya reclamaron los primeros 1.000: el regalo de fundador se terminó. Igual tenés el @ de fundador ✨`;
+  else if (c && c.look && c.look.regaloOk) h = `🎁 Sos Fundador (de los primeros 1.000 en reclamar): te regalamos <b>${REGALO_COINS} Pixel Coins</b>. Alcanzan para un traje completo o 3 piezas de trajes distintos.`;
+  else if (!c && quedan(me.stats || {})) h = `🎁 Los primeros 1.000 en reclamar su pixelito son Fundadores y se llevan <b>${REGALO_COINS} Pixel Coins gratis</b>: un traje completo o 3 piezas de los que quieras. Quedan ${miles(quedan(me.stats))}.`;
+  else h = c ? `El regalo de ${REGALO_COINS} Pixel Coins era para los primeros 1.000 en reclamar. Igual tu pixelito ya es tuyo ✨` : `Ya reclamaron los primeros 1.000 Fundadores. Igual podés reclamar tu pixelito ✨`;
   $('giftBox').innerHTML = h;
 }
 function renderMine(first) {
@@ -1010,7 +1012,7 @@ function renderMine(first) {
   $('mNum').textContent = p.num ? '#' + p.num : 'NUEVO';
   $('mHandle').innerHTML = c ? [...p.handle].map((ch, i) => `<span class="fz" style="color:${RAINBOW[i % RAINBOW.length]};animation-delay:${i * .1}s">${esc(ch)}</span>`).join('') : esc(p.handle);
   $('mDay').textContent = probandoAlgo() ? 'Probándote ropa de la tienda (vista previa)' : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el próximo Reel' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
-  $('mBadge').innerHTML = c ? `<span class="badge">★ FUNDADOR #${c.ord}</span>` : '';
+  $('mBadge').innerHTML = c ? `<span class="badge">${esFundador(c) ? `★ FUNDADOR #${c.ord}` : '✓ RECLAMADO'}</span>` : '';
   $('lookTitle').textContent = c ? 'TU PIXELITO' : 'PASO 1 · ARMÁ TU PIXELITO';
   $('islaTitle').textContent = c ? 'TU ISLA' : 'PASO 2 · TU ISLA';
   $('claimBtn').textContent = c ? 'Guardar cambios' : '¡RECLAMAR MI PIXELITO!';
@@ -1121,7 +1123,7 @@ async function save() {
   $('claimBtn').disabled = false;
   if (r.error) { $('claimMsg').textContent = r.error; return; }
   const keep = me.islas; me = r; me.islas = keep; look = { ...LOOK0, ...r.claim.look };
-  $('claimMsg').textContent = first ? `¡Es tuyo! Sos el fundador #${r.claim.ord} y tu @ ya salta con los colores de Los Pixelitos ✨${!r.claim.look.regalo && r.claim.look.regaloOk ? ` Y te regalamos ${REGALO_COINS} Pixel Coins para la tienda 🎁` : ''}` : 'Cambios guardados.';
+  $('claimMsg').textContent = first ? (esFundador(r.claim) ? `¡Es tuyo! Sos el Fundador #${r.claim.ord}: tu @ ya salta con los colores de Los Pixelitos ✨${!r.claim.look.regalo ? ` y te regalamos ${REGALO_COINS} Pixel Coins para la tienda 🎁` : ''}` : '¡Es tuyo! Tu pixelito ya quedó reclamado ✨') : 'Cambios guardados.';
   renderMine(false); makeShare();
   if (first) { confetti(); setTimeout(() => $('shareCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 900); }
 }
@@ -1165,11 +1167,11 @@ function drawStory(c, W, t) {
   c.fillStyle = INK; c.fillRect(54, 504, 990, 750); c.fillRect(40, 490, 1000, 750);
   c.drawImage(SC, 50, 500, 980, 736);
   if (isla) { const s = `ISLA DIA ${isla.day} · ${isla.label.toUpperCase()}`; T(s, 540, 1320, fit(s, 980, 30), '#FFFFFF', 5); }
-  nameTag(c, p.handle, 540, 1430, 52, t, true, 960, 7);
+  nameTag(c, p.handle, 540, 1430, 52, t, esFundador(cl), 960, 7);
   c.fillStyle = INK; c.fillRect(150, 1520, 800, 140); c.fillRect(160, 1530, 800, 140);
   c.fillStyle = '#FFE14D'; c.fillRect(156, 1526, 788, 128);
   c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = INK; c.font = '36px "Press Start 2P", monospace'; c.fillText(`PIXELITO #${p.num}`, 540, 1568);
-  c.fillStyle = '#B23A1E'; c.font = '28px "Press Start 2P", monospace'; c.fillText(`FUNDADOR #${cl.ord}`, 540, 1618);
+  c.fillStyle = '#B23A1E'; c.font = '28px "Press Start 2P", monospace'; c.fillText(esFundador(cl) ? `FUNDADOR #${cl.ord}` : 'RECLAMADO', 540, 1618);
   T('@somoslospixelitos', 540, 1770, 36, '#FFFFFF', 6);
   T('pixepolis.com', 540, 1840, 30, '#FFE14D', 5);
   c.setTransform(1, 0, 0, 1, 0, 0);
