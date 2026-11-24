@@ -64,3 +64,15 @@ La configuración se hace en el panel (no hay `wrangler.toml` en el repo).
 ## Conectar Instagram (último paso)
 
 Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_APP_SECRET` y `IG_TOKEN` (salen de la app de Meta). En developers.facebook.com, el webhook va a `https://pixepolis.com/api/ig`, con el campo `messages`.
+
+## Estado en producción (24/11/2026)
+
+- **Web:** pixepolis.com en Cloudflare Pages (proyecto `pixepolis-com`, repo `GeorgeElHumano/PIXEPOLIS.COM`, se publica solo con cada push a `main`). Base D1 `pixepolis-db` unida como `DB`.
+- **Instagram conectado y app publicada:** app de Meta **Pixepolis Club** (id 985016004283134), en el portfolio *Jorge Duarte*, caso de uso "Administrar mensajes y contenido en Instagram" con inicio de sesión unificado. Está en modo activo: el bot contesta a cualquier seguidor (probado con @caballerogrossling).
+- **Token:** `IG_TOKEN` es un token de usuario del sistema que no vence. La web usa `graph.facebook.com` con el id de Instagram `17841413502664396`; si algún día se usa un token que empieza con `IG`, cambia sola a `graph.instagram.com`.
+- **Webhook:** `https://pixepolis.com/api/ig`, campo `messages`, suscripción activa en la cuenta.
+- **Revisar la conexión:** `https://pixepolis.com/api/ig-estado` muestra si está conectado, los seguidores y los últimos eventos del webhook.
+- **Páginas para Meta:** `/privacidad/` y `/borrar-datos/` (pedidos de borrado: DM con "BORRAR", se hacen a mano).
+- **Vista previa del link:** `/og.png`. **App instalable:** `manifest.webmanifest`, `sw.js`, íconos `icono-*.png` y botón "Agregar a inicio" con guía para iPhone, Android y compu.
+- **Página de Facebook:** "Los Pixelitos" (categoría Creador digital).
+- Los textos dicen "el próximo Reel", sin horario fijo.
