@@ -1,0 +1,17 @@
+{
+ "name": "Pixépolis Club · Los Pixelitos",
+ "short_name": "Pixépolis",
+ "description": "1 seguidor = 1 pixelito. Reclamá el tuyo y reservá tu lugar en Pixépolis Club.",
+ "start_url": "/?app=1",
+ "scope": "/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#1FB6FF",
+ "theme_color": "#1FB6FF",
+ "lang": "es",
+ "icons": [
+  {"src": "/icono-192.png", "sizes": "192x192", "type": "image/png"},
+  {"src": "/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+  {"src": "/icono-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+ ]
+}
