@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reclamá tu pixelito · Pixépolis Club</title>
+<meta name="description" content="1 seguidor = 1 pixelito. Reclamá el tuyo y reservá tu lugar en Pixépolis Club.">
+<meta name="theme-color" content="#1FB6FF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* VOICE: juguetón, de videojuego, como los Reels de Los Pixelitos
+     IDEA: una postal de Pixépolis, el archipiélago de islas flotantes donde viven los pixelitos
+     PICTURE: tu pixelito parado en su isla, con la decoración del video de ese día
+     COLOUR and TYPE: cielo celeste, amarillo, rosa y tinta; Press Start 2P + Inter
+     LAYOUT: una columna para celular, tarjetas con borde grueso y sombra dura */
+  :root { --sky:#1FB6FF; --ink:#14121F; --yel:#FFE14D; --pink:#FF3D7F; --grn:#27AE60; --blue:#2F80ED; color-scheme:light; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; min-width:0; }
+  html, body { margin:0; }
+  body { background:linear-gradient(#1FB6FF 0, #4CC7FF 45%, #80D8FF 100%); color:var(--ink); font-family:Inter, system-ui, sans-serif; min-height:100vh; }
+  body.bar-on { padding-bottom:96px; }
+  main { max-width:460px; margin:0 auto; padding:18px 16px 40px; }
+  .demo { background:var(--ink); color:var(--yel); font:10px/1.6 'Press Start 2P', monospace; text-align:center; padding:8px 10px; }
+  .logo { text-align:center; margin:10px 0 4px; }
+  .logo .los { font:16px 'Press Start 2P', monospace; color:#fff; text-shadow:3px 3px 0 var(--ink); }
+  .logo .word { font:27px/1.25 'Press Start 2P', monospace; letter-spacing:-1px; margin-top:6px; }
+  .logo .word span { display:inline-block; -webkit-text-stroke:2px var(--ink); text-shadow:3px 3px 0 var(--ink); animation:hop 1.6s ease-in-out infinite; }
+  @keyframes hop { 0%,100% { transform:translateY(0) } 40% { transform:translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .logo .word span { animation:none; } }
+  .tag { text-align:center; color:#fff; font-weight:800; margin:6px 0 16px; text-shadow:0 2px 0 rgba(0,0,0,.25); line-height:1.6; }
+  .tag b { font:11px 'Press Start 2P', monospace; color:var(--yel); text-shadow:2px 2px 0 var(--ink); }
+  .card { background:#fff; border:4px solid var(--ink); box-shadow:6px 6px 0 var(--ink); border-radius:12px; padding:16px; margin-bottom:22px; position:relative; }
+  .card h2 { font:12px/1.7 'Press Start 2P', monospace; color:var(--pink); margin:0 0 10px; }
+  .scene { display:block; width:100%; aspect-ratio: 4 / 3; image-rendering:pixelated; border:4px solid var(--ink); border-radius:10px; background:var(--sky); }
+  .count { display:flex; justify-content:space-between; align-items:baseline; margin:14px 0 6px; font-weight:800; }
+  .count b { font:14px 'Press Start 2P', monospace; color:var(--grn); }
+  .bar { height:16px; border:3px solid var(--ink); border-radius:6px; overflow:hidden; background:#E8F7FF; }
+  .bar i { display:block; height:100%; background:repeating-linear-gradient(90deg, var(--yel) 0 10px, #FFC300 10px 20px); width:0; transition:width 1s; }
+  ol.steps { margin:0; padding:0; list-style:none; counter-reset:s; }
+  ol.steps li { counter-increment:s; display:flex; gap:12px; align-items:flex-start; margin:0 0 12px; line-height:1.45; }
+  ol.steps li::before { content:counter(s); flex:none; width:30px; height:30px; display:grid; place-items:center; font:12px 'Press Start 2P', monospace; background:var(--yel); border:3px solid var(--ink); border-radius:6px; }
+  .btn { display:block; width:100%; text-align:center; text-decoration:none; font:800 16px Inter, sans-serif; padding:15px 12px; min-height:48px; border-radius:10px; border:3px solid var(--ink); background:#fff; color:var(--ink); box-shadow:4px 4px 0 var(--ink); cursor:pointer; }
+  .btn:active { transform:translate(3px,3px); box-shadow:1px 1px 0 var(--ink); }
+  .btn:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid var(--pink); outline-offset:2px; }
+  .btn.main { background:var(--yel); }
+  .btn.pink { background:var(--pink); color:#fff; }
+  .btn.big { font:12px/1.5 'Press Start 2P', monospace; padding:16px 10px; }
+  .btn[disabled] { opacity:.5; }
+  .gap { height:12px; }
+  .muted { color:#555; font-size:14px; line-height:1.5; }
+  .chat { background:#F3F3F7; border-radius:10px; padding:12px; min-height:60px; display:flex; flex-direction:column; gap:8px; margin:12px 0; }
+  .msg { max-width:86%; padding:10px 12px; border-radius:16px; font-size:14px; line-height:1.45; white-space:pre-wrap; word-break:break-word; }
+  .msg.me { align-self:flex-end; background:linear-gradient(135deg,#7B5CFF,#E340A9); color:#fff; border-bottom-right-radius:4px; }
+  .msg.bot { align-self:flex-start; background:#fff; border:1px solid #ddd; border-bottom-left-radius:4px; }
+  .msg .who { font-size:11px; font-weight:800; opacity:.7; display:block; margin-bottom:2px; }
+  .msg a { color:var(--blue); font-weight:700; }
+  input[type=text] { width:100%; font:600 16px Inter, sans-serif; padding:12px; border:3px solid var(--ink); border-radius:10px; }
+  .who-big { text-align:center; margin:12px 0 2px; }
+  .who-big .num { font:18px 'Press Start 2P', monospace; }
+  .who-big .h { font-weight:800; font-size:18px; color:var(--blue); margin-top:8px; word-break:break-all; }
+  .who-big .d { color:#555; font-size:13px; margin-top:4px; line-height:1.4; }
+  .badge { display:inline-block; font:10px/1 'Press Start 2P', monospace; background:var(--yel); border:3px solid var(--ink); padding:7px 9px; border-radius:6px; margin-top:10px; }
+  .stage { position:sticky; top:0; z-index:4; margin:0 -16px 16px; padding:10px 16px 12px; background:#1FB6FF; box-shadow:0 6px 0 rgba(20,18,31,.18); }
+  .stage .scene { width:auto; height:min(30vh, calc((min(100vw, 460px) - 40px) * .75)); margin:0 auto; box-shadow:5px 5px 0 var(--ink); }
+  #stepIsla, #shareCard, #stepLook { scroll-margin-top:calc(30vh + 90px); }
+  .stage-txt { text-align:center; margin-top:8px; color:#fff; font-weight:800; text-shadow:0 2px 0 rgba(0,0,0,.25); word-break:break-all; }
+  .fz { display:inline-block; -webkit-text-stroke:1px var(--ink); animation:hop 1.4s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .fz { animation:none; } }
+  .stage-txt b { font:12px 'Press Start 2P', monospace; color:var(--yel); text-shadow:2px 2px 0 var(--ink); }
+  .stage-txt .badge { margin:0 0 0 4px; padding:4px 6px; font-size:8px; text-shadow:none; color:var(--ink); vertical-align:middle; }
+  .stage-sub { text-align:center; color:#fff; font-size:12px; font-weight:600; margin-top:2px; text-shadow:0 1px 0 rgba(0,0,0,.3); }
+  .lbl { font:800 13px Inter, sans-serif; letter-spacing:.04em; margin:18px 0 10px; }
+  .lbl.first { margin-top:4px; }
+  .sw { display:flex; flex-wrap:wrap; gap:8px; }
+  .sw button { width:40px; height:40px; border-radius:8px; border:3px solid var(--ink); cursor:pointer; padding:0; font:10px 'Press Start 2P', monospace; color:var(--ink); }
+  .sw button.on { outline:4px solid var(--pink); outline-offset:2px; }
+  .chips { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .chips button { font:600 14px Inter, sans-serif; padding:10px 4px; min-height:44px; border-radius:8px; border:3px solid var(--ink); background:#fff; cursor:pointer; color:var(--ink); }
+  .chips button.on { background:var(--yel); }
+  .trajes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:12px; }
+  .traje { border:3px solid var(--ink); border-radius:8px; background:#fff; padding:6px 4px 8px; cursor:pointer; font:inherit; color:inherit; text-align:center; }
+  .traje.on { outline:4px solid var(--pink); outline-offset:1px; background:#FFF8D6; }
+  .traje.mio { background:#E8F7FF; }
+  .traje canvas { display:block; width:100%; height:92px; object-fit:contain; image-rendering:pixelated; }
+  .traje .tn { font:800 13px Inter, sans-serif; margin-top:4px; }
+  .traje .tp { font:600 11px Inter, sans-serif; color:#555; }
+  .traje .tg { display:inline-block; margin-top:4px; font:800 10px/1 Inter, sans-serif; letter-spacing:.04em; padding:4px 6px; border-radius:4px; background:#eee; color:#555; }
+  .traje .tg.y { background:var(--yel); color:var(--ink); }
+  .traje .tg.b { background:var(--blue); color:#fff; }
+  .gift { background:#FFF8D6; border:3px dashed var(--ink); border-radius:10px; padding:12px; font-size:14px; line-height:1.45; }
+  .gift b { color:var(--pink); }
+  .gift .btn { margin-top:10px; }
+  .gift .chips { margin-top:10px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .packs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .packs div { border:3px solid var(--ink); border-radius:8px; padding:8px 4px; text-align:center; background:#fff; opacity:.75; }
+  .packs b { display:block; font:11px 'Press Start 2P', monospace; color:#B8860B; }
+  .packs span { font:800 14px Inter, sans-serif; }
+  .meta { margin:0 0 14px; }
+  .meta .mt { display:flex; justify-content:space-between; gap:8px; font-weight:800; font-size:14px; margin-bottom:6px; }
+  .meta .mt em { font-style:normal; font:11px 'Press Start 2P', monospace; color:var(--grn); white-space:nowrap; }
+  .meta.done .mt { color:var(--grn); }
+  .shop { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .shop button { font:600 14px Inter, sans-serif; padding:10px 6px; min-height:44px; border-radius:8px; border:3px solid var(--ink); background:#fff; cursor:pointer; color:var(--ink); }
+  .shop button.on { background:#F6D58E; }
+  .shop button.set { grid-column:1 / -1; background:#FFE14D; }
+  .chips button.gold { background:linear-gradient(#FFE14D,#FFC300); font-weight:800; }
+  .chips button[disabled] { background:#eee; color:#888; border-style:dashed; }
+  .note { font-size:13px; color:#555; margin-top:10px; line-height:1.45; }
+  .islas { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 4px 12px; margin:0 -4px; }
+  .isla { flex:0 0 72%; scroll-snap-align:start; border:3px solid var(--ink); border-radius:10px; background:#fff; padding:8px; text-align:left; cursor:pointer; font:inherit; color:inherit; }
+  .isla.on { outline:4px solid var(--pink); outline-offset:1px; background:#FFF8D6; }
+  .isla canvas { display:block; width:100%; aspect-ratio:4/3; image-rendering:pixelated; border-radius:6px; border:2px solid var(--ink); }
+  .isla .t { font:10px/1.5 'Press Start 2P', monospace; margin:8px 0 4px; display:flex; justify-content:space-between; gap:6px; flex-wrap:wrap; }
+  .isla .t em { font-style:normal; color:var(--pink); }
+  .isla .u { font-weight:800; font-size:13px; color:var(--blue); word-break:break-all; }
+  .isla .c { font-size:13px; line-height:1.4; margin:3px 0; }
+  .isla .n { font-size:12px; color:#555; }
+  .nav { display:flex; gap:8px; justify-content:flex-end; }
+  .nav button { width:44px; height:44px; border:3px solid var(--ink); border-radius:8px; background:#fff; font:800 18px Inter; cursor:pointer; color:var(--ink); }
+  .tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .tabs button { font:10px 'Press Start 2P', monospace; padding:12px 4px; min-height:44px; border:3px solid var(--ink); border-radius:8px; background:#fff; cursor:pointer; color:var(--ink); }
+  .tabs button.on { background:var(--yel); }
+  .share-img, .share-vid { display:block; width:62%; margin:0 auto 14px; border:4px solid var(--ink); border-radius:10px; background:#000; }
+  .status { font-size:13px; color:#555; min-height:18px; margin-top:10px; text-align:center; line-height:1.4; }
+  .prog { height:12px; border:3px solid var(--ink); border-radius:6px; overflow:hidden; margin:10px 0; background:#E8F7FF; }
+  .prog i { display:block; height:100%; width:0; background:var(--pink); }
+  .err { text-align:center; }
+  .err .big { font:14px/1.7 'Press Start 2P', monospace; color:var(--pink); margin-bottom:10px; }
+  .dock { position:fixed; left:0; right:0; bottom:0; padding:12px 16px calc(12px + env(safe-area-inset-bottom)); background:rgba(255,255,255,.94); border-top:4px solid var(--ink); z-index:5; }
+  .dock .in { max-width:460px; margin:0 auto; }
+  .dock .status { margin-top:6px; min-height:0; }
+  footer { text-align:center; color:#fff; font-size:12px; font-weight:600; text-shadow:0 1px 0 rgba(0,0,0,.3); }
+  footer a { color:#fff; }
+  #confetti { position:fixed; inset:0; pointer-events:none; z-index:9; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<div class="demo" id="demoBar" hidden>MODO PRUEBA · LOS RECLAMOS SE GUARDAN SOLO EN ESTE CELULAR</div>
+<canvas id="confetti"></canvas>
+<main>
+  <div class="logo">
+    <div class="los">LOS</div>
+    <div class="word" id="word"></div>
+  </div>
+  <div class="tag">1 seguidor = 1 pixelito<br>Reservá tu lugar en <b>PIXÉPOLIS CLUB</b></div>
+
+  <section id="vHome" hidden>
+    <div class="card">
+      <h2>RECLAMÁ TU PIXELITO</h2>
+      <canvas class="scene" id="homeScene" width="200" height="150"></canvas>
+      <div class="count"><span id="cntLbl">Reclamados de los seguidores</span><b id="cnt">…</b></div>
+      <div class="bar"><i id="bar"></i></div>
+      <p class="muted" style="margin:12px 0 0">Pixépolis Club es el archipiélago de los pixelitos: cada Reel suma una isla nueva. Los que reclaman su pixelito antes de que abra ganan el <b>@ de Fundador</b>: su nombre con los colores y el salto del logo de Los Pixelitos, que después no se va a poder conseguir nunca más.</p>
+    </div>
+    <div class="card">
+      <h2>METAS</h2>
+      <p class="muted" style="margin:0 0 14px" id="metaTxt"></p>
+      <div id="metas"></div>
+    </div>
+    <div class="card">
+      <h2>PASO A PASO</h2>
+      <ol class="steps">
+        <li><span>Seguí a <b>@somoslospixelitos</b>. Tu pixelito aparece en el Reel de las 19:00.</span></li>
+        <li><span>Mandanos <b>RECLAMAR</b> por mensaje directo.</span></li>
+        <li><span>Te llega un link que es solo tuyo: elegí tu isla, armá tu look y reclamalo.</span></li>
+      </ol>
+      <a class="btn main" href="https://ig.me/m/somoslospixelitos" target="_blank" rel="noopener">Mandar RECLAMAR por DM</a>
+    </div>
+    <div class="card" id="simCard" hidden>
+      <h2>SIMULADOR DEL BOT</h2>
+      <p class="muted" style="margin:0">Para probar sin Instagram: escribí un @ y hacé de cuenta que manda el DM. Probá con <a href="#" data-try="@georgeelhumano">@georgeelhumano</a>, con uno que se fue (<a href="#" data-try="@america_avila19">@america_avila19</a>) o con un @ inventado, como si te hubieras sumado recién: tu pixelito se crea al instante, sin esperar el Reel.</p>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <label for="simUser" class="lbl" style="display:block;margin-top:0">TU USUARIO</label>
+      <input type="text" id="simUser" placeholder="@tuusuario" autocapitalize="none" autocorrect="off" spellcheck="false">
+      <label style="display:flex;gap:10px;align-items:center;margin-top:12px;font-weight:600;font-size:14px;min-height:44px"><input type="checkbox" id="simSigue" checked style="width:22px;height:22px;accent-color:#FF3D7F"> Este @ nos sigue en Instagram (como lo verifica el bot real)</label>
+      <div class="gap"></div>
+      <button class="btn pink" id="simSend">Enviar “RECLAMAR”</button>
+    </div>
+  </section>
+
+  <section id="vMine" hidden>
+    <div class="stage">
+      <canvas class="scene" id="mineScene" width="400" height="300"></canvas>
+      <div class="stage-txt"><b id="mNum"></b> <span id="mHandle"></span> <span id="mBadge"></span></div>
+      <div class="stage-sub" id="mDay"></div>
+    </div>
+    <div class="card" id="stepLook">
+      <h2 id="lookTitle">PASO 1 · ARMÁ TU PIXELITO</h2>
+      <div class="lbl first">PIEL</div><div class="sw" id="oSkin"></div>
+      <div class="lbl">PEINADO</div><div class="chips" id="oStyle"></div>
+      <div class="lbl">COLOR DE PELO</div><div class="sw" id="oHair"></div>
+      <div class="lbl">ROPA</div><div class="chips" id="oOutfit"></div>
+      <div class="lbl">COLOR DE ROPA</div><div class="sw" id="oShirt"></div>
+      <div class="lbl">PANTALÓN</div><div class="sw" id="oPants"></div>
+      <div class="lbl">ACCESORIO</div><div class="chips" id="oAcc"></div>
+      <p class="note">★ = como salió en el video.</p>
+      <p class="note" id="crownNote">✨ Cuando reclamás tu pixelito, tu @ pasa a ser de fundador: con los colores y el salto del logo, arriba de tu cabeza.</p>
+      <div class="gap"></div>
+      <button class="btn" id="toIsla">Listo, ahora elegí tu isla ↓</button>
+    </div>
+    <div class="card" id="shopCard">
+      <h2>TIENDA · MUY PRONTO</h2>
+      <div class="gift" id="giftBox"></div>
+      <p class="note" style="margin-top:12px">Cada traje trae 4 piezas: cabeza, torso, piernas y pies. Pieza suelta: 100 monedas ($1). Traje completo: 300 monedas ($3). Tocá uno para probártelo.</p>
+      <div class="trajes" id="trajes"></div>
+      <div class="lbl">PAQUETES DE MONEDAS</div>
+      <div class="packs" id="packs"><div><b>300</b><span>$3</span></div><div><b>500</b><span>$5</span></div><div><b>1.100</b><span>$10</span></div><div><b>3.000</b><span>$25</span></div><div><b>6.500</b><span>$50</span></div><div><b>14.000</b><span>$100</span></div></div>
+      <p class="note" style="margin-top:6px">Monedas: próximamente. Los paquetes grandes traen monedas de regalo.</p>
+      <p class="note">Lo que compres se ve en la web y en el video diario de Los Pixelitos. Las monedas solo se usan dentro de Pixépolis.</p>
+      <p class="note"><b>Si sos menor de edad, pedile a un adulto antes de comprar.</b></p>
+    </div>
+    <div class="card" id="stepIsla">
+      <h2 id="islaTitle">PASO 2 · TU ISLA</h2>
+      <p class="muted" style="margin:0 0 12px">Cada isla es un día de los Reels, con lo que pidió el comentario ganador. Tu pixelito vive en la que elijas.</p>
+      <div class="islas" id="islas"></div>
+      <div class="nav"><button id="isPrev" aria-label="Isla anterior">‹</button><button id="isNext" aria-label="Isla siguiente">›</button></div>
+    </div>
+    <div class="card" id="shareCard" hidden>
+      <h2>COMPARTILO</h2>
+      <div class="tabs"><button id="tImg" class="on">IMAGEN</button><button id="tVid">VIDEO</button></div>
+      <div id="paneImg">
+        <img class="share-img" id="shareImg" alt="Imagen de tu pixelito para historias">
+        <button class="btn pink" id="shareImgBtn">Compartir imagen</button>
+      </div>
+      <div id="paneVid" hidden>
+        <video class="share-vid" id="shareVid" playsinline controls loop hidden></video>
+        <button class="btn main" id="makeVid">Crear video con música (6 s)</button>
+        <div class="prog" id="vidProg" hidden><i></i></div>
+        <button class="btn pink" id="shareVidBtn" hidden>Compartir video</button>
+      </div>
+      <div class="status" id="shareMsg">Etiquetá a @somoslospixelitos 💛</div>
+    </div>
+  </section>
+
+  <section id="vErr" hidden>
+    <div class="card err">
+      <div class="big" id="eTitle">UPS</div>
+      <p id="eText"></p>
+      <button class="btn main" id="eBack">Volver al inicio</button>
+    </div>
+  </section>
+
+  <footer>@somoslospixelitos · <a href="https://instagram.com/somoslospixelitos" target="_blank" rel="noopener">Instagram</a></footer>
+</main>
+<div class="dock" id="dock" hidden><div class="in">
+  <button class="btn big main" id="claimBtn">¡RECLAMAR MI PIXELITO!</button>
+  <div class="status" id="claimMsg"></div>
+</div></div>
+
+<script>
+{
+/* ================= opciones (las mismas que en el servidor) ================= */
+const OPC = {
+  shirt: ['#FF3D3D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#FF4FA3', '#00C2A8', '#FFD23F', '#FFFFFF', '#14121F'],
+  pants: ['#1F3A93', '#2C2C2A', '#5D4037', '#37474F', '#FFFFFF', '#E53935', '#90CAF9'],
+  hair: ['#2C2C2A', '#633806', '#BA7517', '#E8C35A', '#412402', '#D9480F', '#FF4FA3', '#2F80ED', '#BDBDBD'],
+  skin: ['#FFD3A5', '#F0A878', '#B97A4B', '#FCE1C8', '#8D5A3B', '#6B4226'],
+  style: [['corto', 'Corto'], ['largo', 'Largo'], ['rastas', 'Rastas'], ['rapado', 'Rapado'], ['cresta', 'Cresta'], ['colitas', 'Colitas'], ['afro', 'Afro']],
+  outfit: [['remera', 'Remera'], ['buzo', 'Buzo'], ['camisa', 'Camisa'], ['vestido', 'Vestido'], ['musculosa', 'Musculosa'], ['campera', 'Campera']],
+  acc: [['', 'Nada'], ['gorra', 'Gorra'], ['lentes', 'Lentes'], ['mono', 'Moño'], ['auris', 'Auris']],
+};
+const INK = '#14121F';
+const CONF = ['#FF3D7F', '#FFE14D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8'];
+const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto', outfit: 'remera', acc: '', regalo: '', piezas: '', isla: null };
+const META_REGALO = 1000, METAS = [[1000, 'Traje gratis para los que reclamaron antes'], [2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
+const PIEZAS = [['c', 'Cabeza'], ['t', 'Torso'], ['p', 'Piernas'], ['f', 'Pies']];
+const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const f = v => Math.max(0, Math.min(255, Math.round(v * k))); return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map(v => v.toString(16).padStart(2, '0')).join(''); };
+const F = (c, x, y, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(x), Math.round(y), Math.max(1, Math.round(w)), Math.max(1, Math.round(h))); };
+function txt(c, s, x, y, sz, col) { c.font = `${Math.max(4, sz)}px "Press Start 2P", monospace`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = col; c.fillText(s, x, y); }
+
+/* ================= un pixelito (grilla de 6×11, igual que sim.py) ================= */
+
+/* ================= @ de fundador: letras con los colores del logo que saltan ================= */
+const RAINBOW = ['#FF3D7F', '#FFE14D', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8', '#FF3D3D', '#2F80ED', '#FF4FA3'];
+function nameTag(c, s, cx, cy, sz, t, founder, maxW, stroke) {
+  c.font = `${sz}px "Press Start 2P", monospace`;
+  while (c.measureText(s).width > maxW && sz > 6) { sz -= 1; c.font = `${sz}px "Press Start 2P", monospace`; }
+  c.textAlign = 'left'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.strokeStyle = INK; c.lineWidth = stroke;
+  let x = cx - c.measureText(s).width / 2;
+  [...s].forEach((ch, i) => {
+    const w = c.measureText(ch).width, y = founder ? cy - Math.abs(Math.sin(t / 8 + i * 0.6)) * sz * 0.45 : cy;
+    c.strokeText(ch, x, y); c.fillStyle = founder ? RAINBOW[i % RAINBOW.length] : '#FFFFFF'; c.fillText(ch, x, y); x += w;
+  });
+  c.textAlign = 'center';
+}
+/* ================= pixelito detallado (16×28), mismas proporciones que el de 6×11 ================= */
+/* ================= trajes de la tienda (15). Cada uno tiene 4 piezas: cabeza (c), torso (t), piernas (p) y pies (f) ================= */
+const G = '#FFC300';
+const piernas = (R, col) => { const d = shade(col, 0.8); R(4, 21, 3, 5, col); R(9, 21, 3, 5, col); R(6, 21, 1, 5, d); R(11, 21, 1, 5, d); };
+const TR = {
+  cowboy: { n: 'Cowboy',
+    c: (R, hy) => { const LE = '#A0662B', LD = '#7A4A1C'; R(4, hy - 5, 8, 5, LE); R(7, hy - 5, 2, 1, LD); R(11, hy - 4, 1, 4, LD); R(4, hy - 1, 8, 1, '#3E2723'); R(7, hy - 1, 2, 1, G); R(0, hy, 16, 2, LE); R(0, hy - 1, 1, 1, LE); R(15, hy - 1, 1, 1, LE); R(1, hy + 1, 14, 1, LD); },
+    t: { fn: R => { const V = '#6B3E1A', VD = '#4E2C12'; R(3, 11, 3, 10, V); R(10, 11, 3, 10, V); R(3, 11, 1, 10, VD); R(12, 11, 1, 10, VD); R(11, 13, 1, 1, '#FFF3A0'); R(10, 14, 3, 1, G); R(11, 15, 1, 1, G); R(10, 16, 1, 1, G); R(12, 16, 1, 1, G); } },
+    p: R => { piernas(R, '#2F5FA8'); R(4, 22, 1, 3, '#5B86C9'); R(9, 22, 1, 3, '#5B86C9'); R(5, 23, 1, 1, '#E8C35A'); R(10, 23, 1, 1, '#E8C35A'); },
+    top: R => { R(3, 20, 10, 1, '#3E2723'); R(7, 20, 2, 1, G); },
+    f: R => { const B = '#A0522D', BD = '#7A3E1E'; R(4, 22, 3, 4, B); R(9, 22, 3, 4, B); R(4, 22, 3, 1, BD); R(9, 22, 3, 1, BD); R(2, 26, 5, 2, B); R(9, 26, 5, 2, B); R(2, 27, 5, 1, '#4E2C12'); R(9, 27, 5, 1, '#4E2C12'); R(7, 26, 1, 1, G); R(8, 26, 1, 1, G); } },
+  astronauta: { n: 'Astronauta',
+    c: R => { const W = '#ECEFF1'; R(2, 0, 12, 11, 'rgba(179,240,255,.32)'); R(2, -1, 12, 1, W); R(1, 0, 1, 11, W); R(14, 0, 1, 11, W); R(3, 1, 2, 1, 'rgba(255,255,255,.85)'); R(3, 2, 1, 2, 'rgba(255,255,255,.85)'); R(12, -3, 1, 2, '#9E9E9E'); R(12, -4, 1, 1, '#FF3D3D'); },
+    t: { base: '#ECEFF1', sleeve: 'full', fn: R => { R(6, 13, 4, 3, '#90A4AE'); R(6, 13, 1, 1, '#FF3D3D'); R(8, 13, 1, 1, '#27AE60'); R(7, 14, 2, 1, '#2F80ED'); R(4, 12, 2, 2, '#2F80ED'); R(4, 12, 1, 1, '#FFFFFF'); R(3, 19, 10, 1, '#B0BEC5'); } },
+    p: R => { piernas(R, '#ECEFF1'); R(4, 23, 3, 1, '#B0BEC5'); R(9, 23, 3, 1, '#B0BEC5'); },
+    f: R => { R(3, 25, 4, 3, '#90A4AE'); R(9, 25, 4, 3, '#90A4AE'); R(3, 25, 4, 1, '#B0BEC5'); R(9, 25, 4, 1, '#B0BEC5'); R(3, 27, 4, 1, '#546E7A'); R(9, 27, 4, 1, '#546E7A'); } },
+  pirata: { n: 'Pirata',
+    c: R => { const B = '#C62828'; R(3, 0, 10, 3, B); R(4, -1, 8, 1, B); [4, 7, 10].forEach(x => R(x, 0, 1, 1, '#FFFFFF')); R(13, 2, 2, 1, B); R(14, 3, 1, 2, B); R(3, 3, 6, 1, INK); R(9, 4, 3, 3, INK); R(12, 3, 1, 1, INK); },
+    t: { base: '#B71C1C', sleeve: 'full', fn: R => { R(6, 11, 4, 4, '#F5F5F5'); R(7, 15, 2, 1, '#F5F5F5'); [13, 16].forEach(y => { R(4, y, 1, 1, G); R(11, y, 1, 1, G); }); R(3, 19, 10, 1, '#3E2723'); R(7, 19, 2, 1, G); } },
+    p: R => { for (let y = 21; y < 26; y++) { const col = y % 2 ? '#ECEFF1' : '#C62828'; R(4, y, 3, 1, col); R(9, y, 3, 1, col); } },
+    f: R => { R(4, 23, 3, 3, '#212121'); R(9, 23, 3, 3, '#212121'); R(4, 23, 3, 1, '#5D4037'); R(9, 23, 3, 1, '#5D4037'); R(3, 26, 4, 2, '#212121'); R(9, 26, 4, 2, '#212121'); } },
+  chef: { n: 'Chef',
+    c: R => { R(3, -6, 10, 3, '#FAFAFA'); R(4, -3, 8, 4, '#FAFAFA'); R(11, -6, 2, 7, '#E0E0E0'); R(4, 0, 8, 1, '#E0E0E0'); R(5, -6, 2, 1, '#FFFFFF'); },
+    t: { base: '#FAFAFA', sleeve: 'full', fn: R => { [13, 15, 17].forEach(y => { R(5, y, 1, 1, '#9E9E9E'); R(10, y, 1, 1, '#9E9E9E'); }); R(6, 11, 4, 1, '#E53935'); R(7, 12, 2, 1, '#E53935'); } },
+    p: R => { for (let y = 21; y < 26; y++) for (const x of [4, 5, 6, 9, 10, 11]) R(x, y, 1, 1, (x + y) % 2 ? '#212121' : '#ECEFF1'); },
+    f: R => { R(3, 26, 4, 2, '#212121'); R(9, 26, 4, 2, '#212121'); R(3, 26, 4, 1, '#424242'); R(9, 26, 4, 1, '#424242'); } },
+  bombero: { n: 'Bombero',
+    c: R => { R(3, -2, 10, 4, '#D32F2F'); R(4, -3, 8, 1, '#D32F2F'); R(1, 1, 14, 2, '#B71C1C'); R(7, -2, 2, 2, G); R(5, -2, 1, 1, '#EF5350'); },
+    t: { base: '#C8A94A', sleeve: 'full', fn: R => { R(3, 15, 10, 1, '#FFEB3B'); R(3, 16, 10, 1, '#CFD8DC'); R(3, 19, 10, 1, '#FFEB3B'); [13, 15, 17].forEach(y => R(7, y, 2, 1, '#212121')); } },
+    p: R => { piernas(R, '#C8A94A'); R(4, 22, 3, 1, '#FFEB3B'); R(9, 22, 3, 1, '#FFEB3B'); },
+    f: R => { R(4, 24, 3, 2, '#212121'); R(9, 24, 3, 2, '#212121'); R(3, 26, 4, 2, '#212121'); R(9, 26, 4, 2, '#212121'); R(3, 27, 4, 1, '#FBC02D'); R(9, 27, 4, 1, '#FBC02D'); } },
+  mago: { n: 'Mago', alto: 10,
+    c: R => { R(1, 0, 14, 2, '#4527A0'); for (let k = 0; k < 9; k++) { const w = Math.max(2, 8 - k); R(8 - w / 2 + Math.max(0, k - 5), -1 - k, w, 1, '#5E35B1'); } R(6, -3, 1, 1, G); R(9, -5, 1, 1, G); R(8, -7, 1, 1, '#FFF3A0'); },
+    t: { base: '#5E35B1', sleeve: 'full', fn: R => { R(5, 14, 1, 1, G); R(10, 17, 1, 1, G); R(9, 13, 1, 1, '#FFF3A0'); R(3, 19, 10, 1, G); } },
+    p: R => { R(3, 21, 10, 5, '#5E35B1'); R(2, 24, 12, 2, '#5E35B1'); R(2, 25, 12, 1, '#4527A0'); R(12, 21, 1, 4, '#4527A0'); R(5, 23, 1, 1, G); },
+    f: R => { R(2, 26, 5, 2, '#7E57C2'); R(9, 26, 5, 2, '#7E57C2'); R(1, 25, 1, 2, '#7E57C2'); R(14, 25, 1, 2, '#7E57C2'); R(1, 24, 1, 1, G); R(14, 24, 1, 1, G); } },
+  caballero: { n: 'Caballero', cubre: true,
+    c: R => { R(2, -1, 12, 12, '#B0BEC5'); R(12, -1, 2, 12, '#90A4AE'); R(3, -1, 9, 1, '#ECEFF1'); R(4, 5, 8, 2, '#263238'); R(5, 5, 1, 1, '#FFFFFF'); R(9, 5, 1, 1, '#FFFFFF'); R(6, 8, 1, 1, '#546E7A'); R(9, 8, 1, 1, '#546E7A'); R(7, -5, 2, 4, '#E53935'); R(8, -6, 2, 2, '#E53935'); R(6, -4, 1, 2, '#C62828'); },
+    t: { base: '#B0BEC5', sleeve: 'full', fn: R => { R(5, 12, 6, 6, '#CFD8DC'); R(5, 12, 6, 1, '#ECEFF1'); R(7, 13, 2, 4, '#E53935'); R(6, 14, 4, 1, '#E53935'); R(1, 10, 3, 2, '#90A4AE'); R(12, 10, 3, 2, '#90A4AE'); R(3, 19, 10, 1, '#5D4037'); R(7, 19, 2, 1, G); } },
+    p: R => { piernas(R, '#90A4AE'); R(4, 23, 3, 1, '#CFD8DC'); R(9, 23, 3, 1, '#CFD8DC'); },
+    f: R => { R(3, 26, 4, 2, '#78909C'); R(9, 26, 4, 2, '#78909C'); R(3, 26, 4, 1, '#B0BEC5'); R(9, 26, 4, 1, '#B0BEC5'); } },
+  ninja: { n: 'Ninja', cubre: true,
+    c: (R, hy, L, o) => { R(2, -1, 12, 12, '#263238'); R(4, 4, 8, 3, L.k); if (o.blink) { R(5, 5, 2, 1, INK); R(9, 5, 2, 1, INK); } else { R(5, 5, 2, 1, INK); R(9, 5, 2, 1, INK); R(5, 6, 2, 1, INK); R(9, 6, 2, 1, INK); } R(2, 2, 12, 1, '#C62828'); R(14, 2, 2, 1, '#C62828'); R(15, 3, 1, 2, '#C62828'); },
+    t: { base: '#263238', sleeve: 'full', fn: R => { R(3, 18, 10, 2, '#C62828'); R(6, 11, 4, 2, '#37474F'); R(7, 13, 2, 3, '#37474F'); } },
+    p: R => { R(3, 21, 4, 4, '#263238'); R(9, 21, 4, 4, '#263238'); R(4, 25, 3, 1, '#37474F'); R(9, 25, 3, 1, '#37474F'); },
+    f: R => { R(3, 26, 4, 2, '#37474F'); R(9, 26, 4, 2, '#37474F'); R(4, 26, 1, 2, '#263238'); R(11, 26, 1, 2, '#263238'); } },
+  rockero: { n: 'Rockero', tapaPelo: true,
+    c: R => { R(3, 0, 10, 3, '#424242'); R(6, -5, 4, 6, '#E91E63'); R(5, -3, 1, 4, '#E91E63'); R(10, -3, 1, 4, '#E91E63'); R(7, -6, 2, 1, '#F48FB1'); R(4, 5, 3, 2, INK); R(9, 5, 3, 2, INK); R(7, 5, 2, 1, INK); R(5, 5, 1, 1, '#E91E63'); R(10, 5, 1, 1, '#E91E63'); },
+    t: { base: '#212121', sleeve: 'full', fn: (R, L) => { R(6, 11, 4, 10, L.s); R(6, 11, 4, 1, L.k); R(5, 11, 1, 10, '#9E9E9E'); R(10, 11, 1, 10, '#9E9E9E'); R(4, 11, 2, 3, '#424242'); R(10, 11, 2, 3, '#424242'); R(3, 11, 1, 1, '#E0E0E0'); R(4, 12, 1, 1, '#E0E0E0'); R(12, 11, 1, 1, '#E0E0E0'); R(11, 12, 1, 1, '#E0E0E0'); } },
+    p: (R, L) => { piernas(R, '#3949AB'); R(4, 22, 2, 1, L.k); R(10, 24, 2, 1, L.k); },
+    f: R => { R(4, 24, 3, 2, '#212121'); R(9, 24, 3, 2, '#212121'); R(3, 26, 4, 2, '#212121'); R(9, 26, 4, 2, '#212121'); R(5, 24, 1, 1, '#E0E0E0'); R(10, 24, 1, 1, '#E0E0E0'); R(3, 27, 4, 1, '#424242'); R(9, 27, 4, 1, '#424242'); } },
+  surfista: { n: 'Surfista',
+    c: R => { R(4, 1, 3, 2, '#FF6F00'); R(9, 1, 3, 2, '#FF6F00'); R(7, 1, 2, 1, INK); R(3, 1, 1, 1, INK); R(12, 1, 1, 1, INK); R(4, 1, 1, 1, '#FFD180'); R(9, 1, 1, 1, '#FFD180'); },
+    t: { base: '#00ACC1', sleeve: 'short', fn: (R, L) => { [[4, 13], [9, 12], [6, 16], [10, 17], [4, 19]].forEach(([x, y], i) => { R(x, y, 2, 2, i % 2 ? '#FFEB3B' : '#FF4081'); R(x, y, 1, 1, '#FFFFFF'); }); R(6, 11, 4, 1, L.k); R(5, 11, 1, 2, '#00838F'); R(10, 11, 1, 2, '#00838F'); } },
+    p: (R, L) => { R(3, 21, 4, 3, '#FF7043'); R(9, 21, 4, 3, '#FF7043'); R(3, 22, 4, 1, '#FFEB3B'); R(9, 22, 4, 1, '#FFEB3B'); R(4, 24, 2, 2, L.k); R(10, 24, 2, 2, L.k); },
+    f: (R, L) => { R(4, 26, 3, 1, L.k); R(9, 26, 3, 1, L.k); R(3, 27, 4, 1, '#29B6F6'); R(9, 27, 4, 1, '#29B6F6'); R(5, 26, 1, 1, '#E91E63'); R(10, 26, 1, 1, '#E91E63'); } },
+  explorador: { n: 'Explorador',
+    c: R => { R(3, -3, 10, 4, '#D7C29E'); R(4, -4, 8, 1, '#D7C29E'); R(1, 1, 14, 1, '#C2A878'); R(3, 0, 10, 1, '#6D4C41'); R(5, -3, 2, 1, '#EFE3C8'); },
+    t: { fn: R => { const K = '#BCA36B', D = '#9E8650'; R(3, 11, 3, 10, K); R(10, 11, 3, 10, K); R(3, 14, 3, 2, D); R(10, 14, 3, 2, D); R(3, 18, 3, 2, D); R(10, 18, 3, 2, D); R(6, 11, 1, 5, '#5D4037'); R(9, 11, 1, 5, '#5D4037'); R(6, 16, 4, 2, '#212121'); R(6, 16, 1, 1, '#64B5F6'); R(9, 16, 1, 1, '#64B5F6'); } },
+    p: (R, L) => { R(3, 21, 4, 3, '#C2A878'); R(9, 21, 4, 3, '#C2A878'); R(4, 24, 2, 1, L.k); R(10, 24, 2, 1, L.k); R(4, 25, 3, 1, '#FAFAFA'); R(9, 25, 3, 1, '#FAFAFA'); },
+    f: R => { R(3, 26, 4, 2, '#6D4C41'); R(9, 26, 4, 2, '#6D4C41'); R(3, 27, 4, 1, '#3E2723'); R(9, 27, 4, 1, '#3E2723'); R(4, 26, 1, 1, '#FFCC80'); R(10, 26, 1, 1, '#FFCC80'); } },
+  heroe: { n: 'Superhéroe',
+    back: R => { R(2, 11, 12, 15, '#D32F2F'); R(2, 24, 12, 2, '#B71C1C'); },
+    c: R => { R(3, 4, 10, 3, '#1565C0'); R(5, 5, 2, 1, '#FFFFFF'); R(9, 5, 2, 1, '#FFFFFF'); R(6, 5, 1, 1, INK); R(10, 5, 1, 1, INK); R(13, 4, 2, 1, '#1565C0'); R(14, 5, 1, 2, '#1565C0'); },
+    t: { base: '#1E63D6', sleeve: 'full', fn: R => { const Y = '#FFD600', Rd = '#D32F2F'; R(6, 13, 4, 3, Y); R(7, 12, 2, 5, Y); R(8, 13, 1, 1, Rd); R(7, 14, 2, 1, Rd); R(7, 15, 1, 1, Rd); R(3, 19, 10, 1, Y); R(7, 19, 2, 1, '#FF6F00'); R(3, 11, 1, 1, G); R(12, 11, 1, 1, G); } },
+    p: R => piernas(R, '#1E63D6'),
+    f: R => { R(4, 23, 3, 3, '#D32F2F'); R(9, 23, 3, 3, '#D32F2F'); R(4, 23, 3, 1, '#EF5350'); R(9, 23, 3, 1, '#EF5350'); R(3, 26, 4, 2, '#D32F2F'); R(9, 26, 4, 2, '#D32F2F'); } },
+  navidad: { n: 'Navideño',
+    c: R => { const Rd = '#D32F2F'; R(3, -1, 10, 3, Rd); R(4, -3, 8, 2, Rd); R(6, -4, 7, 1, Rd); R(13, -3, 1, 2, Rd); R(13, -1, 2, 2, '#FAFAFA'); R(2, 1, 12, 2, '#FAFAFA'); },
+    t: { base: '#D32F2F', sleeve: 'full', fn: R => { R(7, 11, 2, 10, '#FAFAFA'); R(3, 20, 10, 1, '#FAFAFA'); R(3, 17, 10, 1, '#212121'); R(7, 17, 2, 1, G); } },
+    p: R => piernas(R, '#D32F2F'),
+    f: R => { R(4, 24, 3, 2, '#212121'); R(9, 24, 3, 2, '#212121'); R(4, 24, 3, 1, '#FAFAFA'); R(9, 24, 3, 1, '#FAFAFA'); R(3, 26, 4, 2, '#212121'); R(9, 26, 4, 2, '#212121'); } },
+  vampiro: { n: 'Vampiro', tapaPelo: true,
+    back: R => { R(1, 10, 14, 16, '#B71C1C'); R(1, 10, 1, 16, '#212121'); R(14, 10, 1, 16, '#212121'); R(1, 25, 14, 1, '#212121'); },
+    c: R => { R(3, 0, 10, 3, '#1B1B1B'); R(7, 3, 2, 1, '#1B1B1B'); R(4, 0, 3, 1, '#424242'); R(6, 9, 1, 1, '#FFFFFF'); R(9, 9, 1, 1, '#FFFFFF'); },
+    t: { base: '#212121', sleeve: 'full', fn: R => { R(6, 11, 4, 4, '#FAFAFA'); R(7, 15, 2, 1, '#FAFAFA'); R(6, 12, 1, 1, '#B71C1C'); R(9, 12, 1, 1, '#B71C1C'); R(7, 12, 2, 1, '#7F0000'); R(7, 17, 2, 2, G); R(1, 7, 2, 5, '#212121'); R(13, 7, 2, 5, '#212121'); R(2, 8, 1, 3, '#B71C1C'); R(13, 8, 1, 3, '#B71C1C'); } },
+    p: R => piernas(R, '#212121'),
+    f: R => { R(3, 26, 4, 2, '#111111'); R(9, 26, 4, 2, '#111111'); R(4, 26, 1, 1, '#FFFFFF'); R(10, 26, 1, 1, '#FFFFFF'); } },
+  robot: { n: 'Robot', cubre: true,
+    c: (R, hy, L, o) => { R(2, -1, 12, 12, '#90A4AE'); R(2, -1, 12, 1, '#CFD8DC'); R(13, -1, 1, 12, '#607D8B'); R(4, 3, 8, 5, '#263238'); if (o.blink) { R(5, 5, 2, 1, '#00E5FF'); R(9, 5, 2, 1, '#00E5FF'); } else { R(5, 4, 2, 2, '#00E5FF'); R(9, 4, 2, 2, '#00E5FF'); } R(6, 7, 4, 1, '#00E5FF'); R(2, 5, 1, 2, G); R(13, 5, 1, 2, G); R(7, -4, 2, 3, '#78909C'); R(7, -5, 2, 1, '#FF1744'); },
+    t: { base: '#90A4AE', sleeve: 'full', fn: R => { R(5, 13, 6, 5, '#263238'); R(6, 14, 1, 1, '#FF1744'); R(8, 14, 1, 1, '#00E676'); R(9, 14, 1, 1, '#FFEA00'); R(6, 16, 4, 1, '#00E5FF'); R(3, 11, 1, 1, '#CFD8DC'); R(12, 11, 1, 1, '#CFD8DC'); } },
+    p: R => { piernas(R, '#78909C'); R(4, 23, 3, 1, '#455A64'); R(9, 23, 3, 1, '#455A64'); },
+    f: R => { R(4, 25, 3, 1, '#CFD8DC'); R(9, 25, 3, 1, '#CFD8DC'); R(5, 26, 1, 1, '#CFD8DC'); R(10, 26, 1, 1, '#CFD8DC'); R(3, 27, 4, 1, '#546E7A'); R(9, 27, 4, 1, '#546E7A'); } },
+};
+const TRAJES = Object.keys(TR);
+function drawHD(c, L, X, Y, u, o) {
+  const R = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(X + x * u, Y + y * u, w * u, h * u); };
+  const st = L.style || 'corto', of = L.outfit || 'remera', up = o.arms === 'up';
+  const T = L.traje || {}, tc = TR[T.c], tt = TR[T.t], tp = TR[T.p], tf = TR[T.f];
+  const cubre = tc && tc.cubre, sinPelo = cubre || (tc && tc.tapaPelo);
+  const H = L.h, HL = shade(H, 1.3), K = L.k, KD = shade(K, 0.86);
+  const tb = tt && tt.t.base;
+  const S = tb || L.s, SD = shade(S, 0.78), SL = shade(S, 1.15);
+  R(2, 27.6, 12, 0.8, 'rgba(0,0,0,.18)');
+  if (tt && tt.back) tt.back(R, L);
+  if (!sinPelo) {
+    if (st === 'largo') { R(2, 2, 2, 11, H); R(12, 2, 2, 11, H); }
+    if (st === 'afro') { R(1, -3, 14, 9, H); R(2, -4, 12, 1, H); R(4, -3, 3, 1, HL); }
+    if (st === 'rastas') [1, 2, 13, 14].forEach((x, i) => { const n = i === 1 || i === 2 ? 11 : 9; R(x, 2, 1, n, i % 2 ? H : shade(H, 1.18)); R(x, 1 + n, 1, 1, '#E8C35A'); });
+    if (st === 'colitas') { R(0, 0, 3, 3, H); R(13, 0, 3, 3, H); R(0, 3, 2, 1, H); R(14, 3, 2, 1, H); }
+  }
+  const sleeve = tb ? (tt.t.sleeve || 'full') : (of === 'buzo' || of === 'campera' ? 'full' : (of === 'camisa' || of === 'remera' ? 'short' : 'none'));
+  const arm = x => {
+    if (up) { R(x, 3, 2, 8, K); if (sleeve === 'full') R(x, 5, 2, 6, S); else if (sleeve === 'short') R(x, 9, 2, 2, S); }
+    else { R(x, 11, 2, 8, K); if (sleeve === 'full') { R(x, 11, 2, 6, S); R(x, 17, 2, 1, SD); } else if (sleeve === 'short') { R(x, 11, 2, 2, S); R(x, 13, 2, 1, SD); } }
+  };
+  arm(1); arm(13);
+  const vestido = of === 'vestido' && !tb;
+  if (tp) tp.p(R, L);
+  else if (vestido) { R(4, 22, 2, 4, K); R(10, 22, 2, 4, K); }
+  else piernas(R, L.pa);
+  if (tf) tf.f(R, L);
+  else { R(3, 26, 4, 2, '#37474F'); R(9, 26, 4, 2, '#37474F'); R(3, 27, 4, 1, '#F5F5F5'); R(9, 27, 4, 1, '#F5F5F5'); }
+  if (tb) { R(3, 11, 10, 10, S); R(12, 11, 1, 10, SD); R(3, 11, 1, 10, SL); }
+  else {
+    if (vestido) { R(3, 11, 10, 7, S); R(2, 17, 12, 5, S); R(2, 21, 12, 1, SD); R(12, 11, 1, 6, SD); R(3, 16, 10, 1, SD); R(6, 11, 4, 1, K); }
+    else { R(3, 11, 10, 10, S); R(12, 11, 1, 10, SD); R(3, 11, 1, 10, SL); }
+    if (of === 'remera') R(6, 11, 4, 1, K);
+    if (of === 'musculosa') { R(3, 11, 2, 2, K); R(11, 11, 2, 2, K); R(6, 11, 4, 2, K); }
+    if (of === 'buzo') { R(4, 11, 8, 2, SD); R(6, 13, 1, 3, '#FFFFFF'); R(9, 13, 1, 3, '#FFFFFF'); R(5, 16, 6, 3, SD); R(3, 20, 10, 1, SD); }
+    if (of === 'camisa') { R(7, 11, 2, 10, SL); R(5, 11, 2, 2, '#FFFFFF'); R(9, 11, 2, 2, '#FFFFFF'); [13, 15, 17, 19].forEach(y => R(7, y, 1, 1, SD)); }
+    if (of === 'campera') { R(7, 11, 2, 10, '#ECEFF1'); R(7, 12, 1, 9, '#90A4AE'); R(4, 11, 3, 1, SD); R(9, 11, 3, 1, SD); R(3, 20, 10, 1, SD); R(4, 15, 2, 1, SD); R(10, 15, 2, 1, SD); }
+  }
+  if (tt && tt.t.fn) tt.t.fn(R, L);
+  if (tp && tp.top && !vestido) tp.top(R, L);
+  if (!cubre) {
+    R(3, 2, 10, 9, K); R(12, 3, 1, 8, KD);
+    if (!sinPelo) {
+      if (st === 'rapado' || st === 'cresta') R(3, 1, 10, 2, HL);
+      else if (st !== 'afro') { R(3, 0, 10, 3, H); R(5, 0, 4, 1, HL); }
+      if (st === 'corto' || st === 'colitas' || st === 'largo') { R(3, 3, 2, 4, H); R(5, 3, 3, 1, H); }
+      if (st === 'largo') R(11, 3, 2, 4, H);
+      if (st === 'rastas') { R(2, 0, 12, 3, H); R(3, 3, 1, 3, H); }
+      if (st === 'cresta') { R(7, -4, 2, 6, H); R(7, -4, 1, 5, shade(H, 1.3)); }
+      if (st === 'afro') R(3, 2, 10, 1, H);
+    }
+    if (!tc && o.acc === 'lentes') { R(4, 5, 3, 3, INK); R(9, 5, 3, 3, INK); R(7, 5, 2, 1, INK); R(5, 5, 1, 1, '#FFFFFF'); R(10, 5, 1, 1, '#FFFFFF'); }
+    else if (o.blink) { R(5, 6, 2, 1, INK); R(9, 6, 2, 1, INK); }
+    else { R(5, 5, 2, 2, INK); R(9, 5, 2, 2, INK); R(5, 5, 1, 1, '#FFFFFF'); R(9, 5, 1, 1, '#FFFFFF'); }
+    R(4, 8, 1, 1, '#FF8A80'); R(11, 8, 1, 1, '#FF8A80'); R(6, 8, 4, 1, '#B23A1E'); R(5, 7, 1, 1, '#B23A1E'); R(10, 7, 1, 1, '#B23A1E');
+  }
+  const hy = st === 'afro' && !sinPelo ? -4 : 0, a = o.acc;
+  if (tc) { tc.c(R, hy, L, o); return; }
+  if (a === 'gorra') { R(3, hy - 1, 10, 3, '#E53935'); R(4, hy - 2, 8, 1, '#E53935'); R(11, hy + 1, 5, 1, '#B71C1C'); R(7, hy - 1, 2, 1, '#FFFFFF'); }
+  else if (a === 'mono') { R(11, hy - 1, 2, 2, '#FF4FA3'); R(14, hy - 1, 2, 2, '#FF4FA3'); R(13, hy - 1, 1, 2, '#C2185B'); }
+  else if (a === 'auris') { R(3, hy - 1, 10, 1, '#37474F'); R(2, hy - 1, 1, 5, '#37474F'); R(13, hy - 1, 1, 5, '#37474F'); R(1, 4, 2, 4, '#FF3D7F'); R(13, 4, 2, 4, '#FF3D7F'); }
+}
+function drawPixelito(c, L, ox, oy, U, o = {}) {
+  if (o.hd) { const u = Math.max(1, Math.round(U * 11 / 28)); return drawHD(c, L, Math.round(ox + 3 * U - 8 * u), Math.round(oy + 11 * U - 28 * u), u, o); }
+  const R = (x, y, w, h, col) => F(c, ox + x * U, oy + y * U, w * U, h * U, col);
+  const st = L.style || 'corto', of = L.outfit || 'remera', up = o.arms === 'up';
+  R(-0.3, 10.4, 6.6, 0.8, 'rgba(0,0,0,.18)');
+  if (st === 'largo') { R(0.4, 0.6, 0.8, 4.6, L.h); R(4.8, 0.6, 0.8, 4.6, L.h); }
+  if (st === 'rastas') [[0.1, 4.8], [0.7, 5.6], [4.7, 5.6], [5.3, 4.8]].forEach(([x, hh]) => { R(x, 0.6, 0.6, hh, L.h); R(x, 0.6 + hh - 0.7, 0.6, 0.7, '#E8C35A'); });
+  if (st === 'afro') R(0.2, -1.4, 5.6, 3.6, L.h);
+  if (st === 'colitas') { R(-0.3, 0.1, 1.3, 1.3, L.h); R(5, 0.1, 1.3, 1.3, L.h); }
+  R(1, 1, 4, 3, L.k);
+  if (st === 'corto' || st === 'colitas') { R(1, 0, 4, 1, L.h); R(1, 1, 0.6, 2, L.h); }
+  else if (st === 'largo') { R(1, 0, 4, 1, L.h); R(1, 1, 0.6, 1.4, L.h); R(4.4, 1, 0.6, 1.4, L.h); }
+  else if (st === 'rastas') { R(0.8, -0.4, 4.4, 1.4, L.h); R(1, 1, 0.5, 1, L.h); }
+  else if (st === 'rapado') R(1, 0.4, 4, 0.6, shade(L.h, 1.25));
+  else if (st === 'cresta') { R(1, 0.5, 4, 0.5, shade(L.h, 1.2)); R(2.4, -1.6, 1.2, 2.2, L.h); }
+  else if (st === 'afro') R(1, 0.6, 4, 0.5, L.h);
+  if (o.acc === 'lentes') { R(1.5, 1.8, 4, 0.4, INK); R(1.6, 2, 1.6, 1.1, INK); R(3.7, 2, 1.6, 1.1, INK); }
+  else if (!o.blink) { R(2, 2, 1, 1, INK); R(4, 2, 1, 1, INK); }
+  else { R(2, 2.5, 1, 0.4, INK); R(4, 2.5, 1, 0.4, INK); }
+  R(2, 3.34, 3, 0.4, '#B23A1E'); R(1.3, 2.9, 0.6, 0.6, '#FF8A80'); R(4.1, 2.9, 0.6, 0.6, '#FF8A80');
+  const S = L.s, D = shade(S, 0.78);
+  if (of === 'vestido') { R(1, 4, 4, 3.4, S); R(0.5, 7.2, 5, 2.2, S); R(0.5, 9, 5, 0.4, D); R(2.6, 4, 0.8, 0.5, D); }
+  else R(1, 4, 4, 4, S);
+  if (of === 'musculosa') { R(1, 4, 0.8, 1, L.k); R(4.2, 4, 0.8, 1, L.k); }
+  if (of === 'buzo') { R(1.4, 3.7, 3.2, 0.7, D); R(1.8, 6, 2.4, 1.2, D); R(2.4, 4.4, 0.2, 1, '#FFFFFF'); R(3.4, 4.4, 0.2, 1, '#FFFFFF'); }
+  if (of === 'campera') { R(2.5, 4, 1, 4, '#FFFFFF'); R(2.9, 4, 0.2, 4, D); R(1, 7.4, 4, 0.6, D); }
+  if (of === 'camisa') { R(1.9, 4, 1, 0.7, '#FFFFFF'); R(3.1, 4, 1, 0.7, '#FFFFFF'); R(2.9, 5, 0.25, 0.25, D); R(2.9, 6, 0.25, 0.25, D); R(2.9, 7, 0.25, 0.25, D); }
+  const sleeve = of === 'buzo' || of === 'campera' ? 'full' : (of === 'camisa' || of === 'remera' ? 'short' : 'none');
+  const arm = x => {
+    if (up) { R(x, 1, 1, 3, L.k); if (sleeve === 'full') R(x, 1.8, 1, 2.2, S); else if (sleeve === 'short') R(x, 3, 1, 1, S); }
+    else { R(x, 4, 1, 3, L.k); if (sleeve === 'full') R(x, 4, 1, 2.3, S); else if (sleeve === 'short') R(x, 4, 1, 1, S); }
+  };
+  arm(0); arm(5);
+  if (of === 'vestido') { R(1.3, 9.4, 0.8, 1.6, L.k); R(3.9, 9.4, 0.8, 1.6, L.k); R(1.1, 10.4, 1.1, 0.6, L.pa); R(3.8, 10.4, 1.1, 0.6, L.pa); }
+  else { R(1, 8, 1, 3, L.pa); R(4, 8, 1, 3, L.pa); }
+  const hy = st === 'afro' ? -1.4 : st === 'rastas' ? -0.4 : st === 'cresta' ? -0.6 : 0, a = o.acc;
+  if (a === 'corona') {
+    R(1.2, hy - 1.2, 3.6, 1.2, '#FFC300'); R(1.2, hy - 2.2, 0.8, 1, '#FFC300'); R(2.6, hy - 2.5, 0.8, 1.3, '#FFC300'); R(4, hy - 2.2, 0.8, 1, '#FFC300');
+    R(2.8, hy - 2.2, 0.4, 0.4, '#E53935'); R(1.4, hy - 1, 0.6, 0.4, '#FFF3A0');
+    if (o.sparkle) R(5.3, hy - 2.8, 0.5, 0.5, '#FFFFFF');
+  } else if (a === 'gorra') { R(0.8, hy - 0.7, 4.4, 1.3, '#E53935'); R(4.4, hy + 0.1, 2.2, 0.6, '#B71C1C'); R(2.6, hy - 0.5, 0.8, 0.5, '#FFFFFF'); }
+  else if (a === 'mono') { R(3.4, hy - 1, 1, 1, '#FF4FA3'); R(5.2, hy - 1, 1, 1, '#FF4FA3'); R(4.3, hy - 0.7, 0.9, 0.7, '#C2185B'); }
+  else if (a === 'auris') { R(0.6, hy - 0.7, 4.8, 0.6, '#37474F'); R(0.6, hy - 0.7, 0.6, 1.6, '#37474F'); R(4.8, hy - 0.7, 0.6, 1.6, '#37474F'); R(0.1, 0.9, 1.1, 2, '#FF3D7F'); R(4.8, 0.9, 1.1, 2, '#FF3D7F'); }
+}
+
+/* ================= cielo e islas con la acción de cada video ================= */
+function sky(c, W, H, t) {
+  const bands = ['#1FB6FF', '#33BEFF', '#4CC7FF', '#66CFFF', '#80D8FF', '#99E0FF', '#B3E8FF', '#CCF0FF'];
+  const bh = H / bands.length; bands.forEach((col, i) => { c.fillStyle = col; c.fillRect(0, Math.floor(i * bh), W, Math.ceil(bh) + 1); });
+  const sx = W * 0.84, sy = H * 0.14, r = W * 0.055;
+  c.fillStyle = '#FFE14D'; for (let k = 0; k < 8; k++) { const an = k * Math.PI / 4 + t * 0.01; c.fillRect(Math.round(sx + Math.cos(an) * r * 1.9 - r * .25), Math.round(sy + Math.sin(an) * r * 1.9 - r * .25), Math.round(r * .5), Math.round(r * .5)); }
+  c.fillStyle = '#FFD23F'; c.fillRect(Math.round(sx - r), Math.round(sy - r * .7), Math.round(2 * r), Math.round(1.4 * r)); c.fillRect(Math.round(sx - r * .7), Math.round(sy - r), Math.round(1.4 * r), Math.round(2 * r));
+  c.fillStyle = '#fff';
+  [[0.1, 0.1, 1], [0.45, 0.24, 0.7]].forEach(([x, y, s], i) => {
+    const q = W * 0.028 * s, X = ((x * W + t * (0.15 + i * 0.1)) % (W + 10 * q)) - 4 * q, Y = y * H;
+    [[0, 1, 6, 2], [1, 0, 3, 1], [4, 0, 1, 1]].forEach(([a, b, w, h]) => c.fillRect(Math.round(X + a * q), Math.round(Y + b * q), Math.round(w * q), Math.round(h * q)));
+  });
+}
+function islandBase(c, x, y, w, h) {
+  F(c, x + 3, y + 3, w, h + 6, '#0D3B66');
+  F(c, x, y + h - 2, w, 8, '#8D5524'); F(c, x + 5, y + h + 6, w - 10, 4, '#6B3E1A');
+  F(c, x, y, w, h, '#6CC24A'); F(c, x, y, w, 3, '#9BE36A');
+  for (let k = 6; k < w - 6; k += 12) F(c, x + k, y + 7 + (k * 7) % Math.max(1, h - 12), 1.5, 2.5, '#4E9A2E');
+}
+// (x,y,w,h) = superficie de la isla; e = escala (1 = isla grande de la escena)
+function decor(c, isla, x, y, w, h, t, e) {
+  const a = isla.act;
+  if (a === 'piscina') {
+    const px = x + w * 0.5, py = y + h * 0.12, pw = w * 0.44, ph = h * 0.5;
+    F(c, px - 3 * e, py - 3 * e, pw + 6 * e, ph + 6 * e, '#E8E2D0'); F(c, px, py, pw, ph, '#2FB5E8');
+    for (let k = 0; k < pw - 8 * e; k += 12 * e) F(c, px + 4 * e + k, py + 3 * e + (Math.floor(t / 8 + k) % 2) * e * 2, 6 * e, 1.2 * e, '#FFFFFF');
+    const cols = ['#FF4FA3', '#FFE14D', '#9B51E0', '#FF9F1C', '#00C2A8'];
+    for (let i = 0; i < 5; i++) {
+      const bx = x + w * (0.08 + 0.84 * ((Math.sin(t * 0.011 + i * 1.7) + 1) / 2)), by = y - h * 0.6 + h * 1.1 * ((Math.sin(t * 0.017 + i * 3.1) + 1) / 2);
+      const s = 2.4 * e, col = cols[i];
+      if (Math.floor(t / 5 + i) % 2) { F(c, bx - 2 * s, by - s, 1.6 * s, 1.6 * s, col); F(c, bx + 0.4 * s, by - s, 1.6 * s, 1.6 * s, col); F(c, bx - 1.6 * s, by + 0.6 * s, 1.2 * s, 1.2 * s, col); F(c, bx + 0.4 * s, by + 0.6 * s, 1.2 * s, 1.2 * s, col); }
+      else { F(c, bx - s, by - s, 0.8 * s, 2.6 * s, col); F(c, bx + 0.2 * s, by - s, 0.8 * s, 2.6 * s, col); }
+      F(c, bx - 0.25 * s, by - s, 0.5 * s, 2.8 * s, INK);
+    }
+  } else if (a === 'hostal') {
+    const bx = x + w * 0.06, bw = w * 0.5, base = y + h * 0.42, H = h * 1.5;
+    F(c, bx, base - H, bw, H, '#F2D3A0'); for (let yy = base - 6 * e; yy > base - H; yy -= 7 * e) F(c, bx, yy, bw, 0.8 * e, '#D9B47A');
+    F(c, bx - 4 * e, base - H - 7 * e, bw + 8 * e, 8 * e, '#C0392B'); F(c, bx + 3 * e, base - H - 12 * e, bw - 6 * e, 5 * e, '#A93226');
+    for (let r = 0; r < 3; r++) for (let k = 0; k < 4; k++) F(c, bx + 5 * e + k * (bw - 10 * e) / 4, base - H + 6 * e + r * H * 0.28, (bw - 10 * e) / 4 - 3 * e, H * 0.16, (r + k + Math.floor(t / 40)) % 5 ? '#FFE9A8' : '#4A6FA5');
+    F(c, bx + bw / 2 - 6 * e, base - 13 * e, 12 * e, 13 * e, '#6D4C41');
+    F(c, bx + bw / 2 - 18 * e, base - H - 22 * e, 36 * e, 9 * e, INK); F(c, bx + bw / 2 - 17 * e, base - H - 21 * e, 34 * e, 7 * e, '#FF3D7F');
+    txt(c, 'HOSTAL', bx + bw / 2, base - H - 17.3 * e, 4.6 * e, '#FFFFFF');
+  } else if (a === 'boda') {
+    const cx = x + w * 0.5, fb = y + h * 0.42, aw = 22 * e, ah = 34 * e;
+    F(c, cx - 5 * e, fb, 10 * e, h * 0.58, '#C62828');
+    F(c, cx - aw, fb - ah, 3 * e, ah, '#FFFFFF'); F(c, cx + aw - 3 * e, fb - ah, 3 * e, ah, '#FFFFFF'); F(c, cx - aw, fb - ah - 4 * e, 2 * aw, 4 * e, '#FFFFFF');
+    const fc = ['#FF4FA3', '#FFE14D', '#FF3D7F', '#FFFFFF', '#FF9F1C'];
+    for (let i = 0; i < 12; i++) { const q = i / 11; F(c, cx - aw + q * 2 * aw - 1.5 * e, fb - ah - 5 * e - 4 * e * Math.sin(q * Math.PI), 3 * e, 3 * e, fc[i % 5]); }
+    for (let i = 0; i < 5; i++) { F(c, cx - aw - 1.5 * e, fb - ah + 4 * e + i * 6 * e, 3 * e, 3 * e, fc[i % 5]); F(c, cx + aw - 1.5 * e, fb - ah + 4 * e + i * 6 * e, 3 * e, 3 * e, fc[(i + 2) % 5]); }
+    for (let i = 0; i < 10; i++) F(c, x + 6 * e + i * w / 10 + 4 * e * Math.sin(t * 0.03 + i), y - h * 0.8 + ((t * 0.5 + i * 37) % (h * 1.7)), 2 * e, 1.4 * e, '#FF8AB8');
+  } else if (a === 'conga') {
+    for (let i = 0; i < 14; i++) { const q = i / 13, fx = x + 4 * e + q * (w - 8 * e), fy = y - 26 * e + 6 * e * Math.sin(q * Math.PI); F(c, fx, fy, 4 * e, 4 * e, CONF[i % 7]); F(c, fx + e, fy + 4 * e, 2 * e, 1.5 * e, CONF[i % 7]); }
+    F(c, x + 4 * e, y - 28 * e, 1.5 * e, 28 * e, '#8D6E63'); F(c, x + w - 5.5 * e, y - 28 * e, 1.5 * e, 28 * e, '#8D6E63');
+    const RC = ['#26A69A', '#FF7043', '#7E57C2'];
+    for (let i = 0; i < 3; i++) {
+      const u = 2.2 * e, rx = x + w * 0.58 + i * 15 * e + Math.sin(t * 0.12 + i) * 1.5 * e, ry = y + h * 0.42 - 11 * u - Math.abs(Math.sin(t * 0.12 + i)) * 2 * e;
+      F(c, rx + 2.7 * u, ry - 2 * u, 0.6 * u, 1.6 * u, '#9E9E9E'); F(c, rx + 2.4 * u, ry - 2.7 * u, 1.2 * u, 1.2 * u, Math.floor(t / 8 + i) % 2 ? '#FF3D3D' : '#FFE14D');
+      F(c, rx + 0.3 * u, ry - 0.6 * u, 5.4 * u, 4.2 * u, '#B0BEC5'); F(c, rx + 1.3 * u, ry + 0.7 * u, 1.3 * u, 1.3 * u, '#00E5FF'); F(c, rx + 3.4 * u, ry + 0.7 * u, 1.3 * u, 1.3 * u, '#00E5FF');
+      F(c, rx + 0.5 * u, ry + 3.8 * u, 5 * u, 4.4 * u, RC[i]); F(c, rx + 1.2 * u, ry + 8.2 * u, 1.2 * u, 3 * u, '#78909C'); F(c, rx + 3.6 * u, ry + 8.2 * u, 1.2 * u, 3 * u, '#78909C');
+    }
+  } else if (a === 'parque') {
+    const cx = x + w * 0.64, cy = y + h * 0.3, p = 8 * e;
+    F(c, x + 3 * e, cy - p / 2, w - 6 * e, p, '#E8D5A3'); F(c, cx - p / 2, y + 3 * e, p, h - 6 * e, '#E8D5A3');
+    F(c, cx - 14 * e, cy - 8 * e, 28 * e, 16 * e, '#B0BEC5'); F(c, cx - 12 * e, cy - 6 * e, 24 * e, 12 * e, '#29B6F6');
+    for (let j = 0; j < 5; j++) { const hh = (8 + 5 * Math.sin(t * 0.3 + j)) * e; F(c, cx - 1 * e + (j - 2) * 2.4 * e, cy - 3 * e - hh, 2 * e, hh, '#B3E5FC'); }
+    [[0.06, 0.12], [0.94, 0.12], [0.3, 0.06], [0.7, 0.06]].forEach(([qx, qy]) => {
+      const tx = x + w * qx, ty = y + h * qy + 6 * e, r = 6 * e;
+      F(c, tx - e, ty - 6 * e, 2 * e, 6 * e, '#6D4C41'); F(c, tx - r, ty - 6 * e - r * 1.4, 2 * r, r * 1.4, '#2E7D32'); F(c, tx - r * 0.6, ty - 6 * e - r * 1.9, 1.2 * r, r * 0.6, '#43A047');
+    });
+    const sx0 = x + w * 0.12, sy0 = y - 12 * e, sw = Math.sin(t * 0.15) * 4 * e;
+    F(c, sx0, sy0, 2 * e, 22 * e, '#E53935'); F(c, sx0 + 22 * e, sy0, 2 * e, 22 * e, '#E53935'); F(c, sx0, sy0, 24 * e, 2 * e, '#E53935');
+    F(c, sx0 + 7 * e + sw, sy0 + 2 * e, 0.8 * e, 12 * e, '#424242'); F(c, sx0 + 5 * e + sw, sy0 + 14 * e, 6 * e, 1.6 * e, '#FFC300');
+  } else if (a === 'futbol') {
+    const fx = x + 8 * e, fy = y + 4 * e, fw = w - 16 * e, fh = h - 8 * e;
+    for (let i = 0; i < 10; i++) F(c, fx + i * fw / 10, fy, fw / 10 + 1, fh, i % 2 ? '#5DB043' : '#6CC24A');
+    const L = Math.max(1, 1.2 * e);
+    F(c, fx, fy, fw, L, '#fff'); F(c, fx, fy + fh - L, fw, L, '#fff'); F(c, fx, fy, L, fh, '#fff'); F(c, fx + fw - L, fy, L, fh, '#fff'); F(c, fx + fw / 2, fy, L, fh, '#fff');
+    for (let i = 0; i < 20; i++) { const an = i / 20 * 2 * Math.PI; F(c, fx + fw / 2 + Math.cos(an) * 9 * e, fy + fh / 2 + Math.sin(an) * 9 * e, L, L, '#fff'); }
+    F(c, fx - 6 * e, fy + fh / 2 - 8 * e, 6 * e, 16 * e, '#E0E0E0'); F(c, fx + fw, fy + fh / 2 - 8 * e, 6 * e, 16 * e, '#E0E0E0');
+    const q = (t % 160) / 160, bx = fx + fw * (0.15 + 0.7 * (q < .5 ? q * 2 : 2 - q * 2)), by = fy + fh * (0.3 + 0.2 * Math.sin(q * 12)) - Math.abs(Math.sin(q * 30)) * 4 * e;
+    F(c, bx, by, 3 * e, 3 * e, '#FFFFFF'); F(c, bx + e, by + e, e, e, INK);
+  } else if (a === 'quince') {
+    const fw = w * 0.5, fx = x + w * 0.25, fy = y + 2 * e, fh = h * 0.42, n = 8, m = 3, tw = fw / n, th = fh / m;
+    for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) F(c, fx + i * tw, fy + j * th, tw - 0.6 * e, th - 0.6 * e, CONF[(i + j + Math.floor(t / 8)) % 7]);
+    const dx = x + w * 0.5; F(c, dx - 0.4 * e, y - 40 * e, 0.8 * e, 14 * e, '#9E9E9E'); F(c, dx - 4 * e, y - 27 * e, 8 * e, 8 * e, '#BDBDBD');
+    for (let i = 0; i < 4; i++) if (Math.floor(t / 3 + i) % 3 === 0) F(c, dx - 3 * e + (i % 2) * 4 * e, y - 26 * e + Math.floor(i / 2) * 4 * e, 1.5 * e, 1.5 * e, '#FFFFFF');
+    const kx = x + w * 0.05, ky = y + h * 0.4;
+    F(c, kx, ky - 7 * e, 16 * e, 7 * e, '#FF8AB8'); F(c, kx + 2 * e, ky - 13 * e, 12 * e, 6 * e, '#FFFFFF'); F(c, kx + 4 * e, ky - 18 * e, 8 * e, 5 * e, '#FF8AB8');
+    F(c, kx + 6 * e, ky - 22 * e, 1.2 * e, 4 * e, '#2F80ED'); F(c, kx + 9 * e, ky - 22 * e, 1.2 * e, 4 * e, '#2F80ED');
+    if (Math.floor(t / 4) % 2) { F(c, kx + 5.8 * e, ky - 24 * e, 1.6 * e, 1.6 * e, '#FFC300'); F(c, kx + 8.8 * e, ky - 24 * e, 1.6 * e, 1.6 * e, '#FFC300'); }
+    for (let i = 0; i < 8; i++) { const side = i % 2, q = Math.floor(i / 2) / 4, bx = side ? x + w - 8 * e - q * 14 * e : x + w * 0.24 - 6 * e - q * 10 * e, by = y - 24 * e + q * 8 * e + Math.sin(t * 0.08 + i) * 1.5 * e; F(c, bx, by + 5 * e, 0.6 * e, 12 * e, '#FFFFFF'); F(c, bx - 2.5 * e, by, 5 * e, 5.5 * e, CONF[i % 7]); }
+    const bw = 44 * e; F(c, x + w / 2 - bw / 2, y - 14 * e, bw, 9 * e, INK); F(c, x + w / 2 - bw / 2 + e, y - 13 * e, bw - 2 * e, 7 * e, '#FF3D7F'); txt(c, '¡FELIZ 15!', x + w / 2, y - 9.4 * e, 4 * e, '#FFFFFF');
+  } else {
+    for (let i = 0; i < 8; i++) F(c, x + 8 * e + i * (w - 16 * e) / 8, y + h * (0.2 + 0.5 * ((i * 37) % 10) / 10), 2 * e, 2 * e, ['#FF3D7F', '#FFEB3B', '#FFFFFF', '#FF9800'][i % 4]);
+  }
+}
+// Escena completa: cielo + isla + vecinos + tu pixelito
+function scene(c, W, H, t, isla, me, vecinos) {
+  c.imageSmoothingEnabled = false;
+  sky(c, W, H, t);
+  const e = W / 200, x = 14 * e, y = 84 * e, w = 172 * e, h = 46 * e;
+  islandBase(c, x, y, w, h);
+  if (isla) {
+    decor(c, isla, x, y, w, h, t, e);
+    F(c, x + 2 * e, y - 13 * e, 40 * e, 11 * e, INK); F(c, x + 3 * e, y - 12 * e, 38 * e, 9 * e, '#FFE14D'); txt(c, 'DIA ' + isla.day, x + 22 * e, y - 7.3 * e, 5 * e, INK);
+    F(c, x + 7 * e, y - 2 * e, 2 * e, 3 * e, '#6B3E1A'); F(c, x + 35 * e, y - 2 * e, 2 * e, 3 * e, '#6B3E1A');
+  }
+  const pos = [0.1, 0.26, 0.74, 0.9];
+  (vecinos || []).slice(0, 4).forEach((v, i) => {
+    const U = 2.4 * e, jump = Math.max(0, Math.sin(t / 18 + i * 1.9)) * 3 * e;
+    drawPixelito(c, { s: v.shirt, h: v.hair, k: v.skin, pa: v.pants }, x + w * pos[i] - 3 * U, y + h * 0.62 - 11 * U - jump, U, { arms: jump > 1.5 * e ? 'up' : 'down', blink: Math.floor(t / 4 + i * 30) % 90 < 3 });
+  });
+  if (me) {
+    const U = 4.6 * e, hop = Math.max(0, Math.sin(t / 22)) * 5 * e;
+    drawPixelito(c, me.L, W / 2 - 3 * U, y + h - 3 * e - 11 * U - hop, U, { arms: hop > 3 * e ? 'up' : 'down', acc: me.acc, hd: true, blink: Math.floor(t / 3) % 70 < 3, sparkle: Math.floor(t / 14) % 3 === 0 });
+    if (me.name) {
+      const u = Math.max(1, Math.round(U * 11 / 28)), tcab = me.L.traje && TR[me.L.traje.c], top = y + h - 3 * e - 28 * u - hop - (tcab ? (tcab.alto || 7) * u : me.L.style === 'afro' ? 6 * u : 3 * u);
+      nameTag(c, me.name, W / 2, top - 5 * e, 6 * e, t, me.founder, W - 8 * e, Math.max(2, 1.4 * e));
+      if (me.founder) { c.font = `${Math.round(3.6 * e)}px "Press Start 2P", monospace`; c.fillStyle = '#FFE14D'; c.strokeStyle = INK; c.lineWidth = Math.max(2, e); c.textBaseline = 'middle'; c.strokeText(`FUNDADOR #${me.founder}`, W / 2, top - 15 * e); c.fillText(`FUNDADOR #${me.founder}`, W / 2, top - 15 * e); }
+    }
+  }
+}
+
+/* ================= API (servidor real o modo prueba) ================= */
+let API = null, DEMO = false;
+const qs = new URLSearchParams(location.search);
+function cleanLook(b, dias) {
+  const L = {};
+  for (const k of ['shirt', 'pants', 'hair', 'skin']) L[k] = OPC[k].includes(b[k]) ? b[k] : null;
+  L.style = OPC.style.some(o => o[0] === b.style) ? b.style : 'corto';
+  L.outfit = OPC.outfit.some(o => o[0] === b.outfit) ? b.outfit : 'remera';
+  L.acc = OPC.acc.some(o => o[0] === b.acc) ? b.acc : '';
+  L.isla = dias.includes(+b.isla) ? +b.isla : null;
+  return L;
+}
+function makeDemoApi(data) {
+  const P = new Map(data.p.map(r => [r[1], { num: r[0], handle: r[1], day: r[2], act: r[3], shirt: r[4], hair: r[5], skin: r[6], pants: r[7], out: r[8] }]));
+  const ISLAS = data.islas || [];
+  const store = { links: {}, claims: {}, nuevos: {} };
+  try { Object.assign(store, JSON.parse(localStorage.getItem('pxDemo2') || '{}')); } catch (e) {}
+  const save = () => { try { localStorage.setItem('pxDemo2', JSON.stringify(store)); } catch (e) {} };
+  store.nuevos = store.nuevos || {};
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const nuevo = h => store.nuevos[h] ? { num: null, handle: h, day: (data.day || 0) + 1, act: 'llega en el próximo Reel', ...store.nuevos[h], out: 0, nuevo: true } : null;
+  const pix = h => { const p = P.get(h); return p && !p.out ? p : nuevo(h) || p || null; };
+  const stats = () => { let total = 0, claimed = 0; P.forEach(p => { if (!p.out) { total++; if (store.claims[p.handle]) claimed++; } }); Object.keys(store.nuevos).forEach(h => { if (!P.has(h) || P.get(h).out) { total++; if (store.claims[h]) claimed++; } }); return { total, claimed, islas: ISLAS, enVivo: false }; };
+  const byDay = {}; P.forEach(p => { if (!p.out) (byDay[p.day] = byDay[p.day] || []).push(p); });
+  const islas = () => ISLAS.map(i => ({ ...i, vecinos: (byDay[i.day] || []).slice().sort(() => Math.random() - .5).slice(0, 4) }));
+  const mine = h => ({ pixelito: pix(h), claim: store.claims[h] || null, islas: islas(), stats: stats() });
+  const tok = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => b.toString(36).padStart(2, '0')).join('');
+  const bad = { error: 'El link no es válido o ya venció. Mandá RECLAMAR por DM y te llega uno nuevo.' };
+  return {
+    async stats() { return stats(); },
+    async dm(from, text, sigue) {
+      const h = '@' + String(from || '').trim().replace(/^@+/, '').toLowerCase();
+      if (!/^@[a-z0-9._]{1,30}$/.test(h)) return { error: 'Usuario no válido' };
+      if (!/\breclamar\b/i.test(text)) return { kind: 'ignore', text: '(El bot solo responde a la palabra RECLAMAR)' };
+      if (sigue === false) return { kind: 'nofollow', text: '¡Hola! Para tener tu pixelito primero seguí a @somoslospixelitos 👾 Después mandá RECLAMAR de nuevo.' };
+      let p = pix(h);
+      if (sigue === true && (!p || p.out)) { store.nuevos[h] = { shirt: pick(OPC.shirt.slice(0, 8)), hair: pick(OPC.hair.slice(0, 6)), skin: pick(OPC.skin.slice(0, 5)), pants: pick(OPC.pants.slice(0, 4)) }; save(); p = pix(h); }
+      if (!p) return { kind: 'none', text: '¡Hola! Todavía no encontramos tu pixelito 👀 Si recién nos seguiste, aparecés en el próximo Reel (19:00, hora de Paraguay). Después mandá RECLAMAR de nuevo.' };
+      if (p.out) return { kind: 'out', text: 'Tu pixelito salió volando en cohete 🚀 porque dejaste de seguirnos. ¡Volvé a seguirnos y su lugar te espera!' };
+      Object.keys(store.links).forEach(k => { if (store.links[k] === h) delete store.links[k]; });
+      const t = tok(); store.links[t] = h; save();
+      const url = location.origin + location.pathname + '?t=' + t;
+      const hola = p.nuevo ? '¡Hola! Ya sos parte de Los Pixelitos 👾 Tu pixelito llega en el Reel de hoy (19:00), pero ya podés reclamarlo y armarlo:' : `¡Hola! Tu pixelito #${p.num} te está esperando 👾`;
+      return { kind: 'link', url, text: `${hola}\n${url}\nEl link es solo tuyo y vence en 24 horas.` };
+    },
+    async yo(t) { const h = store.links[t]; return h ? mine(h) : bad; },
+    async reclamar(t, look) {
+      const h = store.links[t]; if (!h) return bad;
+      if (pix(h).out) return { error: 'Tu pixelito se fue en cohete.' };
+      const c = store.claims[h];
+      const prev = c ? c.look : null, L = cleanLook(look, ISLAS.map(i => i.day));
+      L.regaloOk = prev ? !!prev.regaloOk : stats().total < 1000;
+      L.regalo = prev && prev.regalo ? prev.regalo : (L.regaloOk && TRAJES.includes(look.regalo) ? look.regalo : '');
+      L.piezas = L.regalo ? [...new Set(String(look.piezas || '').replace(/[^ctpf]/g, ''))].join('') : '';
+      store.claims[h] = { ord: c ? c.ord : Object.keys(store.claims).length + 1, t: c ? c.t : Date.now(), look: L }; save();
+      return mine(h);
+    },
+  };
+}
+const J = r => r.json();
+const realApi = {
+  stats: () => fetch('/api/stats').then(J),
+  dm: (from, text, sigue) => fetch('/api/dev/dm', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ from, text, sigue }) }).then(J),
+  yo: t => fetch('/api/yo?t=' + encodeURIComponent(t)).then(J),
+  reclamar: (t, look) => fetch('/api/reclamar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t, look }) }).then(J),
+};
+
+/* ================= vistas ================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+function show(v) { ['vHome', 'vMine', 'vErr'].forEach(x => $(x).hidden = x !== v); $('dock').hidden = v !== 'vMine'; document.body.classList.toggle('bar-on', v === 'vMine'); window.scrollTo(0, 0); }
+function setUrl(t) { try { history.replaceState(null, '', t ? '?t=' + t : location.pathname); } catch (e) {} }
+$('word').innerHTML = [...'PIXELITOS'].map((ch, i) => `<span style="color:${['#FF3D7F', '#FFE14D', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8', '#FF3D3D', '#FFE14D', '#FF4FA3'][i]};animation-delay:${i * .12}s">${ch}</span>`).join('');
+
+let token = null, me = null, look = { ...LOOK0 }, homeIslas = [];
+
+async function route(t) {
+  if (!t) { setUrl(null); show('vHome'); refreshCount(); return; }
+  token = t;
+  const r = await API.yo(t).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
+  if (r.error) return showErr('LINK VENCIDO', r.error);
+  setUrl(t); me = r; look = { ...LOOK0, ...(r.claim ? r.claim.look : {}) };
+  $('claimMsg').textContent = '';
+  renderMine(true); show('vMine');
+}
+function showErr(title, text) { $('eTitle').textContent = title; $('eText').textContent = text; show('vErr'); }
+$('eBack').onclick = () => route(null);
+
+async function refreshCount() {
+  const s = await API.stats().catch(() => null); if (!s) return;
+  homeIslas = s.islas || [];
+  $('cnt').textContent = `${s.claimed} / ${s.total}`;
+  $('cntLbl').textContent = s.enVivo ? 'Reclamados · seguidores en vivo' : 'Reclamados de los seguidores';
+  const next = METAS.find(([n]) => s.total < n);
+  $('metaTxt').innerHTML = s.total < META_REGALO ? `Somos <b>${s.total}</b>. Si reclamás tu pixelito antes de los <b>1.000 seguidores</b>, elegís <b>un traje de la tienda gratis</b> para siempre. Faltan ${META_REGALO - s.total}.` : next ? `Somos <b>${s.total}</b>. Próxima meta: ${next[0].toLocaleString('es')}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`;
+  $('metas').innerHTML = METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${n.toLocaleString('es')}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
+  $('bar').style.width = (s.total ? Math.max(2, 100 * s.claimed / s.total) : 0) + '%';
+}
+
+function bubble(kind, html) { const d = document.createElement('div'); d.className = 'msg ' + kind; d.innerHTML = html; $('chat').appendChild(d); return d; }
+async function simSend() {
+  const u = $('simUser').value.trim(); if (!u) { $('simUser').focus(); return; }
+  bubble('me', `<span class="who">${esc(u.startsWith('@') ? u : '@' + u)}</span>RECLAMAR`);
+  const typing = bubble('bot', '<span class="who">@somoslospixelitos</span>escribiendo…');
+  const r = await API.dm(u, 'RECLAMAR', $('simSigue').checked).catch(() => ({ error: 'No se pudo conectar' }));
+  await new Promise(ok => setTimeout(ok, 600));
+  if (r.error) { typing.innerHTML = `<span class="who">@somoslospixelitos</span>${esc(r.error)}`; return; }
+  let html = esc(r.text);
+  if (r.url) html = html.replace(esc(r.url), `<a href="${esc(r.url)}" data-open="${esc(r.url)}">${esc(r.url)}</a>`);
+  typing.innerHTML = `<span class="who">@somoslospixelitos</span>${html}`;
+}
+$('simSend').onclick = simSend;
+$('simUser').addEventListener('keydown', e => { if (e.key === 'Enter') simSend(); });
+
+const curIsla = () => { const d = look.isla || me.pixelito.day; return me.islas.find(i => i.day === d) || me.islas.find(i => i.day === me.pixelito.day) || me.islas[me.islas.length - 1] || null; };
+let probando = null, giftConfirm = null;
+function trajeActual(share) {
+  if (probando && !share) return { c: probando, t: probando, p: probando, f: probando };
+  const r = look.regalo, z = look.piezas || '';
+  return r ? { c: z.includes('c') ? r : '', t: z.includes('t') ? r : '', p: z.includes('p') ? r : '', f: z.includes('f') ? r : '' } : {};
+}
+function curMe(share) { const p = me.pixelito; return { L: { s: look.shirt || p.shirt, pa: look.pants || p.pants, h: look.hair || p.hair, k: look.skin || p.skin, style: look.style, outfit: look.outfit, traje: trajeActual(share) }, acc: look.acc, name: p.handle, founder: me.claim ? me.claim.ord : 0 }; }
+function swatches(el, key, orig) {
+  el.innerHTML = [`<button data-k="${key}" data-v="" style="background:${orig}" class="${look[key] ? '' : 'on'}" aria-label="Como en el video">★</button>`]
+    .concat(OPC[key].filter(c => c !== orig).map(c => `<button data-k="${key}" data-v="${c}" style="background:${c}" class="${look[key] === c ? 'on' : ''}" aria-label="Color ${c}"></button>`)).join('');
+}
+function chips(el, key, list, claimed) {
+  el.innerHTML = list.map(([v, name]) => {
+    const lock = key === 'acc' && v === 'corona' && !claimed;
+    return `<button data-k="${key}" data-v="${v}" class="${look[key] === v ? 'on' : ''} ${v === 'corona' ? 'gold' : ''}" ${lock ? 'disabled' : ''}>${lock ? '🔒 Corona' : name}</button>`;
+  }).join('');
+}
+function renderIslas() {
+  const sel = look.isla || me.pixelito.day;
+  $('islas').innerHTML = me.islas.map(i => `<button class="isla ${i.day === sel ? 'on' : ''}" data-isla="${i.day}">
+      <canvas width="200" height="150" data-thumb="${i.day}"></canvas>
+      <div class="t"><span>ISLA DÍA ${i.day}</span>${i.day === me.pixelito.day ? '<em>LLEGASTE ACÁ</em>' : ''}</div>
+      <div class="u">${esc(i.user)} · ❤ ${i.likes}</div>
+      <div class="c">“${esc(i.text)}”</div>
+      <div class="n">${i.n} pixelitos</div></button>`).join('');
+  me.islas.forEach(i => { const cv = document.querySelector(`[data-thumb="${i.day}"]`); scene(cv.getContext('2d'), 200, 150, 60, i, null, i.vecinos); });
+  const on = document.querySelector('.isla.on'); if (on) $('islas').scrollLeft = on.offsetLeft - $('islas').offsetLeft - 4;
+}
+function renderShop() {
+  const base = { ...curMe(true).L, traje: null }, c = me.claim, total = me.stats ? me.stats.total : 0;
+  const locked = !!(c && c.look && c.look.regalo);
+  const canGift = !locked && (c ? !!(c.look && c.look.regaloOk) : total < META_REGALO);
+  $('trajes').innerHTML = TRAJES.map(id => {
+    const mio = look.regalo === id, on = probando === id;
+    const tag = mio ? '<span class="tg b">TU REGALO</span>' : on ? '<span class="tg y">PROBANDO</span>' : '<span class="tg">MUY PRONTO</span>';
+    return `<button class="traje ${on ? 'on' : ''} ${mio ? 'mio' : ''}" data-tr="${id}"><canvas width="54" height="117" data-tt="${id}"></canvas><div class="tn">${TR[id].n}</div><div class="tp">300 monedas</div>${tag}</button>`;
+  }).join('');
+  TRAJES.forEach(id => { const cv = document.querySelector(`[data-tt="${id}"]`), x = cv.getContext('2d'); x.clearRect(0, 0, 54, 117); drawHD(x, { ...base, traje: { c: id, t: id, p: id, f: id } }, 3, 30, 3, {}); });
+  let h = '';
+  if (look.regalo) {
+    h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>${locked ? '' : ' (se guarda cuando reclamás tu pixelito; hasta entonces lo podés cambiar)'}. Elegí qué piezas te ponés:`
+      + `<div class="chips">${PIEZAS.map(([k, n]) => `<button data-pz="${k}" class="${(look.piezas || '').includes(k) ? 'on' : ''}">${(look.piezas || '').includes(k) ? '✓ ' : ''}${n}</button>`).join('')}</div>`;
+    if (canGift && probando && probando !== look.regalo) h += `<button class="btn main" data-gift="${probando}">Cambiar mi regalo por ${TR[probando].n}</button>`;
+  } else if (canGift) {
+    h = c ? `🎁 Reclamaste antes de los 1.000 seguidores: <b>elegí un traje gratis</b>. Es para siempre, así que probate varios primero.` : `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te llevás un traje gratis</b>. Faltan ${Math.max(0, META_REGALO - total)}. Probate uno y elegilo.`;
+    if (probando) h += `<button class="btn main" data-gift="${probando}">${giftConfirm === probando ? `Confirmar: ${TR[probando].n} es mi regalo para siempre` : `Elegir ${TR[probando].n} como mi regalo`}</button>`;
+  } else {
+    h = c ? 'El traje gratis era para los que reclamaron antes de los 1.000 seguidores. Igual tenés tu @ de fundador ✨' : 'Ya llegamos a los 1.000 seguidores: el traje gratis de fundador se terminó. Igual tenés el @ de fundador ✨';
+  }
+  if (probando) h += `<button class="btn" data-tr="${probando}">Sacarme el ${TR[probando].n} (vista previa)</button>`;
+  $('giftBox').innerHTML = h;
+}
+function renderMine(first) {
+  const p = me.pixelito, c = me.claim, isla = curIsla();
+  $('mNum').textContent = p.num ? '#' + p.num : 'NUEVO';
+  $('mHandle').innerHTML = c ? [...p.handle].map((ch, i) => `<span class="fz" style="color:${RAINBOW[i % RAINBOW.length]};animation-delay:${i * .1}s">${esc(ch)}</span>`).join('') : esc(p.handle);
+  $('mDay').textContent = probando ? `Probándote el traje ${TR[probando].n} (vista previa)` : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el Reel de hoy (19:00)' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
+  $('mBadge').innerHTML = c ? `<span class="badge">★ FUNDADOR #${c.ord}</span>` : '';
+  $('lookTitle').textContent = c ? 'TU PIXELITO' : 'PASO 1 · ARMÁ TU PIXELITO';
+  $('islaTitle').textContent = c ? 'TU ISLA' : 'PASO 2 · TU ISLA';
+  $('claimBtn').textContent = c ? 'Guardar cambios' : '¡RECLAMAR MI PIXELITO!';
+  $('crownNote').hidden = !!c;
+  swatches($('oSkin'), 'skin', p.skin); swatches($('oHair'), 'hair', p.hair); swatches($('oShirt'), 'shirt', p.shirt); swatches($('oPants'), 'pants', p.pants);
+  renderShop();
+  chips($('oStyle'), 'style', OPC.style); chips($('oOutfit'), 'outfit', OPC.outfit); chips($('oAcc'), 'acc', OPC.acc, !!c);
+  if (first) renderIslas(); else document.querySelectorAll('.isla').forEach(b => b.classList.toggle('on', +b.dataset.isla === (look.isla || p.day)));
+  $('shareCard').hidden = !c;
+  if (c && !$('shareCard').dataset.ok) makeShare();
+}
+const DEF = { style: 'corto', outfit: 'remera', acc: '' };
+document.addEventListener('click', e => {
+  const tr = e.target.closest('[data-try]'); if (tr) { e.preventDefault(); $('simUser').value = tr.dataset.try; return; }
+  const op = e.target.closest('[data-open]');
+  if (op && DEMO) { e.preventDefault(); route(new URL(op.dataset.open).searchParams.get('t')); return; }
+  const b = e.target.closest('button[data-k]');
+  if (b && me) { const k = b.dataset.k; look[k] = b.dataset.v || (k in DEF ? DEF[k] : null); changed(); return; }
+  const tj = e.target.closest('[data-tr]');
+  if (tj && me) { const id = tj.dataset.tr; probando = probando === id ? null : id; giftConfirm = null; renderMine(false); return; }
+  const gf = e.target.closest('[data-gift]');
+  if (gf && me) {
+    const id = gf.dataset.gift;
+    if (me.claim && giftConfirm !== id) { giftConfirm = id; renderShop(); return; }
+    look.regalo = id; look.piezas = 'ctpf'; probando = null; giftConfirm = null;
+    if (me.claim) save(); else changed();
+    return;
+  }
+  const pz = e.target.closest('[data-pz]');
+  if (pz && me) { const k = pz.dataset.pz, z = look.piezas || ''; look.piezas = z.includes(k) ? z.replace(k, '') : z + k; changed(); return; }
+  const is = e.target.closest('[data-isla]');
+  if (is && me) { const d = +is.dataset.isla; look.isla = d === me.pixelito.day ? null : d; changed(); }
+});
+function changed() {
+  renderMine(false); resetVideo();
+  if (me.claim) { $('claimMsg').textContent = 'Tenés cambios sin guardar.'; makeShare(); }
+}
+$('toIsla').onclick = () => $('stepIsla').scrollIntoView({ behavior: 'smooth', block: 'start' });
+$('isPrev').onclick = () => $('islas').scrollBy({ left: -$('islas').clientWidth * .75, behavior: 'smooth' });
+$('isNext').onclick = () => $('islas').scrollBy({ left: $('islas').clientWidth * .75, behavior: 'smooth' });
+async function save() {
+  const first = !me.claim;
+  $('claimBtn').disabled = true; $('claimMsg').textContent = 'Guardando…';
+  const r = await API.reclamar(token, look).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
+  $('claimBtn').disabled = false;
+  if (r.error) { $('claimMsg').textContent = r.error; return; }
+  const keep = me.islas; me = r; me.islas = keep; look = { ...LOOK0, ...r.claim.look };
+  $('claimMsg').textContent = first ? `¡Es tuyo! Sos el fundador #${r.claim.ord} y tu @ ya salta con los colores de Los Pixelitos ✨${r.claim.look.regalo ? ' Y te llevás el traje ' + TR[r.claim.look.regalo].n + ' gratis 🎁' : r.claim.look.regaloOk ? ' Elegí tu traje gratis en la tienda 🎁' : ''}` : 'Cambios guardados.';
+  renderMine(false); makeShare();
+  if (first) { confetti(); setTimeout(() => $('shareCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 900); }
+}
+$('claimBtn').onclick = () => save();
+
+/* ================= animación ================= */
+const HOME_LOOKS = Array.from({ length: 12 }, (_, i) => ({ s: OPC.shirt[(i * 3) % 8], h: OPC.hair[(i * 5) % 6], k: OPC.skin[(i * 2) % 5], pa: OPC.pants[i % 4] }));
+function homeScene(c, W, H, t) {
+  c.imageSmoothingEnabled = false; sky(c, W, H, t);
+  const list = homeIslas.length ? homeIslas.slice(-6) : [{ day: 1, act: '' }, { day: 2, act: '' }, { day: 3, act: '' }];
+  list.forEach((i, k) => {
+    const col = k % 3, row = Math.floor(k / 3), w = 52, h = 16;
+    const x = 8 + col * 63 + (row % 2) * 6, y = 58 + row * 50 + Math.sin(t / 30 + k) * 2 + (col % 2) * 5;
+    islandBase(c, x, y, w, h); decor(c, i, x, y, w, h, t, w / 172);
+    for (let j = 0; j < 3; j++) { const U = 1, jump = Math.max(0, Math.sin(t / 15 + k + j * 2)) * 2; drawPixelito(c, HOME_LOOKS[(k * 3 + j) % 12], x + 9 + j * 14, y + h * 0.75 - 11 * U - jump, U, { arms: jump > 1 ? 'up' : 'down' }); }
+    F(c, x + 1, y - 9, 22, 7, INK); F(c, x + 2, y - 8, 20, 5, '#FFE14D'); txt(c, 'DIA ' + i.day, x + 12, y - 5.3, 3.2, INK);
+  });
+}
+function tick(ms) {
+  const t = ms / 33;
+  if (!$('vHome').hidden) homeScene($('homeScene').getContext('2d'), 200, 150, t);
+  if (!$('vMine').hidden && me) { const i = curIsla(); scene($('mineScene').getContext('2d'), 400, 300, t, i, curMe(), i && i.vecinos); }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+/* ================= historia para compartir: imagen y video ================= */
+const SC = document.createElement('canvas'); SC.width = 490; SC.height = 368;
+function drawStory(c, W, t) {
+  const k = W / 1080; c.setTransform(k, 0, 0, k, 0, 0); c.imageSmoothingEnabled = false;
+  sky(c, 1080, 1920, t);
+  const p = me.pixelito, cl = me.claim, isla = curIsla();
+  const T = (s, x, y, sz, col, st = Math.max(4, sz / 7)) => { c.font = `${sz}px "Press Start 2P", monospace`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = st * 2; c.strokeStyle = INK; c.strokeText(s, x, y); c.fillStyle = col; c.fillText(s, x, y); };
+  const fit = (s, max, sz) => { c.font = `${sz}px "Press Start 2P", monospace`; while (c.measureText(s).width > max && sz > 16) { sz -= 2; c.font = `${sz}px "Press Start 2P", monospace`; } return sz; };
+  T('RESERVÉ MI LUGAR EN', 540, 200, 44, '#FFFFFF');
+  const cols = ['#FF3D7F', '#FFE14D', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8', '#FF3D3D', '#FFE14D', '#2F80ED'];
+  c.font = '100px "Press Start 2P", monospace'; const word = 'PIXÉPOLIS'; let x = 540 - c.measureText(word).width / 2;
+  [...word].forEach((ch, i) => { c.font = '100px "Press Start 2P", monospace'; const w = c.measureText(ch).width; T(ch, x + w / 2, 315 - Math.abs(Math.sin(t / 8 + i * 0.6)) * 18, 100, cols[i], 13); x += w; });
+  T('CLUB', 540, 425, 64, '#FFE14D', 9);
+  scene(SC.getContext('2d'), 490, 368, t, isla, curMe(true), isla && isla.vecinos);
+  c.fillStyle = INK; c.fillRect(54, 504, 990, 750); c.fillRect(40, 490, 1000, 750);
+  c.drawImage(SC, 50, 500, 980, 736);
+  if (isla) { const s = `ISLA DIA ${isla.day} · ${isla.label.toUpperCase()}`; T(s, 540, 1320, fit(s, 980, 30), '#FFFFFF', 5); }
+  nameTag(c, p.handle, 540, 1430, 52, t, true, 960, 7);
+  c.fillStyle = INK; c.fillRect(150, 1520, 800, 140); c.fillRect(160, 1530, 800, 140);
+  c.fillStyle = '#FFE14D'; c.fillRect(156, 1526, 788, 128);
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = INK; c.font = '36px "Press Start 2P", monospace'; c.fillText(`PIXELITO #${p.num}`, 540, 1568);
+  c.fillStyle = '#B23A1E'; c.font = '28px "Press Start 2P", monospace'; c.fillText(`FUNDADOR #${cl.ord}`, 540, 1618);
+  T('@somoslospixelitos', 540, 1770, 36, '#FFFFFF', 6);
+  T('pixepolis.com', 540, 1840, 30, '#FFE14D', 5);
+  c.setTransform(1, 0, 0, 1, 0, 0);
+}
+// Música de los Reels: la misma de sim.py (audio): 132 bpm, arpegio Do-Sol-La m-Fa en onda cuadrada, bajo, bombo y platillo
+function musica(sec, SR) {
+  const n = Math.floor(sec * SR), out = new Float32Array(n), beat = 60 / 132, e8 = beat / 2;
+  const CH = [[523.3, 659.3, 784.0], [392.0, 493.9, 587.3], [440.0, 523.3, 659.3], [349.2, 440.0, 523.3]], BASS = [130.8, 98.0, 110.0, 87.3];
+  let pl = 0, pb = 0;
+  for (let i = 0; i < n; i++) {
+    const t = i / SR, bar = Math.floor(t / (beat * 4)) % 4, step = Math.floor(t / e8) % 8, te = t % e8;
+    const c = CH[bar], f = c[step % 3] * (step === 3 || step === 7 ? 2 : 1);
+    pl += f / SR; pb += BASS[bar] * (step % 2 ? 2 : 1) / SR;
+    const lead = Math.sign(Math.sin(2 * Math.PI * pl)) * Math.exp(-te / e8 * 5) * 0.045;
+    const bass = Math.sign(Math.sin(2 * Math.PI * pb)) * 0.05 * Math.exp(-te / e8 * 2);
+    const kt = t % beat, kick = Math.sin(2 * Math.PI * (60 + 120 * Math.exp(-kt * 30)) * kt) * Math.exp(-kt * 14) * 0.22;
+    const ht = (t + e8) % beat, hat = (Math.random() * 2 - 1) * Math.exp(-ht * 60) * 0.05;
+    const fade = Math.min(1, t / 0.3, (sec - t) / 1.2);
+    out[i] = Math.tanh((lead + bass + kick + hat) * 2.2) * 0.9 * Math.max(0, fade);
+  }
+  return out;
+}
+let imgBlob = null, vidBlob = null, vidExt = 'mp4', shareSeq = 0;
+async function fonts() { try { await document.fonts.load('40px "Press Start 2P"'); } catch (e) {} }
+async function makeShare() {
+  const my = ++shareSeq; await fonts(); if (my !== shareSeq || !me.claim) return;
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1920;
+  drawStory(cv.getContext('2d'), 1080, 40);
+  const b = await new Promise(ok => cv.toBlob(ok, 'image/png')); if (my !== shareSeq) return;
+  imgBlob = b; $('shareImg').src = URL.createObjectURL(b); $('shareCard').dataset.ok = '1';
+}
+function resetVideo() { vidBlob = null; $('shareVid').hidden = true; $('shareVidBtn').hidden = true; $('makeVid').hidden = false; $('vidProg').hidden = true; }
+$('tImg').onclick = () => { $('tImg').classList.add('on'); $('tVid').classList.remove('on'); $('paneImg').hidden = false; $('paneVid').hidden = true; };
+$('tVid').onclick = () => { $('tVid').classList.add('on'); $('tImg').classList.remove('on'); $('paneImg').hidden = true; $('paneVid').hidden = false; };
+$('makeVid').onclick = async () => {
+  // El audio se prepara dentro del toque (el iPhone lo exige)
+  let ac = null; try { ac = new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
+  const types = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+  const type = window.MediaRecorder && HTMLCanvasElement.prototype.captureStream && types.find(x => MediaRecorder.isTypeSupported(x));
+  if (!type) { $('shareMsg').textContent = 'Este navegador no puede crear videos. Probá con la imagen.'; return; }
+  await fonts();
+  vidExt = type.includes('mp4') ? 'mp4' : 'webm';
+  const cv = document.createElement('canvas'); cv.width = 720; cv.height = 1280; const c = cv.getContext('2d');
+  drawStory(c, 720, 0);
+  const DUR = 6000, stream = cv.captureStream(30);
+  let src = null;
+  if (ac && ac.createMediaStreamDestination) {
+    const dest = ac.createMediaStreamDestination(), buf = ac.createBuffer(1, Math.floor(DUR / 1000 * ac.sampleRate), ac.sampleRate);
+    buf.copyToChannel(musica(DUR / 1000, ac.sampleRate), 0);
+    src = ac.createBufferSource(); src.buffer = buf; src.connect(dest);
+    dest.stream.getAudioTracks().forEach(tr => stream.addTrack(tr));
+  }
+  let rec;
+  try { rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 5e6, audioBitsPerSecond: 128e3 }); }
+  catch (e) { $('shareMsg').textContent = 'No se pudo grabar el video en este navegador.'; return; }
+  const parts = []; rec.ondataavailable = ev => ev.data.size && parts.push(ev.data);
+  const done = new Promise(ok => rec.onstop = ok);
+  $('makeVid').hidden = true; $('vidProg').hidden = false; $('shareMsg').textContent = 'Grabando tu video…';
+  rec.start(250); if (src) src.start();
+  const t0 = performance.now(), bar = $('vidProg').firstElementChild;
+  await new Promise(ok => { (function f() { const el = performance.now() - t0; drawStory(c, 720, el / 33); bar.style.width = Math.min(100, el / DUR * 100) + '%'; if (el < DUR) requestAnimationFrame(f); else ok(); })(); });
+  rec.stop(); await done; if (ac) ac.close().catch(() => {});
+  vidBlob = new Blob(parts, { type: type.split(';')[0] });
+  $('vidProg').hidden = true; $('shareVid').src = URL.createObjectURL(vidBlob); $('shareVid').hidden = false; $('shareVidBtn').hidden = false;
+  $('shareMsg').textContent = 'Listo. Etiquetá a @somoslospixelitos 💛';
+};
+async function shareFile(blob, name, type) {
+  if (!blob) return;
+  const file = new File([blob], name, { type });
+  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: '¡Reservé mi lugar en Pixépolis Club! pixepolis.com @somoslospixelitos' }); $('shareMsg').textContent = '¡Listo!'; return; } }
+  catch (e) { if (e && e.name === 'AbortError') return; }
+  try { if (window.claude && window.claude.use) { const dl = await window.claude.use('downloads'); if (dl) { await dl.save({ filename: name, data: blob }); $('shareMsg').textContent = 'Listo. Guardalo y subilo a tu historia.'; return; } } }
+  catch (e) { if (e && e.code === 'declined') return; }
+  $('shareMsg').textContent = type.startsWith('image') ? 'Mantené apretada la imagen y tocá “Guardar en Fotos”.' : 'No se pudo compartir el video desde acá. Abrí la página en Safari.';
+}
+$('shareImgBtn').onclick = () => shareFile(imgBlob, `pixepolis-${me.pixelito.num}.png`, 'image/png');
+$('shareVidBtn').onclick = () => shareFile(vidBlob, `pixepolis-${me.pixelito.num}.${vidExt}`, vidBlob ? vidBlob.type : 'video/mp4');
+
+function confetti() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = $('confetti'), c = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
+  const ps = Array.from({ length: 140 }, () => ({ x: innerWidth / 2, y: innerHeight * .45, vx: (Math.random() - .5) * 16, vy: -Math.random() * 16 - 4, s: 6 + Math.random() * 8, c: CONF[Math.floor(Math.random() * 7)], l: 70 + Math.random() * 40 }));
+  (function f() { c.clearRect(0, 0, cv.width, cv.height); let alive = 0; ps.forEach(p => { if (p.l-- <= 0) return; alive++; p.x += p.vx; p.y += p.vy; p.vy += .45; p.vx *= .98; c.fillStyle = p.c; c.fillRect(p.x, p.y, p.s, p.s); }); if (alive) requestAnimationFrame(f); else c.clearRect(0, 0, cv.width, cv.height); })();
+}
+
+(async function boot() {
+  try { const r = await fetch('/api/stats', { cache: 'no-store' }); if (r.ok && (r.headers.get('content-type') || '').includes('json')) API = realApi; } catch (e) {}
+  if (!API) {
+    DEMO = true;
+    let data = window.PX_DEMO_DATA;
+    if (!data) { try { data = await (await fetch('data.json')).json(); } catch (e) { data = { p: [], islas: [] }; } }
+    API = makeDemoApi(data);
+  }
+  $('demoBar').hidden = !DEMO;
+  $('simCard').hidden = !(DEMO || qs.get('sim') === '1');
+  route(qs.get('t'));
+})();
+}
+</script>
+</body>
+</html>
