@@ -252,7 +252,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -312,7 +312,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -372,7 +372,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -432,7 +432,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -492,7 +492,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -552,7 +552,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -612,7 +612,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -672,7 +672,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -732,7 +732,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -792,7 +792,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -852,7 +852,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -912,7 +912,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -972,7 +972,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1032,7 +1032,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1092,7 +1092,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1152,7 +1152,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1212,7 +1212,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1272,7 +1272,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1332,7 +1332,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1392,7 +1392,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1452,7 +1452,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1512,7 +1512,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1572,7 +1572,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1632,7 +1632,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1692,7 +1692,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1752,7 +1752,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1812,7 +1812,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1872,7 +1872,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1932,7 +1932,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -1992,7 +1992,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2052,7 +2052,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2112,7 +2112,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2172,7 +2172,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2232,7 +2232,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2292,7 +2292,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2352,7 +2352,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2412,7 +2412,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2472,7 +2472,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2532,7 +2532,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2592,7 +2592,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2652,7 +2652,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2712,7 +2712,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2772,7 +2772,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2832,7 +2832,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2892,7 +2892,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -2952,7 +2952,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3012,7 +3012,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3072,7 +3072,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3132,7 +3132,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3192,7 +3192,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3252,7 +3252,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3312,7 +3312,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3372,7 +3372,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3432,7 +3432,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3492,7 +3492,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3552,7 +3552,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3612,7 +3612,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3672,7 +3672,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3732,7 +3732,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
@@ -3792,7 +3792,7 @@
    "is_free": false,
    "is_enabled": true,
    "inventory_options": {
-    "consumable": null,
+    "consumable": false,
     "expiration_period": null
    },
    "limits": null,
