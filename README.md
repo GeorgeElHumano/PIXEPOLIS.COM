@@ -90,5 +90,5 @@ Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_A
 - Cada traje tiene 4 piezas (gorra, remera, pantalón, zapatos): **100 coins por pieza** o **300 el traje completo**. Se pueden probar gratis y combinar piezas de trajes distintos.
 - Lo comprado queda en `armario` (D1) y se puede poner/sacar; el servidor solo acepta ropa del traje de regalo o del armario.
 - Paquetes (únicos productos en Xsolla): 300/$3, 500/$5, 1.100/$10, 3.000/$25, 6.500/$50, 14.000/$100.
-- Modos (`pagos` en `/api/yo`): `pronto` (producción sin claves: todo dice "muy pronto"), `prueba` (DEV=1: los paquetes se acreditan gratis), `xsolla` (con XSOLLA_API_KEY, XSOLLA_PROJECT, XSOLLA_MERCHANT y XSOLLA_WEBHOOK_SECRET: abre la página de pago y las coins entran por el webhook `/api/xsolla`). Vuelve a `/?t=…&pago=ok` y la web espera la confirmación.
+- Modos (`pagos` en `/api/yo`): `pronto` (producción sin claves: los paquetes dicen "muy pronto", pero las coins que ya tenés se gastan igual), `prueba` (DEV=1: los paquetes se acreditan gratis), `xsolla` (con XSOLLA_API_KEY, XSOLLA_PROJECT, XSOLLA_MERCHANT y XSOLLA_WEBHOOK_SECRET: abre la página de pago y las coins entran por el webhook `/api/xsolla`). Vuelve a `/?t=…&pago=ok` y la web espera la confirmación.
 - `XSOLLA_SANDBOX` = sandbox por defecto; poner `0` para cobrar de verdad.
