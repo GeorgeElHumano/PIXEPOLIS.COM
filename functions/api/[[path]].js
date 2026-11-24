@@ -25,6 +25,8 @@ const LINK_HOURS = 24;
 const TRAJES = ['cowboy', 'astronauta', 'pirata', 'chef', 'bombero', 'mago', 'caballero', 'ninja', 'rockero', 'surfista', 'explorador', 'heroe', 'navidad', 'vampiro', 'robot'];
 const META_REGALO = 1000;
 const WORD = /\breclamar\b/i;
+const RESET = /\b(restablecer|recuperar|reset)\b/i; // restablecer contraseña
+const RESET_MIN = 60;
 // Opciones de personalización (las mismas que en public/index.html)
 const OPC = {
   shirt: ['#FF3D3D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#FF4FA3', '#00C2A8', '#FFD23F', '#FFFFFF', '#14121F'],
@@ -51,6 +53,10 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS links_handle ON links(handle)`,
   `CREATE TABLE IF NOT EXISTS nuevos(handle TEXT PRIMARY KEY, t INTEGER NOT NULL, shirt TEXT, hair TEXT, skin TEXT, pants TEXT)`,
   `CREATE TABLE IF NOT EXISTS reclamos(handle TEXT PRIMARY KEY, num INTEGER NOT NULL, ord INTEGER NOT NULL, look TEXT NOT NULL, t INTEGER NOT NULL, upd INTEGER)`,
+  `CREATE TABLE IF NOT EXISTS cuentas(handle TEXT PRIMARY KEY, salt TEXT NOT NULL, hash TEXT NOT NULL, t INTEGER NOT NULL, upd INTEGER)`,
+  `CREATE TABLE IF NOT EXISTS sesiones(th TEXT PRIMARY KEY, handle TEXT NOT NULL, created INTEGER NOT NULL, exp INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS sesiones_handle ON sesiones(handle)`,
+  `CREATE TABLE IF NOT EXISTS intentos(k TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL)`,
 ];
 let ready = false;
 async function init(db) {
@@ -124,7 +130,8 @@ const pick = (arr, n) => { const a = arr.slice(); for (let i = a.length - 1; i >
 const islasCon = D => D.islas.map(i => ({ ...i, vecinos: pick(D.byDay[i.day] || [], 4).map(({ shirt, hair, skin, pants }) => ({ shirt, hair, skin, pants })) }));
 
 // Arma la respuesta del bot para un @ (crea el link único si corresponde)
-async function botReply(db, D, env, handle, origin, sigue) {
+async function botReply(db, D, env, handle, origin, sigue, modo) {
+  if (modo === 'reset') return resetReply(db, D, handle, origin);
   // sigue: true/false según Instagram (is_user_follow_business); undefined si no se pudo saber
   if (sigue === false) return { kind: 'nofollow', text: `¡Hola! Para tener tu pixelito primero seguí a @somoslospixelitos 👾 Después mandá RECLAMAR de nuevo.` };
   let p = await pixelito(db, D, handle);
@@ -145,18 +152,69 @@ async function botReply(db, D, env, handle, origin, sigue) {
   return { kind: 'link', url, text: `${hola}\n${url}\nEl link es solo tuyo y vence en ${LINK_HOURS} horas.` };
 }
 
-async function byToken(db, raw) {
-  if (!raw || raw.length > 64) return null;
-  const l = await db.prepare('SELECT handle, exp FROM links WHERE th=?').bind(await sha(raw)).first();
-  if (!l || l.exp < now()) return null;
-  return l.handle;
+// RESTABLECER por DM: link de 1 hora que abre directo la pantalla de contraseña nueva
+async function resetReply(db, D, handle, origin) {
+  const cu = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(handle).first();
+  if (!cu) return { kind: 'noclave', text: `Todavía no tenés contraseña 🔒 Mandá RECLAMAR y la creás en tu primer ingreso.` };
+  const p = await pixelito(db, D, handle);
+  if (p && p.out) return { kind: 'out', text: `Tu pixelito salió volando en cohete 🚀 porque dejaste de seguirnos. ¡Volvé a seguirnos y su lugar te espera!` };
+  const raw = b64url(crypto.getRandomValues(new Uint8Array(18))), t = now();
+  await db.batch([
+    db.prepare('DELETE FROM links WHERE handle=? OR exp<?').bind(handle, t),
+    db.prepare('INSERT INTO links(th, handle, created, exp) VALUES(?,?,?,?)').bind(await sha(raw), handle, t, t + RESET_MIN * 60e3),
+  ]);
+  const url = `${origin}/?t=${raw}&clave=1`;
+  return { kind: 'reset', url, text: `🔑 Para restablecer tu contraseña entrá acá y elegí una nueva:\n${url}\nEl link es solo tuyo y vence en ${RESET_MIN} minutos. Si no lo pediste, ignoralo: tu contraseña sigue igual.` };
 }
+
+// Un token es un link del DM (24 h, prueba que sos dueño del @) o una sesión iniciada con contraseña (30 días)
+async function byToken(db, raw) { const r = await tokenInfo(db, raw); return r ? r.handle : null; }
+async function tokenInfo(db, raw) {
+  if (!raw || raw.length > 64) return null;
+  const th = await sha(raw);
+  const l = await db.prepare('SELECT handle, exp FROM links WHERE th=?').bind(th).first();
+  if (l && l.exp >= now()) return { handle: l.handle, dm: true };
+  const s = await db.prepare('SELECT handle, exp FROM sesiones WHERE th=?').bind(th).first();
+  if (s && s.exp >= now()) return { handle: s.handle, dm: false };
+  return null;
+}
+
+/* ---------- contraseñas ---------- */
+const SES_DIAS = 30;
+async function pbkdf2(pw, saltHex) {
+  const salt = new Uint8Array(saltHex.match(/../g).map(h => parseInt(h, 16)));
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: 100000 }, key, 256));
+}
+async function nuevaSesion(db, handle) {
+  const raw = b64url(crypto.getRandomValues(new Uint8Array(24))), t = now();
+  await db.batch([
+    db.prepare('DELETE FROM sesiones WHERE exp<?').bind(t),
+    db.prepare('INSERT INTO sesiones(th, handle, created, exp) VALUES(?,?,?,?)').bind(await sha(raw), handle, t, t + SES_DIAS * 864e5),
+  ]);
+  return raw;
+}
+// Como mucho 8 intentos fallidos cada 15 minutos por @ y por conexión
+async function frenado(db, keys) {
+  const t = now();
+  for (const k of keys) {
+    const r = await db.prepare('SELECT n, t FROM intentos WHERE k=?').bind(k).first();
+    if (r && t - r.t < 15 * 60e3 && r.n >= 8) return true;
+  }
+  return false;
+}
+async function fallo(db, keys) {
+  const t = now();
+  for (const k of keys) await db.prepare(`INSERT INTO intentos(k, n, t) VALUES(?1, 1, ?2) ON CONFLICT(k) DO UPDATE SET n = CASE WHEN ?2 - t > 900000 THEN 1 ELSE n + 1 END, t = CASE WHEN ?2 - t > 900000 THEN ?2 ELSE t END`).bind(k, t).run();
+}
+const claveOk = p => typeof p === 'string' && p.length >= 6 && p.length <= 72;
 
 async function mine(db, D, env, handle) {
   const p = await pixelito(db, D, handle);
   if (!p) return null;
   const c = await db.prepare('SELECT ord, look, t FROM reclamos WHERE handle=?').bind(handle).first();
-  return { pixelito: p, claim: c ? { ord: c.ord, t: c.t, look: JSON.parse(c.look) } : null, islas: islasCon(D), stats: await stats(db, D, env) };
+  const cu = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(handle).first();
+  return { pixelito: p, claim: c ? { ord: c.ord, t: c.t, look: JSON.parse(c.look) } : null, tieneClave: !!cu, islas: islasCon(D), stats: await stats(db, D, env) };
 }
 
 /* ---------- Instagram (Meta) ---------- */
@@ -198,11 +256,12 @@ async function igHandle(env, db, D, payload, origin) {
   for (const e of payload.entry || []) {
     for (const m of e.messaging || []) {
       const text = m.message && !m.message.is_echo ? m.message.text || '' : '';
-      log({ ev: 'mensaje', reclamar: WORD.test(text) });
-      if (!WORD.test(text)) continue;
+      const modo = RESET.test(text) ? 'reset' : WORD.test(text) ? 'reclamar' : null;
+      log({ ev: 'mensaje', modo });
+      if (!modo) continue;
       const u = await igPerfil(env, m.sender.id);
       if (!u) continue;
-      const r = await botReply(db, D, env, u.handle, origin, u.sigue);
+      const r = await botReply(db, D, env, u.handle, origin, u.sigue, modo);
       await igSend(env, m.sender.id, r.text);
     }
   }
@@ -230,6 +289,44 @@ export async function onRequest(ctx) {
       if (!h) return fail(BAD_LINK, 404);
       const r = await mine(db, D, env, h);
       return r ? json(r) : fail('No encontramos tu pixelito.', 404);
+    }
+
+    // Crear o cambiar la contraseña. Con el link del DM siempre se puede (sirve para recuperarla);
+    // con una sesión, solo si todavía no tenía.
+    if (path === 'clave' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      const ti = await tokenInfo(db, b.t);
+      if (!ti) return fail(BAD_LINK, 404);
+      if (!claveOk(b.clave)) return fail('La contraseña tiene que tener entre 6 y 72 caracteres.');
+      const ya = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(ti.handle).first();
+      if (ya && !ti.dm) return fail('Para cambiar la contraseña, mandá RESTABLECER por DM y entrá con el link que te llega.', 403);
+      const salt = hex(crypto.getRandomValues(new Uint8Array(16))), h = await pbkdf2(b.clave, salt), t = now();
+      await db.batch([
+        db.prepare('INSERT INTO cuentas(handle, salt, hash, t, upd) VALUES(?1,?2,?3,?4,?4) ON CONFLICT(handle) DO UPDATE SET salt=excluded.salt, hash=excluded.hash, upd=excluded.upd').bind(ti.handle, salt, h, t),
+        db.prepare('DELETE FROM sesiones WHERE handle=?').bind(ti.handle),
+      ]);
+      return json({ ok: true, sesion: await nuevaSesion(db, ti.handle) });
+    }
+
+    if (path === 'entrar' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      const h = handleOf(b.usuario);
+      if (!HANDLE_RE.test(h) || typeof b.clave !== 'string') return fail('Usuario o contraseña incorrectos.', 401);
+      const ip = req.headers.get('cf-connecting-ip') || 'x', keys = ['u:' + h, 'ip:' + ip];
+      if (await frenado(db, keys)) return fail('Demasiados intentos. Probá de nuevo en 15 minutos.', 429);
+      const cu = await db.prepare('SELECT salt, hash FROM cuentas WHERE handle=?').bind(h).first();
+      if (!cu) { await fallo(db, keys); return fail('Ese @ todavía no tiene contraseña. Mandá RECLAMAR por DM a @somoslospixelitos y la creás en tu primer ingreso.', 401); }
+      const calc = await pbkdf2(b.clave.slice(0, 72), cu.salt);
+      let d = calc.length ^ cu.hash.length; for (let i = 0; i < calc.length; i++) d |= calc.charCodeAt(i) ^ cu.hash.charCodeAt(i);
+      if (d) { await fallo(db, keys); return fail('Usuario o contraseña incorrectos.', 401); }
+      await db.prepare('DELETE FROM intentos WHERE k=?').bind('u:' + h).run();
+      return json({ sesion: await nuevaSesion(db, h) });
+    }
+
+    if (path === 'salir' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      if (b.t && b.t.length <= 64) await db.prepare('DELETE FROM sesiones WHERE th=?').bind(await sha(b.t)).run();
+      return json({ ok: true });
     }
 
     if (path === 'reclamar' && M === 'POST') {
@@ -262,8 +359,9 @@ export async function onRequest(ctx) {
       const b = await req.json().catch(() => ({}));
       const h = handleOf(b.from);
       if (!HANDLE_RE.test(h)) return fail('Usuario no válido');
-      if (!WORD.test(b.text || '')) return json({ kind: 'ignore', text: '(El bot solo responde a la palabra RECLAMAR)' });
-      return json(await botReply(db, D, env, h, url.origin, typeof b.sigue === 'boolean' ? b.sigue : undefined));
+      const modo = RESET.test(b.text || '') ? 'reset' : WORD.test(b.text || '') ? 'reclamar' : null;
+      if (!modo) return json({ kind: 'ignore', text: '(El bot responde a RECLAMAR y a RESTABLECER)' });
+      return json(await botReply(db, D, env, h, url.origin, typeof b.sigue === 'boolean' ? b.sigue : undefined, modo));
     }
 
     if (path === 'ig' && M === 'GET') {

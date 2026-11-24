@@ -67,6 +67,13 @@
   #a2hs .x { background:#fff; }
   #a2hs .ar { position:fixed; bottom:calc(4px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%); font-size:34px; color:#fff; text-shadow:2px 2px 0 var(--ink); animation:a2b 1s ease-in-out infinite; }
   @keyframes a2b { 50% { transform:translate(-50%,8px); } }
+  #pwBox { position:fixed; inset:0; z-index:9998; background:rgba(20,18,31,.6); display:flex; align-items:center; justify-content:center; padding:16px; }
+  #pwBox[hidden] { display:none; }
+  #pwBox .b { background:#fff; border:4px solid var(--ink); box-shadow:6px 6px 0 var(--ink); border-radius:14px; padding:18px; width:100%; max-width:400px; }
+  #pwBox h2, #loginCard h2 { margin-top:0; }
+  .pwf { display:grid; gap:10px; margin:12px 0; }
+  .pwmsg { min-height:1.2em; font:600 14px Inter, sans-serif; color:#C62828; margin:4px 0 0; }
+  .linkbtn { background:none; border:0; padding:6px 0; font:600 14px Inter, sans-serif; color:var(--blue); text-decoration:underline; cursor:pointer; }
   .card { background:#fff; border:4px solid var(--ink); box-shadow:6px 6px 0 var(--ink); border-radius:12px; padding:16px; margin-bottom:22px; position:relative; }
   .card h2 { font:12px/1.7 'Press Start 2P', monospace; color:var(--pink); margin:0 0 10px; }
   .scene { display:block; width:100%; aspect-ratio: 4 / 3; image-rendering:pixelated; border:4px solid var(--ink); border-radius:10px; background:var(--sky); }
@@ -92,7 +99,7 @@
   .msg.bot { align-self:flex-start; background:#fff; border:1px solid #ddd; border-bottom-left-radius:4px; }
   .msg .who { font-size:11px; font-weight:800; opacity:.7; display:block; margin-bottom:2px; }
   .msg a { color:var(--blue); font-weight:700; }
-  input[type=text] { width:100%; font:600 16px Inter, sans-serif; padding:12px; border:3px solid var(--ink); border-radius:10px; }
+  input[type=password], input[type=text] { width:100%; font:600 16px Inter, sans-serif; padding:12px; border:3px solid var(--ink); border-radius:10px; }
   .who-big { text-align:center; margin:12px 0 2px; }
   .who-big .num { font:18px 'Press Start 2P', monospace; }
   .who-big .h { font-weight:800; font-size:18px; color:var(--blue); margin-top:8px; word-break:break-all; }
@@ -195,6 +202,17 @@
   <button type="button" class="a2btn" id="a2open" hidden>📲 AGREGAR A INICIO</button>
 
   <section id="vHome" hidden>
+    <div class="card" id="loginCard">
+      <h2>¿YA TENÉS CONTRASEÑA?</h2>
+      <p class="muted" style="margin:0">Entrá con tu @ de Instagram y la contraseña que creaste en tu primer ingreso.</p>
+      <form class="pwf" id="loginForm" autocomplete="on">
+        <input type="text" id="lgUser" name="username" placeholder="@tuusuario" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username">
+        <input type="password" id="lgPass" name="password" placeholder="Contraseña" autocomplete="current-password">
+        <button class="btn main" type="submit">ENTRAR</button>
+        <p class="pwmsg" id="lgMsg"></p>
+      </form>
+      <p class="note" style="margin:0">¿Primera vez? Mandá <b>RECLAMAR</b> por DM a @somoslospixelitos y creás tu contraseña al entrar.<br>¿Te la olvidaste? Mandá <b>RESTABLECER</b> por DM y te llega un link para elegir una nueva.</p>
+    </div>
     <div class="card">
       <h2>RECLAMÁ TU PIXELITO</h2>
       <canvas class="scene" id="homeScene" width="200" height="150"></canvas>
@@ -251,13 +269,13 @@
     <div class="card" id="shopCard">
       <h2>TIENDA · MUY PRONTO</h2>
       <div class="gift" id="giftBox"></div>
-      <p class="note" style="margin-top:12px">Cada traje trae 4 piezas: <b>gorra, remera, pantalón y zapatos</b>. Se compran por separado (100 monedas, $1 cada una) o el traje completo (300 monedas, $3). Tocá un traje para probarte sus piezas y combinarlas con las de otros.</p>
+      <p class="note" style="margin-top:12px">Cada traje trae 4 piezas: <b>gorra, remera, pantalón y zapatos</b>. Se compran con <b>Pixel Coins</b>: 100 cada pieza o 300 el traje completo. Tocá un traje para probarte sus piezas y combinarlas con las de otros.</p>
       <div class="trajes" id="trajes"></div>
       <div id="pzBox"></div>
-      <div class="lbl">PAQUETES DE MONEDAS</div>
+      <div class="lbl">PAQUETES DE PIXEL COINS</div>
       <div class="packs" id="packs"><div><b>300</b><span>$3</span></div><div><b>500</b><span>$5</span></div><div><b>1.100</b><span>$10</span></div><div><b>3.000</b><span>$25</span></div><div><b>6.500</b><span>$50</span></div><div><b>14.000</b><span>$100</span></div></div>
-      <p class="note" style="margin-top:6px">Monedas: próximamente. Los paquetes grandes traen monedas de regalo.</p>
-      <p class="note">Lo que compres se ve en la web y en el video diario de Los Pixelitos. Las monedas solo se usan dentro de Pixépolis.</p>
+      <p class="note" style="margin-top:6px">Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.</p>
+      <p class="note">Lo que compres se ve en la web y en el video diario de Los Pixelitos. Las Pixel Coins son la moneda del juego y solo se usan dentro de Pixépolis.</p>
       <p class="note"><b>Si sos menor de edad, pedile a un adulto antes de comprar.</b></p>
     </div>
     <div class="card" id="stepIsla">
@@ -296,7 +314,22 @@
 <div class="dock" id="dock" hidden><div class="in">
   <button class="btn big main" id="claimBtn">¡RECLAMAR MI PIXELITO!</button>
   <div class="status" id="claimMsg"></div>
+  <div class="status" id="acct"></div>
 </div></div>
+<div id="pwBox" role="dialog" aria-modal="true" aria-labelledby="pwTitle" hidden>
+  <form class="b" id="pwForm" autocomplete="on">
+    <h2 id="pwTitle">CREÁ TU CONTRASEÑA</h2>
+    <p class="muted" style="margin:0" id="pwTxt"></p>
+    <div class="pwf">
+      <input type="text" id="pwUser" name="username" autocomplete="username" readonly>
+      <input type="password" id="pwPass" name="new-password" placeholder="Contraseña (mínimo 6)" autocomplete="new-password">
+      <input type="password" id="pwPass2" placeholder="Repetila" autocomplete="new-password">
+      <button class="btn main" type="submit" id="pwSave">GUARDAR CONTRASEÑA</button>
+      <p class="pwmsg" id="pwMsg"></p>
+    </div>
+    <button type="button" class="linkbtn" id="pwLater">Ahora no</button>
+  </form>
+</div>
 
 <script>
 {
@@ -730,6 +763,9 @@ const realApi = {
   dm: (from, text, sigue) => fetch('/api/dev/dm', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ from, text, sigue }) }).then(J),
   yo: t => fetch('/api/yo?t=' + encodeURIComponent(t)).then(J),
   reclamar: (t, look) => fetch('/api/reclamar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t, look }) }).then(J),
+  clave: (t, clave) => fetch('/api/clave', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t, clave }) }).then(J),
+  entrar: (usuario, clave) => fetch('/api/entrar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ usuario, clave }) }).then(J),
+  salir: t => fetch('/api/salir', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t }) }).then(J),
 };
 
 /* ================= vistas ================= */
@@ -741,15 +777,58 @@ $('word').innerHTML = [...'PIXELITOS'].map((ch, i) => `<span style="color:${['#F
 
 let token = null, me = null, look = { ...LOOK0 }, homeIslas = [];
 
-async function route(t) {
+/* sesión guardada en este dispositivo (después de crear o usar la contraseña) */
+const SES = { get() { try { return localStorage.getItem('pxSesion'); } catch (e) { return null; } }, set(v) { try { v ? localStorage.setItem('pxSesion', v) : localStorage.removeItem('pxSesion'); } catch (e) {} } };
+let viaLink = false;
+async function route(t, deLink) {
   if (!t) { setUrl(null); show('vHome'); refreshCount(); return; }
-  token = t;
+  token = t; viaLink = !!deLink;
   const r = await API.yo(t).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
-  if (r.error) return showErr('LINK VENCIDO', r.error);
-  setUrl(t); me = r; look = { ...LOOK0, ...(r.claim ? r.claim.look : {}) };
+  if (r.error) {
+    if (!deLink) { SES.set(null); return route(null); }
+    return showErr('LINK VENCIDO', r.error);
+  }
+  setUrl(deLink ? t : null); me = r; look = { ...LOOK0, ...(r.claim ? r.claim.look : {}) };
   $('claimMsg').textContent = '';
   renderMine(true); show('vMine');
+  if (deLink && !DEMO && (!r.tieneClave || qs.get('clave') === '1')) pwOpen(!!r.tieneClave);
+  if (!DEMO) $('acct').innerHTML = (deLink ? `<button type="button" class="linkbtn" id="pwChange">${r.tieneClave ? 'Cambiar mi contraseña' : 'Crear mi contraseña'}</button> · ` : '') + `<button type="button" class="linkbtn" id="logout">Salir</button>`;
 }
+function pwOpen(cambiar) {
+  $('pwTitle').textContent = cambiar ? 'CAMBIAR CONTRASEÑA' : 'CREÁ TU CONTRASEÑA';
+  $('pwTxt').innerHTML = cambiar ? 'Elegí una contraseña nueva para tu @. Al guardarla se cierran tus otras sesiones.' : 'Es tu primer ingreso 🎉 Creá una contraseña y la próxima vez entrás directo en <b>pixepolis.com</b> con tu @, sin pedir link por DM.';
+  $('pwUser').value = me.pixelito.handle; $('pwPass').value = ''; $('pwPass2').value = ''; $('pwMsg').textContent = '';
+  $('pwBox').hidden = false; setTimeout(() => $('pwPass').focus(), 50);
+}
+$('pwLater').onclick = () => { $('pwBox').hidden = true; };
+$('pwForm').onsubmit = async e => {
+  e.preventDefault();
+  const a = $('pwPass').value, b = $('pwPass2').value;
+  if (a.length < 6) { $('pwMsg').textContent = 'Usá al menos 6 caracteres.'; return; }
+  if (a !== b) { $('pwMsg').textContent = 'Las dos contraseñas no coinciden.'; return; }
+  $('pwSave').disabled = true;
+  const r = await API.clave(token, a).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
+  $('pwSave').disabled = false;
+  if (r.error) { $('pwMsg').textContent = r.error; return; }
+  SES.set(r.sesion); me.tieneClave = true; $('pwBox').hidden = true;
+  $('claimMsg').textContent = '🔒 Contraseña guardada. Desde ahora entrás en pixepolis.com con tu @ y tu contraseña.';
+  const ch = $('pwChange'); if (ch) ch.textContent = 'Cambiar mi contraseña';
+};
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const u = $('lgUser').value.trim(), p = $('lgPass').value;
+  if (!u || !p) { $('lgMsg').textContent = 'Completá tu @ y tu contraseña.'; return; }
+  if (DEMO) { $('lgMsg').textContent = 'En el modo prueba no hay contraseñas.'; return; }
+  $('lgMsg').textContent = 'Entrando…';
+  const r = await API.entrar(u, p).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
+  if (r.error) { $('lgMsg').textContent = r.error; return; }
+  $('lgMsg').textContent = ''; $('lgPass').value = '';
+  SES.set(r.sesion); route(r.sesion, false);
+};
+document.addEventListener('click', async e => {
+  if (e.target.id === 'pwChange') { pwOpen(!!me.tieneClave); return; }
+  if (e.target.id === 'logout') { const s = SES.get(); SES.set(null); if (s && !DEMO) API.salir(s).catch(() => {}); me = null; route(null); }
+});
 function showErr(title, text) { $('eTitle').textContent = title; $('eText').textContent = text; show('vErr'); }
 $('eBack').onclick = () => route(null);
 
@@ -833,7 +912,7 @@ function renderShop() {
     z = `<div class="pzbox"><div class="pzh">${TR[sel].n} por partes</div><div class="pzs">`
       + PIEZAS.map(([k, n, ic]) => {
         const puesta = pu[k] === sel, prueba = probando[k] === sel;
-        const sub = mio ? (puesta ? 'Puesta ✓ · tocá para sacarla' : 'Tuya · tocá para ponértela') : (prueba ? 'Probándotela · muy pronto' : '100 monedas · probátela');
+        const sub = mio ? (puesta ? 'Puesta ✓ · tocá para sacarla' : 'Tuya · tocá para ponértela') : (prueba ? 'Probándotela · muy pronto' : '100 Pixel Coins · probátela');
         return `<button data-pz="${k}" class="${mio ? 'mio' : ''} ${(mio ? puesta : prueba) ? 'on' : ''}">${ic} ${n}<small>${sub}</small></button>`;
       }).join('') + `</div><div class="row">`
       + (mio ? `<button class="btn" data-todo="${sel}">Ponerme todo</button>` : `<button class="btn" data-todo="${sel}">Probarme todo</button>`)
@@ -1064,7 +1143,9 @@ function confetti() {
   }
   $('demoBar').hidden = !DEMO;
   $('simCard').hidden = !(DEMO || qs.get('sim') === '1');
-  route(qs.get('t'));
+  if (qs.get('t')) route(qs.get('t'), true);
+  else if (!DEMO && SES.get()) route(SES.get(), false);
+  else route(null);
 })();
 }
 </script>

@@ -25,7 +25,7 @@ Está armado igual que NOX: Cloudflare Pages + Functions (`functions/api/[[path]
 ## Tienda y metas
 
 - **15 trajes** (cowboy, astronauta, pirata, chef, bombero, mago, caballero, ninja, rockero, surfista, explorador, superhéroe, navideño, vampiro y robot), cada uno con 4 piezas: cabeza, torso, piernas y pies. Se pueden probar; la venta figura como "muy pronto".
-- **Precios:** pieza 100 monedas ($1), traje 300 ($3). Paquetes: 300 ($3), 500 ($5), 1.100 ($10), 3.000 ($25), 6.500 ($50) y 14.000 ($100). Pasarela pendiente (Lemon Squeezy, o Paddle vendiendo trajes sin monedas).
+- **Pixel Coins:** la moneda del juego. Pieza 100, traje completo 300 (se compran adentro del juego). Afuera solo se venden paquetes de Pixel Coins: 300 ($3), 500 ($5), 1.100 ($10), 3.000 ($25), 6.500 ($50) y 14.000 ($100), por **Xsolla** (comerciante 951393, proyecto 324051; catálogo en `public/tienda/catalogo-xsolla.json`). Lemon Squeezy cerró, Fungies no acepta vendedores nuevos y Dodo no acepta juegos.
 - **Metas:** 1.000 seguidores (traje gratis), 2.500 (evento en los Reels), 5.000 (abre Pixépolis).
 - **Regalo de fundador:** quien reclama su pixelito antes de los 1.000 seguidores elige un traje gratis. El servidor lo decide al reclamar (`regaloOk`) y, una vez elegido, no se puede cambiar.
 - Aviso en la tienda: lo comprado se ve en la web y en el video diario; si sos menor, pedile a un adulto.
@@ -76,3 +76,10 @@ Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_A
 - **Vista previa del link:** `/og.png`. **App instalable:** `manifest.webmanifest`, `sw.js`, íconos `icono-*.png` y botón "Agregar a inicio" con guía para iPhone, Android y compu.
 - **Página de Facebook:** "Los Pixelitos" (categoría Creador digital).
 - Los textos dicen "el próximo Reel", sin horario fijo.
+
+## Cuentas y contraseñas
+
+- **Primer ingreso:** con el link del DM (RECLAMAR) la web pide crear una contraseña (mínimo 6). Después se entra en pixepolis.com con el @ y la contraseña; la sesión dura 30 días en ese dispositivo.
+- **Restablecer:** mandar **RESTABLECER** por DM. El bot responde con un link de 60 minutos que abre directo la pantalla de contraseña nueva; al guardarla se cierran las otras sesiones.
+- Contraseñas guardadas con PBKDF2 (100.000 vueltas, sal propia). Máximo 8 intentos fallidos cada 15 minutos por @ y por conexión.
+- Rutas: `POST /api/clave`, `POST /api/entrar`, `POST /api/salir`. Tablas D1: `cuentas`, `sesiones`, `intentos`.
