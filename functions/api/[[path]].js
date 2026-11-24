@@ -88,15 +88,17 @@ const HANDLE_RE = /^@[a-z0-9._]{1,30}$/;
 const BAD_LINK = 'El link no es válido o ya venció. Mandá RECLAMAR por DM y te llega uno nuevo.';
 
 // Seguidores en vivo: el número de la cuenta de Instagram (se pide como mucho una vez por minuto)
-let IGF = null, IGF_T = 0;
+let IGF = null, IGF_T = 0, IGERR = '';
 async function seguidores(env) {
   if (!env.IG_TOKEN) return null;
   if (IGF !== null && Date.now() - IGF_T < 60e3) return IGF;
   try {
-    const r = await fetch(`${GRAPH}/me?fields=followers_count&access_token=${encodeURIComponent(env.IG_TOKEN)}`);
+    const { base, me } = api(env);
+    const r = await fetch(`${base}/${me}?fields=followers_count&access_token=${encodeURIComponent(env.IG_TOKEN)}`);
     const j = await r.json();
-    if (typeof j.followers_count === 'number') { IGF = j.followers_count; IGF_T = Date.now(); }
-  } catch (e) {}
+    if (typeof j.followers_count === 'number') { IGF = j.followers_count; IGF_T = Date.now(); IGERR = ''; }
+    else IGERR = (j.error && (j.error.message || j.error.type)) || 'sin followers_count';
+  } catch (e) { IGERR = String(e && e.message || e); }
   return IGF;
 }
 async function stats(db, D, env) {
@@ -165,15 +167,24 @@ async function igValid(req, body, secret) {
   let d = 0; for (let i = 0; i < mac.length; i++) d |= mac.charCodeAt(i) ^ sig.charCodeAt(i);
   return d === 0;
 }
-const GRAPH = 'https://graph.instagram.com/v21.0';
+// Token de Instagram Login (empieza con IG) -> graph.instagram.com y "me";
+// token de Facebook / usuario del sistema (EAA...) -> graph.facebook.com y el id de la cuenta de Instagram.
+const IG_ID = '17841413502664396';
+function api(env) {
+  const t = String(env.IG_TOKEN || '');
+  return t.startsWith('IG')
+    ? { base: 'https://graph.instagram.com/v21.0', me: 'me' }
+    : { base: 'https://graph.facebook.com/v21.0', me: env.IG_USER_ID || IG_ID };
+}
 async function igPerfil(env, id) {
-  const r = await fetch(`${GRAPH}/${id}?fields=username,is_user_follow_business&access_token=${encodeURIComponent(env.IG_TOKEN)}`);
+  const r = await fetch(`${api(env).base}/${id}?fields=username,is_user_follow_business&access_token=${encodeURIComponent(env.IG_TOKEN)}`);
   if (!r.ok) return null;
   const j = await r.json();
   return j.username ? { handle: handleOf(j.username), sigue: typeof j.is_user_follow_business === 'boolean' ? j.is_user_follow_business : undefined } : null;
 }
 async function igSend(env, id, text) {
-  await fetch(`${GRAPH}/me/messages`, {
+  const { base, me } = api(env);
+  await fetch(`${base}/${me}/messages`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${env.IG_TOKEN}` },
     body: JSON.stringify({ recipient: { id }, message: { text } }),
@@ -204,6 +215,10 @@ export async function onRequest(ctx) {
     const D = await loadData(ctx);
 
     if (path === 'stats' && M === 'GET') return json({ ...(await stats(db, D, env)), islas: D.islas });
+    if (path === 'ig-estado' && M === 'GET') {
+      const n = await seguidores(env);
+      return json({ conectado: n !== null, seguidores: n, tipo: env.IG_TOKEN ? (String(env.IG_TOKEN).startsWith('IG') ? 'instagram' : 'facebook') : 'sin token', error: IGERR || null });
+    }
 
     if (path === 'yo' && M === 'GET') {
       const h = await byToken(db, url.searchParams.get('t'));
