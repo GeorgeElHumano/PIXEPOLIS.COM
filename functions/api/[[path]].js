@@ -89,6 +89,8 @@ const BAD_LINK = 'El link no es válido o ya venció. Mandá RECLAMAR por DM y t
 
 // Seguidores en vivo: el número de la cuenta de Instagram (se pide como mucho una vez por minuto)
 let IGF = null, IGF_T = 0, IGERR = '';
+const LOG = [];
+function log(x) { LOG.unshift({ t: new Date().toISOString(), ...x }); LOG.length = Math.min(LOG.length, 12); }
 async function seguidores(env) {
   if (!env.IG_TOKEN) return null;
   if (IGF !== null && Date.now() - IGF_T < 60e3) return IGF;
@@ -178,22 +180,25 @@ function api(env) {
 }
 async function igPerfil(env, id) {
   const r = await fetch(`${api(env).base}/${id}?fields=username,is_user_follow_business&access_token=${encodeURIComponent(env.IG_TOKEN)}`);
-  if (!r.ok) return null;
   const j = await r.json();
+  if (!r.ok) { log({ ev: 'perfil error', msg: (j.error && j.error.message) || r.status }); return null; }
   return j.username ? { handle: handleOf(j.username), sigue: typeof j.is_user_follow_business === 'boolean' ? j.is_user_follow_business : undefined } : null;
 }
 async function igSend(env, id, text) {
   const { base, me } = api(env);
-  await fetch(`${base}/${me}/messages`, {
+  const r = await fetch(`${base}/${me}/messages`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${env.IG_TOKEN}` },
     body: JSON.stringify({ recipient: { id }, message: { text } }),
   });
+  const j = await r.json().catch(() => ({}));
+  log({ ev: r.ok ? 'respuesta enviada' : 'respuesta error', msg: r.ok ? undefined : (j.error && j.error.message) || r.status });
 }
 async function igHandle(env, db, D, payload, origin) {
   for (const e of payload.entry || []) {
     for (const m of e.messaging || []) {
       const text = m.message && !m.message.is_echo ? m.message.text || '' : '';
+      log({ ev: 'mensaje', reclamar: WORD.test(text) });
       if (!WORD.test(text)) continue;
       const u = await igPerfil(env, m.sender.id);
       if (!u) continue;
@@ -217,7 +222,7 @@ export async function onRequest(ctx) {
     if (path === 'stats' && M === 'GET') return json({ ...(await stats(db, D, env)), islas: D.islas });
     if (path === 'ig-estado' && M === 'GET') {
       const n = await seguidores(env);
-      return json({ conectado: n !== null, seguidores: n, tipo: env.IG_TOKEN ? (String(env.IG_TOKEN).startsWith('IG') ? 'instagram' : 'facebook') : 'sin token', error: IGERR || null });
+      return json({ conectado: n !== null, seguidores: n, tipo: env.IG_TOKEN ? (String(env.IG_TOKEN).startsWith('IG') ? 'instagram' : 'facebook') : 'sin token', error: IGERR || null, ultimos: LOG });
     }
 
     if (path === 'yo' && M === 'GET') {
@@ -264,8 +269,10 @@ export async function onRequest(ctx) {
 
     if (path === 'ig' && M === 'POST') {
       const body = await req.text();
-      if (!(await igValid(req, body, env.IG_APP_SECRET))) return new Response('firma', { status: 401 });
-      ctx.waitUntil(igHandle(env, db, D, JSON.parse(body), url.origin).catch(() => {}));
+      if (!(await igValid(req, body, env.IG_APP_SECRET))) { log({ ev: 'firma inválida' }); return new Response('firma', { status: 401 }); }
+      let pl = {}; try { pl = JSON.parse(body); } catch (e) {}
+      log({ ev: 'webhook', obj: pl.object, campos: (pl.entry || []).map(e => Object.keys(e).join('+')).join(',') });
+      ctx.waitUntil(igHandle(env, db, D, pl, url.origin).catch(e => log({ ev: 'error', msg: String(e && e.message || e) })));
       return new Response('ok');
     }
 
