@@ -1,0 +1,4509 @@
+{
+ "virtual_currency": [
+  {
+   "sku": "monedas",
+   "name": {
+    "es": "Monedas",
+    "en": "Coins"
+   },
+   "type": "virtual_currency",
+   "description": {
+    "es": "Monedas de Pixépolis Club para comprar ropa para tu pixelito.",
+    "en": "Pixépolis Club coins to buy clothes for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "prices": [],
+   "vc_prices": [],
+   "is_free": false,
+   "is_hard": true,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": {
+     "usages_count": null
+    },
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": []
+  }
+ ],
+ "virtual_currency_packages": [
+  {
+   "sku": "monedas-300",
+   "name": {
+    "es": "300 monedas",
+    "en": "300 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 300 monedas de Pixépolis Club.",
+    "en": "Pack of 300 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 300
+    }
+   ],
+   "prices": [
+    {
+     "amount": 3.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "monedas-500",
+   "name": {
+    "es": "500 monedas",
+    "en": "500 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 500 monedas de Pixépolis Club.",
+    "en": "Pack of 500 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 500
+    }
+   ],
+   "prices": [
+    {
+     "amount": 5.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "monedas-1100",
+   "name": {
+    "es": "1.100 monedas",
+    "en": "1,100 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 1.100 monedas de Pixépolis Club.",
+    "en": "Pack of 1,100 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 1100
+    }
+   ],
+   "prices": [
+    {
+     "amount": 10.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "monedas-3000",
+   "name": {
+    "es": "3.000 monedas",
+    "en": "3,000 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 3.000 monedas de Pixépolis Club.",
+    "en": "Pack of 3,000 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 3000
+    }
+   ],
+   "prices": [
+    {
+     "amount": 25.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "monedas-6500",
+   "name": {
+    "es": "6.500 monedas",
+    "en": "6,500 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 6.500 monedas de Pixépolis Club.",
+    "en": "Pack of 6,500 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 6500
+    }
+   ],
+   "prices": [
+    {
+     "amount": 50.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "monedas-14000",
+   "name": {
+    "es": "14.000 monedas",
+    "en": "14,000 coins"
+   },
+   "type": "bundle",
+   "bundle_type": "virtual_currency_package",
+   "description": {
+    "es": "Paquete de 14.000 monedas de Pixépolis Club.",
+    "en": "Pack of 14,000 Pixépolis Club coins."
+   },
+   "image_url": "https://pixepolis.com/tienda/moneda.png",
+   "content": [
+    {
+     "sku": "monedas",
+     "quantity": 14000
+    }
+   ],
+   "prices": [
+    {
+     "amount": 100.0,
+     "currency": "USD",
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "vc_prices": [],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  }
+ ],
+ "virtual_items": [
+  {
+   "sku": "cowboy-gorra",
+   "name": {
+    "es": "Gorra de Cowboy",
+    "en": "Cowboy Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Cowboy para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Cowboy outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/cowboy-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "cowboy",
+       "value": {
+        "en": "Cowboy"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "cowboy-remera",
+   "name": {
+    "es": "Remera de Cowboy",
+    "en": "Cowboy Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Cowboy para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Cowboy outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/cowboy-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "cowboy",
+       "value": {
+        "en": "Cowboy"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "cowboy-pantalon",
+   "name": {
+    "es": "Pantalón de Cowboy",
+    "en": "Cowboy Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Cowboy para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Cowboy outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/cowboy-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "cowboy",
+       "value": {
+        "en": "Cowboy"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "cowboy-zapatos",
+   "name": {
+    "es": "Zapatos de Cowboy",
+    "en": "Cowboy Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Cowboy para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Cowboy outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/cowboy-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "cowboy",
+       "value": {
+        "en": "Cowboy"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "astronauta-gorra",
+   "name": {
+    "es": "Gorra de Astronauta",
+    "en": "Astronaut Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Astronauta para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Astronaut outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/astronauta-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "astronauta",
+       "value": {
+        "en": "Astronaut"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "astronauta-remera",
+   "name": {
+    "es": "Remera de Astronauta",
+    "en": "Astronaut Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Astronauta para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Astronaut outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/astronauta-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "astronauta",
+       "value": {
+        "en": "Astronaut"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "astronauta-pantalon",
+   "name": {
+    "es": "Pantalón de Astronauta",
+    "en": "Astronaut Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Astronauta para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Astronaut outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/astronauta-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "astronauta",
+       "value": {
+        "en": "Astronaut"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "astronauta-zapatos",
+   "name": {
+    "es": "Zapatos de Astronauta",
+    "en": "Astronaut Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Astronauta para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Astronaut outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/astronauta-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "astronauta",
+       "value": {
+        "en": "Astronaut"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "pirata-gorra",
+   "name": {
+    "es": "Gorra de Pirata",
+    "en": "Pirate Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Pirata para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Pirate outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/pirata-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "pirata",
+       "value": {
+        "en": "Pirate"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "pirata-remera",
+   "name": {
+    "es": "Remera de Pirata",
+    "en": "Pirate Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Pirata para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Pirate outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/pirata-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "pirata",
+       "value": {
+        "en": "Pirate"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "pirata-pantalon",
+   "name": {
+    "es": "Pantalón de Pirata",
+    "en": "Pirate Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Pirata para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Pirate outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/pirata-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "pirata",
+       "value": {
+        "en": "Pirate"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "pirata-zapatos",
+   "name": {
+    "es": "Zapatos de Pirata",
+    "en": "Pirate Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Pirata para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Pirate outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/pirata-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "pirata",
+       "value": {
+        "en": "Pirate"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "chef-gorra",
+   "name": {
+    "es": "Gorra de Chef",
+    "en": "Chef Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Chef para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Chef outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/chef-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "chef",
+       "value": {
+        "en": "Chef"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "chef-remera",
+   "name": {
+    "es": "Remera de Chef",
+    "en": "Chef Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Chef para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Chef outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/chef-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "chef",
+       "value": {
+        "en": "Chef"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "chef-pantalon",
+   "name": {
+    "es": "Pantalón de Chef",
+    "en": "Chef Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Chef para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Chef outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/chef-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "chef",
+       "value": {
+        "en": "Chef"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "chef-zapatos",
+   "name": {
+    "es": "Zapatos de Chef",
+    "en": "Chef Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Chef para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Chef outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/chef-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "chef",
+       "value": {
+        "en": "Chef"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "bombero-gorra",
+   "name": {
+    "es": "Gorra de Bombero",
+    "en": "Firefighter Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Bombero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Firefighter outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/bombero-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "bombero",
+       "value": {
+        "en": "Firefighter"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "bombero-remera",
+   "name": {
+    "es": "Remera de Bombero",
+    "en": "Firefighter Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Bombero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Firefighter outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/bombero-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "bombero",
+       "value": {
+        "en": "Firefighter"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "bombero-pantalon",
+   "name": {
+    "es": "Pantalón de Bombero",
+    "en": "Firefighter Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Bombero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Firefighter outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/bombero-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "bombero",
+       "value": {
+        "en": "Firefighter"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "bombero-zapatos",
+   "name": {
+    "es": "Zapatos de Bombero",
+    "en": "Firefighter Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Bombero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Firefighter outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/bombero-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "bombero",
+       "value": {
+        "en": "Firefighter"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "mago-gorra",
+   "name": {
+    "es": "Gorra de Mago",
+    "en": "Wizard Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Mago para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Wizard outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/mago-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "mago",
+       "value": {
+        "en": "Wizard"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "mago-remera",
+   "name": {
+    "es": "Remera de Mago",
+    "en": "Wizard Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Mago para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Wizard outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/mago-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "mago",
+       "value": {
+        "en": "Wizard"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "mago-pantalon",
+   "name": {
+    "es": "Pantalón de Mago",
+    "en": "Wizard Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Mago para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Wizard outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/mago-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "mago",
+       "value": {
+        "en": "Wizard"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "mago-zapatos",
+   "name": {
+    "es": "Zapatos de Mago",
+    "en": "Wizard Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Mago para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Wizard outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/mago-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "mago",
+       "value": {
+        "en": "Wizard"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "caballero-gorra",
+   "name": {
+    "es": "Gorra de Caballero",
+    "en": "Knight Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Caballero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Knight outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/caballero-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "caballero",
+       "value": {
+        "en": "Knight"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "caballero-remera",
+   "name": {
+    "es": "Remera de Caballero",
+    "en": "Knight Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Caballero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Knight outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/caballero-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "caballero",
+       "value": {
+        "en": "Knight"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "caballero-pantalon",
+   "name": {
+    "es": "Pantalón de Caballero",
+    "en": "Knight Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Caballero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Knight outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/caballero-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "caballero",
+       "value": {
+        "en": "Knight"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "caballero-zapatos",
+   "name": {
+    "es": "Zapatos de Caballero",
+    "en": "Knight Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Caballero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Knight outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/caballero-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "caballero",
+       "value": {
+        "en": "Knight"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "ninja-gorra",
+   "name": {
+    "es": "Gorra de Ninja",
+    "en": "Ninja Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Ninja para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Ninja outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/ninja-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "ninja",
+       "value": {
+        "en": "Ninja"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "ninja-remera",
+   "name": {
+    "es": "Remera de Ninja",
+    "en": "Ninja Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Ninja para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Ninja outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/ninja-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "ninja",
+       "value": {
+        "en": "Ninja"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "ninja-pantalon",
+   "name": {
+    "es": "Pantalón de Ninja",
+    "en": "Ninja Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Ninja para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Ninja outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/ninja-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "ninja",
+       "value": {
+        "en": "Ninja"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "ninja-zapatos",
+   "name": {
+    "es": "Zapatos de Ninja",
+    "en": "Ninja Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Ninja para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Ninja outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/ninja-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "ninja",
+       "value": {
+        "en": "Ninja"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "rockero-gorra",
+   "name": {
+    "es": "Gorra de Rockero",
+    "en": "Rocker Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Rockero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Rocker outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/rockero-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "rockero",
+       "value": {
+        "en": "Rocker"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "rockero-remera",
+   "name": {
+    "es": "Remera de Rockero",
+    "en": "Rocker Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Rockero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Rocker outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/rockero-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "rockero",
+       "value": {
+        "en": "Rocker"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "rockero-pantalon",
+   "name": {
+    "es": "Pantalón de Rockero",
+    "en": "Rocker Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Rockero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Rocker outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/rockero-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "rockero",
+       "value": {
+        "en": "Rocker"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "rockero-zapatos",
+   "name": {
+    "es": "Zapatos de Rockero",
+    "en": "Rocker Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Rockero para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Rocker outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/rockero-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "rockero",
+       "value": {
+        "en": "Rocker"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "surfista-gorra",
+   "name": {
+    "es": "Gorra de Surfista",
+    "en": "Surfer Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Surfista para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Surfer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/surfista-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "surfista",
+       "value": {
+        "en": "Surfer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "surfista-remera",
+   "name": {
+    "es": "Remera de Surfista",
+    "en": "Surfer Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Surfista para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Surfer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/surfista-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "surfista",
+       "value": {
+        "en": "Surfer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "surfista-pantalon",
+   "name": {
+    "es": "Pantalón de Surfista",
+    "en": "Surfer Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Surfista para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Surfer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/surfista-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "surfista",
+       "value": {
+        "en": "Surfer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "surfista-zapatos",
+   "name": {
+    "es": "Zapatos de Surfista",
+    "en": "Surfer Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Surfista para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Surfer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/surfista-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "surfista",
+       "value": {
+        "en": "Surfer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "explorador-gorra",
+   "name": {
+    "es": "Gorra de Explorador",
+    "en": "Explorer Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Explorador para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Explorer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/explorador-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "explorador",
+       "value": {
+        "en": "Explorer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "explorador-remera",
+   "name": {
+    "es": "Remera de Explorador",
+    "en": "Explorer Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Explorador para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Explorer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/explorador-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "explorador",
+       "value": {
+        "en": "Explorer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "explorador-pantalon",
+   "name": {
+    "es": "Pantalón de Explorador",
+    "en": "Explorer Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Explorador para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Explorer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/explorador-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "explorador",
+       "value": {
+        "en": "Explorer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "explorador-zapatos",
+   "name": {
+    "es": "Zapatos de Explorador",
+    "en": "Explorer Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Explorador para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Explorer outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/explorador-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "explorador",
+       "value": {
+        "en": "Explorer"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "heroe-gorra",
+   "name": {
+    "es": "Gorra de Superhéroe",
+    "en": "Superhero Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Superhéroe para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Superhero outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/heroe-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "heroe",
+       "value": {
+        "en": "Superhero"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "heroe-remera",
+   "name": {
+    "es": "Remera de Superhéroe",
+    "en": "Superhero Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Superhéroe para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Superhero outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/heroe-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "heroe",
+       "value": {
+        "en": "Superhero"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "heroe-pantalon",
+   "name": {
+    "es": "Pantalón de Superhéroe",
+    "en": "Superhero Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Superhéroe para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Superhero outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/heroe-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "heroe",
+       "value": {
+        "en": "Superhero"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "heroe-zapatos",
+   "name": {
+    "es": "Zapatos de Superhéroe",
+    "en": "Superhero Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Superhéroe para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Superhero outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/heroe-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "heroe",
+       "value": {
+        "en": "Superhero"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "navidad-gorra",
+   "name": {
+    "es": "Gorra de Navideño",
+    "en": "Christmas Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Navideño para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Christmas outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/navidad-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "navidad",
+       "value": {
+        "en": "Christmas"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "navidad-remera",
+   "name": {
+    "es": "Remera de Navideño",
+    "en": "Christmas Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Navideño para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Christmas outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/navidad-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "navidad",
+       "value": {
+        "en": "Christmas"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "navidad-pantalon",
+   "name": {
+    "es": "Pantalón de Navideño",
+    "en": "Christmas Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Navideño para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Christmas outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/navidad-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "navidad",
+       "value": {
+        "en": "Christmas"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "navidad-zapatos",
+   "name": {
+    "es": "Zapatos de Navideño",
+    "en": "Christmas Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Navideño para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Christmas outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/navidad-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "navidad",
+       "value": {
+        "en": "Christmas"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "vampiro-gorra",
+   "name": {
+    "es": "Gorra de Vampiro",
+    "en": "Vampire Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Vampiro para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Vampire outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/vampiro-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "vampiro",
+       "value": {
+        "en": "Vampire"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "vampiro-remera",
+   "name": {
+    "es": "Remera de Vampiro",
+    "en": "Vampire Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Vampiro para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Vampire outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/vampiro-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "vampiro",
+       "value": {
+        "en": "Vampire"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "vampiro-pantalon",
+   "name": {
+    "es": "Pantalón de Vampiro",
+    "en": "Vampire Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Vampiro para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Vampire outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/vampiro-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "vampiro",
+       "value": {
+        "en": "Vampire"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "vampiro-zapatos",
+   "name": {
+    "es": "Zapatos de Vampiro",
+    "en": "Vampire Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Vampiro para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Vampire outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/vampiro-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "vampiro",
+       "value": {
+        "en": "Vampire"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "robot-gorra",
+   "name": {
+    "es": "Gorra de Robot",
+    "en": "Robot Hat"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Gorra del traje Robot para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Hat from the Robot outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/robot-c.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "c",
+       "value": {
+        "en": "gorra"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "robot",
+       "value": {
+        "en": "Robot"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "robot-remera",
+   "name": {
+    "es": "Remera de Robot",
+    "en": "Robot Shirt"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Remera del traje Robot para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shirt from the Robot outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/robot-t.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "t",
+       "value": {
+        "en": "remera"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "robot",
+       "value": {
+        "en": "Robot"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "robot-pantalon",
+   "name": {
+    "es": "Pantalón de Robot",
+    "en": "Robot Pants"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Pantalón del traje Robot para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Pants from the Robot outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/robot-p.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "p",
+       "value": {
+        "en": "pantalon"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "robot",
+       "value": {
+        "en": "Robot"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "sku": "robot-zapatos",
+   "name": {
+    "es": "Zapatos de Robot",
+    "en": "Robot Shoes"
+   },
+   "type": "virtual_good",
+   "description": {
+    "es": "Zapatos del traje Robot para tu pixelito. Se ve en la web y en los Reels.",
+    "en": "Shoes from the Robot outfit for your pixelito."
+   },
+   "image_url": "https://pixepolis.com/tienda/robot-f.png",
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 100,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "inventory_options": {
+    "consumable": null,
+    "expiration_period": null
+   },
+   "limits": null,
+   "periods": [],
+   "attributes": [
+    {
+     "external_id": "lugar",
+     "name": {
+      "en": "slot"
+     },
+     "values": [
+      {
+       "external_id": "f",
+       "value": {
+        "en": "zapatos"
+       }
+      }
+     ]
+    },
+    {
+     "external_id": "traje",
+     "name": {
+      "en": "outfit"
+     },
+     "values": [
+      {
+       "external_id": "robot",
+       "value": {
+        "en": "Robot"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "bundles": [
+  {
+   "sku": "traje-cowboy",
+   "name": {
+    "es": "Traje Cowboy completo",
+    "en": "Full Cowboy outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Cowboy: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Cowboy outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/cowboy.png",
+   "content": [
+    {
+     "sku": "cowboy-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "cowboy-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "cowboy-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "cowboy-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-astronauta",
+   "name": {
+    "es": "Traje Astronauta completo",
+    "en": "Full Astronaut outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Astronauta: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Astronaut outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/astronauta.png",
+   "content": [
+    {
+     "sku": "astronauta-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "astronauta-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "astronauta-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "astronauta-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-pirata",
+   "name": {
+    "es": "Traje Pirata completo",
+    "en": "Full Pirate outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Pirata: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Pirate outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/pirata.png",
+   "content": [
+    {
+     "sku": "pirata-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "pirata-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "pirata-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "pirata-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-chef",
+   "name": {
+    "es": "Traje Chef completo",
+    "en": "Full Chef outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Chef: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Chef outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/chef.png",
+   "content": [
+    {
+     "sku": "chef-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "chef-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "chef-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "chef-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-bombero",
+   "name": {
+    "es": "Traje Bombero completo",
+    "en": "Full Firefighter outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Bombero: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Firefighter outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/bombero.png",
+   "content": [
+    {
+     "sku": "bombero-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "bombero-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "bombero-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "bombero-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-mago",
+   "name": {
+    "es": "Traje Mago completo",
+    "en": "Full Wizard outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Mago: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Wizard outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/mago.png",
+   "content": [
+    {
+     "sku": "mago-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "mago-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "mago-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "mago-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-caballero",
+   "name": {
+    "es": "Traje Caballero completo",
+    "en": "Full Knight outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Caballero: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Knight outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/caballero.png",
+   "content": [
+    {
+     "sku": "caballero-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "caballero-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "caballero-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "caballero-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-ninja",
+   "name": {
+    "es": "Traje Ninja completo",
+    "en": "Full Ninja outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Ninja: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Ninja outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/ninja.png",
+   "content": [
+    {
+     "sku": "ninja-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "ninja-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "ninja-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "ninja-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-rockero",
+   "name": {
+    "es": "Traje Rockero completo",
+    "en": "Full Rocker outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Rockero: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Rocker outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/rockero.png",
+   "content": [
+    {
+     "sku": "rockero-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "rockero-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "rockero-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "rockero-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-surfista",
+   "name": {
+    "es": "Traje Surfista completo",
+    "en": "Full Surfer outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Surfista: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Surfer outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/surfista.png",
+   "content": [
+    {
+     "sku": "surfista-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "surfista-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "surfista-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "surfista-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-explorador",
+   "name": {
+    "es": "Traje Explorador completo",
+    "en": "Full Explorer outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Explorador: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Explorer outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/explorador.png",
+   "content": [
+    {
+     "sku": "explorador-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "explorador-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "explorador-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "explorador-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-heroe",
+   "name": {
+    "es": "Traje Superhéroe completo",
+    "en": "Full Superhero outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Superhéroe: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Superhero outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/heroe.png",
+   "content": [
+    {
+     "sku": "heroe-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "heroe-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "heroe-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "heroe-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-navidad",
+   "name": {
+    "es": "Traje Navideño completo",
+    "en": "Full Christmas outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Navideño: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Christmas outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/navidad.png",
+   "content": [
+    {
+     "sku": "navidad-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "navidad-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "navidad-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "navidad-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-vampiro",
+   "name": {
+    "es": "Traje Vampiro completo",
+    "en": "Full Vampire outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Vampiro: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Vampire outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/vampiro.png",
+   "content": [
+    {
+     "sku": "vampiro-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "vampiro-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "vampiro-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "vampiro-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  },
+  {
+   "sku": "traje-robot",
+   "name": {
+    "es": "Traje Robot completo",
+    "en": "Full Robot outfit"
+   },
+   "type": "bundle",
+   "bundle_type": "standard",
+   "description": {
+    "es": "Las 4 piezas del traje Robot: gorra, remera, pantalón y zapatos.",
+    "en": "All 4 pieces of the Robot outfit."
+   },
+   "image_url": "https://pixepolis.com/tienda/robot.png",
+   "content": [
+    {
+     "sku": "robot-gorra",
+     "quantity": 1
+    },
+    {
+     "sku": "robot-remera",
+     "quantity": 1
+    },
+    {
+     "sku": "robot-pantalon",
+     "quantity": 1
+    },
+    {
+     "sku": "robot-zapatos",
+     "quantity": 1
+    }
+   ],
+   "prices": [],
+   "vc_prices": [
+    {
+     "sku": "monedas",
+     "amount": 300,
+     "is_default": true,
+     "is_enabled": true
+    }
+   ],
+   "is_free": false,
+   "is_enabled": true,
+   "limits": null,
+   "periods": []
+  }
+ ]
+}
