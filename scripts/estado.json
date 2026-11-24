@@ -3,6 +3,14 @@
  "day": 8,
  "groups": [
   {
+   "d": 0,
+   "a": "nada",
+   "label": "sin hacer nada",
+   "beach": false,
+   "referee": null,
+   "people": []
+  },
+  {
    "d": 1,
    "a": "piscina",
    "label": "fiesta en la pileta",
