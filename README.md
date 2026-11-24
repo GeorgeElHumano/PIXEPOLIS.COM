@@ -83,3 +83,12 @@ Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_A
 - **Restablecer:** mandar **RESTABLECER** por DM. El bot responde con un link de 60 minutos que abre directo la pantalla de contraseña nueva; al guardarla se cierran las otras sesiones.
 - Contraseñas guardadas con PBKDF2 (100.000 vueltas, sal propia). Máximo 8 intentos fallidos cada 15 minutos por @ y por conexión.
 - Rutas: `POST /api/clave`, `POST /api/entrar`, `POST /api/salir`. Tablas D1: `cuentas`, `sesiones`, `intentos`.
+
+
+## Tienda con Pixel Coins (cómo funciona)
+
+- Cada traje tiene 4 piezas (gorra, remera, pantalón, zapatos): **100 coins por pieza** o **300 el traje completo**. Se pueden probar gratis y combinar piezas de trajes distintos.
+- Lo comprado queda en `armario` (D1) y se puede poner/sacar; el servidor solo acepta ropa del traje de regalo o del armario.
+- Paquetes (únicos productos en Xsolla): 300/$3, 500/$5, 1.100/$10, 3.000/$25, 6.500/$50, 14.000/$100.
+- Modos (`pagos` en `/api/yo`): `pronto` (producción sin claves: todo dice "muy pronto"), `prueba` (DEV=1: los paquetes se acreditan gratis), `xsolla` (con XSOLLA_API_KEY, XSOLLA_PROJECT, XSOLLA_MERCHANT y XSOLLA_WEBHOOK_SECRET: abre la página de pago y las coins entran por el webhook `/api/xsolla`). Vuelve a `/?t=…&pago=ok` y la web espera la confirmación.
+- `XSOLLA_SANDBOX` = sandbox por defecto; poner `0` para cobrar de verdad.

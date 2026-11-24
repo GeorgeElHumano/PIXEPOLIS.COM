@@ -27,6 +27,13 @@ const META_REGALO = 1000;
 const WORD = /\breclamar\b/i;
 const RESET = /\b(restablecer|recuperar|reset)\b/i; // restablecer contraseña
 const RESET_MIN = 60;
+
+/* ---------- Pixel Coins ----------
+   Afuera (Xsolla) solo se venden paquetes de coins. Adentro, las coins compran piezas:
+   100 cada una; el traje completo cuesta 300 (o 100 por cada pieza que te falte, si ya tenés alguna). */
+const PACKS = { 'monedas-300': [300, 3], 'monedas-500': [500, 5], 'monedas-1100': [1100, 10], 'monedas-3000': [3000, 25], 'monedas-6500': [6500, 50], 'monedas-14000': [14000, 100] };
+const PIEZA_COINS = 100, TRAJE_COINS = 300, SLOTS = 'ctpf';
+const piezaId = (traje, k) => `${traje}-${k}`;
 // Opciones de personalización (las mismas que en public/index.html)
 const OPC = {
   shirt: ['#FF3D3D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#FF4FA3', '#00C2A8', '#FFD23F', '#FFFFFF', '#14121F'],
@@ -57,6 +64,10 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS sesiones(th TEXT PRIMARY KEY, handle TEXT NOT NULL, created INTEGER NOT NULL, exp INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS sesiones_handle ON sesiones(handle)`,
   `CREATE TABLE IF NOT EXISTS intentos(k TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS billetera(handle TEXT PRIMARY KEY, coins INTEGER NOT NULL DEFAULT 0, upd INTEGER)`,
+  `CREATE TABLE IF NOT EXISTS armario(handle TEXT NOT NULL, pieza TEXT NOT NULL, t INTEGER NOT NULL, PRIMARY KEY(handle, pieza))`,
+  `CREATE TABLE IF NOT EXISTS movimientos(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT NOT NULL, tipo TEXT NOT NULL, coins INTEGER NOT NULL, detalle TEXT, ref TEXT UNIQUE, t INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS movimientos_handle ON movimientos(handle)`,
 ];
 let ready = false;
 async function init(db) {
@@ -214,7 +225,46 @@ async function mine(db, D, env, handle) {
   if (!p) return null;
   const c = await db.prepare('SELECT ord, look, t FROM reclamos WHERE handle=?').bind(handle).first();
   const cu = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(handle).first();
-  return { pixelito: p, claim: c ? { ord: c.ord, t: c.t, look: JSON.parse(c.look) } : null, tieneClave: !!cu, islas: islasCon(D), stats: await stats(db, D, env) };
+  return { pixelito: p, claim: c ? { ord: c.ord, t: c.t, look: JSON.parse(c.look) } : null, tieneClave: !!cu, ...(await bolsillo(db, handle)), pagos: pagosModo(env), islas: islasCon(D), stats: await stats(db, D, env) };
+}
+async function bolsillo(db, handle) {
+  const b = await db.prepare('SELECT coins FROM billetera WHERE handle=?').bind(handle).first();
+  const a = await db.prepare('SELECT pieza FROM armario WHERE handle=?').bind(handle).all();
+  return { coins: b ? b.coins : 0, armario: a.results.map(r => r.pieza) };
+}
+// 'xsolla' cuando están las claves; 'prueba' solo con DEV=1 (acredita sin cobrar); si no, 'pronto'
+const pagosModo = env => env.XSOLLA_API_KEY && env.XSOLLA_PROJECT && env.XSOLLA_MERCHANT ? 'xsolla' : env.DEV === '1' ? 'prueba' : 'pronto';
+async function acreditar(db, handle, coins, tipo, detalle, ref) {
+  const t = now();
+  const r = await db.prepare('INSERT OR IGNORE INTO movimientos(handle, tipo, coins, detalle, ref, t) VALUES(?,?,?,?,?,?)').bind(handle, tipo, coins, detalle, ref, t).run();
+  if (!r.meta.changes) return false; // ese pago ya se acreditó
+  await db.prepare('INSERT INTO billetera(handle, coins, upd) VALUES(?1, ?2, ?3) ON CONFLICT(handle) DO UPDATE SET coins = coins + ?2, upd = ?3').bind(handle, coins, t).run();
+  return true;
+}
+// Firma de los avisos de Xsolla: Authorization: Signature sha1(cuerpo + clave secreta del proyecto)
+async function xsollaValido(req, body, secret) {
+  if (!secret) return false;
+  const got = (req.headers.get('authorization') || '').replace(/^Signature\s+/i, '').trim();
+  const want = hex(await crypto.subtle.digest('SHA-1', enc.encode(body + secret)));
+  if (got.length !== want.length) return false;
+  let d = 0; for (let i = 0; i < want.length; i++) d |= want.charCodeAt(i) ^ got.charCodeAt(i);
+  return d === 0;
+}
+async function xsollaToken(env, handle, sku, origin, t) {
+  const sandbox = env.XSOLLA_SANDBOX !== '0';
+  const r = await fetch(`https://store.xsolla.com/api/v3/project/${env.XSOLLA_PROJECT}/admin/payment/token`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: 'Basic ' + btoa(`${env.XSOLLA_MERCHANT}:${env.XSOLLA_API_KEY}`) },
+    body: JSON.stringify({
+      sandbox,
+      user: { id: { value: handle }, name: { value: handle }, country: { value: 'PY', allow_modify: true } },
+      purchase: { items: [{ sku, quantity: 1 }] },
+      settings: { language: 'es', currency: 'USD', return_url: `${origin}/?t=${encodeURIComponent(t)}&pago=ok` },
+    }),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok || !j.token) throw new Error((j.errorMessage || j.message || 'Xsolla ' + r.status));
+  return `https://${sandbox ? 'sandbox-' : ''}secure.xsolla.com/paystation4/?token=${encodeURIComponent(j.token)}`;
 }
 
 /* ---------- Instagram (Meta) ---------- */
@@ -329,6 +379,67 @@ export async function onRequest(ctx) {
       return json({ ok: true });
     }
 
+    // Comprar un paquete de Pixel Coins: devuelve la página de pago de Xsolla
+    if (path === 'pack' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      const h = await byToken(db, b.t);
+      if (!h) return fail(BAD_LINK, 404);
+      const pk = PACKS[b.sku]; if (!pk) return fail('Ese paquete no existe.');
+      const modo = pagosModo(env);
+      if (modo === 'pronto') return fail('La compra de Pixel Coins abre muy pronto.', 409);
+      if (modo === 'prueba') { await acreditar(db, h, pk[0], 'pack', b.sku + ' (prueba)', 'prueba-' + crypto.randomUUID()); return json({ prueba: true, ...(await bolsillo(db, h)) }); }
+      try { return json({ url: await xsollaToken(env, h, b.sku, url.origin, b.t) }); }
+      catch (e) { log({ ev: 'xsolla token', msg: String(e.message || e) }); return fail('No pudimos abrir el pago. Probá de nuevo en un rato.', 502); }
+    }
+
+    // Comprar piezas con Pixel Coins (adentro del juego)
+    if (path === 'comprar' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      const h = await byToken(db, b.t);
+      if (!h) return fail(BAD_LINK, 404);
+      if (!TRAJES.includes(b.traje)) return fail('Ese traje no existe.');
+      const pedidas = [...new Set(String(b.piezas || '').replace(/[^ctpf]/g, ''))];
+      if (!pedidas.length) return fail('Elegí al menos una pieza.');
+      const yo = await bolsillo(db, h);
+      const rc = await db.prepare('SELECT look FROM reclamos WHERE handle=?').bind(h).first();
+      const regalo = rc ? (JSON.parse(rc.look).regalo || '') : '';
+      const tiene = k => yo.armario.includes(piezaId(b.traje, k)) || regalo === b.traje;
+      const faltan = pedidas.filter(k => !tiene(k));
+      if (!faltan.length) return fail('Ya tenés esas piezas.');
+      const precio = faltan.length === 4 ? TRAJE_COINS : faltan.length * PIEZA_COINS;
+      if (yo.coins < precio) return fail(`Te faltan ${precio - yo.coins} Pixel Coins.`, 402);
+      const t = now();
+      const r = await db.prepare('UPDATE billetera SET coins = coins - ?1, upd = ?2 WHERE handle = ?3 AND coins >= ?1').bind(precio, t, h).run();
+      if (!r.meta.changes) return fail('No te alcanzan las Pixel Coins.', 402);
+      await db.batch([
+        ...faltan.map(k => db.prepare('INSERT OR IGNORE INTO armario(handle, pieza, t) VALUES(?,?,?)').bind(h, piezaId(b.traje, k), t)),
+        db.prepare('INSERT INTO movimientos(handle, tipo, coins, detalle, t) VALUES(?,?,?,?,?)').bind(h, 'compra', -precio, `${b.traje}:${faltan.join('')}`, t),
+      ]);
+      return json({ ok: true, precio, compradas: faltan, ...(await bolsillo(db, h)) });
+    }
+
+    // Avisos de Xsolla: validar usuario y acreditar coins cuando el pago se confirma
+    if (path === 'xsolla' && M === 'POST') {
+      const body = await req.text();
+      if (!(await xsollaValido(req, body, env.XSOLLA_WEBHOOK_SECRET))) return json({ error: { code: 'INVALID_SIGNATURE' } }, 400);
+      let n = {}; try { n = JSON.parse(body); } catch (e) {}
+      const h = handleOf(n.user && (n.user.external_id || n.user.id));
+      log({ ev: 'xsolla', tipo: n.notification_type });
+      if (n.notification_type === 'user_validation') {
+        const p = HANDLE_RE.test(h) ? await pixelito(db, D, h) : null;
+        return p ? new Response(null, { status: 204 }) : json({ error: { code: 'INVALID_USER' } }, 400);
+      }
+      if (n.notification_type === 'order_paid' || n.notification_type === 'payment') {
+        const items = (n.items || (n.purchase && n.purchase.virtual_items && n.purchase.virtual_items.items) || []);
+        const ref = 'xs-' + ((n.order && n.order.id) || (n.transaction && n.transaction.id) || '');
+        let coins = 0; for (const it of items) { const pk = PACKS[it.sku]; if (pk) coins += pk[0] * (+it.quantity || 1); }
+        if (HANDLE_RE.test(h) && coins > 0 && ref !== 'xs-') await acreditar(db, h, coins, 'pack', items.map(i => i.sku).join(','), ref);
+        return new Response(null, { status: 204 });
+      }
+      if (n.notification_type === 'refund' || n.notification_type === 'order_canceled') log({ ev: 'xsolla devolución', ref: n.order && n.order.id });
+      return new Response(null, { status: 204 });
+    }
+
     if (path === 'reclamar' && M === 'POST') {
       const b = await req.json().catch(() => ({}));
       const h = await byToken(db, b.t);
@@ -345,8 +456,12 @@ export async function onRequest(ctx) {
       // Ropa puesta por lugar (gorra, remera, pantalón, zapatos): solo piezas tuyas; hoy, las del traje de regalo
       const ropa = bl.ropa && typeof bl.ropa === 'object' ? bl.ropa : null;
       L.ropa = {};
-      for (const k of 'ctpf') { const v = ropa ? ropa[k] : (L.regalo && String(bl.piezas || '').includes(k) ? L.regalo : ''); L.ropa[k] = L.regalo && v === L.regalo ? L.regalo : ''; }
-      L.piezas = 'ctpf'.split('').filter(k => L.ropa[k]).join('');
+      const arm = (await bolsillo(db, h)).armario;
+      for (const k of 'ctpf') {
+        const v = ropa ? ropa[k] : (L.regalo && String(bl.piezas || '').includes(k) ? L.regalo : '');
+        L.ropa[k] = v && (v === L.regalo || arm.includes(piezaId(v, k))) ? v : '';
+      }
+      L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
       const look = JSON.stringify(L);
       const t = now();
       await db.prepare(`INSERT INTO reclamos(handle, num, ord, look, t, upd) VALUES(?1, ?2, (SELECT COALESCE(MAX(ord),0)+1 FROM reclamos), ?3, ?4, ?4)
