@@ -372,7 +372,7 @@ const OPC = {
 const INK = '#14121F';
 const CONF = ['#FF3D7F', '#FFE14D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8'];
 const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto', outfit: 'remera', acc: '', regalo: '', piezas: '', ropa: null, isla: null };
-const META_REGALO = 1000, METAS = [[1000, 'Traje gratis para los que reclamaron antes'], [2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
+const REGALO_COINS = 300, META_REGALO = 1000, METAS = [[1000, `${REGALO_COINS} Pixel Coins para los que reclamaron antes`], [2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
 const PIEZAS = [['c', 'Gorra', '🧢'], ['t', 'Remera', '👕'], ['p', 'Pantalón', '👖'], ['f', 'Zapatos', '👟']];
 const SLOTS = 'ctpf';
 // solo se guardan puestas las piezas que son tuyas (hoy: las del traje de regalo)
@@ -787,7 +787,8 @@ function makeDemoApi(data) {
       const c = store.claims[h];
       const prev = c ? c.look : null, L = cleanLook(look, ISLAS.map(i => i.day));
       L.regaloOk = prev ? !!prev.regaloOk : stats().total < 1000;
-      L.regalo = prev && prev.regalo ? prev.regalo : (L.regaloOk && TRAJES.includes(look.regalo) ? look.regalo : '');
+      L.regalo = prev && prev.regalo ? prev.regalo : '';
+      if (!c && L.regaloOk) store.coins[h] = (store.coins[h] || 0) + REGALO_COINS;
       L.ropa = ropaOk(look.ropa, L.regalo, look.piezas, store.armario[h]); L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
       store.claims[h] = { ord: c ? c.ord : Object.keys(store.claims).length + 1, t: c ? c.t : Date.now(), look: L }; save();
       return mine(h);
@@ -888,7 +889,7 @@ async function refreshCount() {
   $('cnt').textContent = `${s.claimed} / ${s.total}`;
   $('cntLbl').textContent = s.enVivo ? 'Reclamados · seguidores en vivo' : 'Reclamados de los seguidores';
   const next = METAS.find(([n]) => s.total < n);
-  $('metaTxt').innerHTML = s.total < META_REGALO ? `Somos <b>${s.total}</b>. Si reclamás tu pixelito antes de los <b>1.000 seguidores</b>, elegís <b>un traje de la tienda gratis</b> para siempre. Faltan ${META_REGALO - s.total}.` : next ? `Somos <b>${s.total}</b>. Próxima meta: ${next[0].toLocaleString('es')}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`;
+  $('metaTxt').innerHTML = s.total < META_REGALO ? `Somos <b>${s.total}</b>. Si reclamás tu pixelito antes de los <b>1.000 seguidores</b>, te regalamos <b>${REGALO_COINS} Pixel Coins</b> para la tienda. Faltan ${META_REGALO - s.total}.` : next ? `Somos <b>${s.total}</b>. Próxima meta: ${next[0].toLocaleString('es')}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`;
   $('metas').innerHTML = METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${n.toLocaleString('es')}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
   $('bar').style.width = (s.total ? Math.max(2, 100 * s.claimed / s.total) : 0) + '%';
 }
@@ -952,19 +953,17 @@ function renderIslas() {
 }
 function renderShop() {
   const base = { ...curMe(true).L, traje: null }, c = me.claim, total = me.stats ? me.stats.total : 0;
-  const locked = !!(c && c.look && c.look.regalo);
-  const canGift = !locked && (c ? !!(c.look && c.look.regaloOk) : total < META_REGALO);
   const pu = puesto();
   $('trajes').innerHTML = TRAJES.map(id => {
     const mio = tuyas().includes(id), algo = algunaTuya(id), on = sel === id, prueba = SLOTS.split('').some(k => probando[k] === id);
-    const tag = mio ? '<span class="tg b">TUYO</span>' : prueba ? '<span class="tg y">PROBANDO</span>' : algo ? '<span class="tg b">TENÉS PIEZAS</span>' : me.pagos === 'pronto' ? '<span class="tg">MUY PRONTO</span>' : '<span class="tg">300 COINS</span>';
+    const tag = mio ? '<span class="tg b">TUYO</span>' : prueba ? '<span class="tg y">PROBANDO</span>' : algo ? '<span class="tg b">TENÉS PIEZAS</span>' : '<span class="tg">300 COINS</span>';
     return `<button class="traje ${on ? 'on' : ''} ${mio ? 'mio' : ''}" data-tr="${id}"><canvas width="54" height="117" data-tt="${id}"></canvas><div class="tn">${TR[id].n}</div><div class="tp">300 · pieza 100</div>${tag}</button>`;
   }).join('');
   TRAJES.forEach(id => { const cv = document.querySelector(`[data-tt="${id}"]`), x = cv.getContext('2d'); x.clearRect(0, 0, 54, 117); drawHD(x, { ...base, traje: { c: id, t: id, p: id, f: id } }, 3, 30, 3, {}); });
   // piezas del traje abierto
   let z = '';
   if (sel) {
-    const venta = me.pagos !== 'pronto';
+    const venta = true; // con las coins que ya tenés (p. ej. el regalo) se compra siempre; solo los paquetes esperan a Xsolla
     z = `<div class="pzbox"><div class="pzh">${TR[sel].n} por partes</div><div class="pzs">`
       + PIEZAS.map(([k, n, ic]) => {
         const mia = esTuya(k, sel), puesta = pu[k] === sel, prueba = probando[k] === sel;
@@ -981,21 +980,16 @@ function renderShop() {
   const coin = '<canvas class="k" width="16" height="16" id="coinIco"></canvas>';
   $('coinBar').innerHTML = `<span>${coin}<b>${fmt(me.coins || 0)}</b> <small>Pixel Coins</small></span><small>${me.pagos === 'pronto' ? 'Compra de coins: muy pronto' : me.pagos === 'prueba' ? 'MODO PRUEBA · no se cobra' : 'Pago seguro con Xsolla'}</small>`;
   coinIcon($('coinIco'));
-  $('shopTit').textContent = me.pagos === 'pronto' ? 'TIENDA · MUY PRONTO' : 'TIENDA';
-  $('packNote').textContent = me.pagos === 'pronto' ? 'Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.' : 'Los paquetes grandes traen coins de regalo. Las coins no se pueden cambiar por dinero.';
+  $('shopTit').textContent = 'TIENDA';
+  $('packNote').textContent = me.pagos === 'pronto' ? 'Paquetes de Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.' : 'Los paquetes grandes traen coins de regalo. Las coins no se pueden cambiar por dinero.';
   $('packs').innerHTML = PACKS.map(([sku, n, usd, bonus]) => `<button type="button" class="${me.pagos === 'pronto' ? 'pronto' : ''}" data-pack="${sku}"><b>${fmt(n)}</b><span>$${usd}</span>${bonus ? `<em>${bonus}</em>` : ''}</button>`).join('');
   $('pzBox').innerHTML = z;
-  // regalo de fundador: un traje completo (sus 4 piezas quedan tuyas y las combinás como quieras)
+  // regalo de fundador: 300 Pixel Coins al reclamar antes de los 1.000 (alcanzan para un traje o 3 piezas sueltas)
   let h = '';
-  if (look.regalo) {
-    h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>${locked ? '' : ' (se guarda cuando reclamás tu pixelito; hasta entonces lo podés cambiar)'}. Sus 4 piezas son tuyas: abrilo abajo y ponete las que quieras, mezcladas con las que te pruebes de otros trajes.`;
-    if (canGift && sel && sel !== look.regalo) h += `<button class="btn main" data-gift="${sel}">Cambiar mi regalo por ${TR[sel].n}</button>`;
-  } else if (canGift) {
-    h = c ? `🎁 Reclamaste antes de los 1.000 seguidores: <b>elegí un traje gratis</b> (las 4 piezas). Es para siempre, así que probate varios primero.` : `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te llevás un traje gratis</b> (las 4 piezas). Faltan ${Math.max(0, META_REGALO - total)} seguidores.`;
-    if (sel) h += `<button class="btn main" data-gift="${sel}">${giftConfirm === sel ? `Confirmar: ${TR[sel].n} es mi regalo para siempre` : `Elegir ${TR[sel].n} como mi regalo`}</button>`;
-  } else {
-    h = c ? 'El traje gratis era para los que reclamaron antes de los 1.000 seguidores. Igual tenés tu @ de fundador ✨' : 'Ya llegamos a los 1.000 seguidores: el traje gratis de fundador se terminó. Igual tenés el @ de fundador ✨';
-  }
+  if (look.regalo) h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>. Sus 4 piezas son tuyas: combinalas con lo que quieras.`;
+  else if (c && c.look && c.look.regaloOk) h = `🎁 Reclamaste antes de los 1.000 seguidores: te regalamos <b>${REGALO_COINS} Pixel Coins</b>. Alcanzan para un traje completo o 3 piezas de trajes distintos.`;
+  else if (!c && total < META_REGALO) h = `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te regalamos ${REGALO_COINS} Pixel Coins</b>: un traje completo o 3 piezas de los que quieras. Faltan ${Math.max(0, META_REGALO - total)} seguidores.`;
+  else h = c ? `El regalo de ${REGALO_COINS} Pixel Coins era para los que reclamaron antes de los 1.000 seguidores. Igual tenés tu @ de fundador ✨` : `Ya llegamos a los 1.000 seguidores: el regalo de fundador se terminó. Igual tenés el @ de fundador ✨`;
   $('giftBox').innerHTML = h;
 }
 function renderMine(first) {
@@ -1036,14 +1030,6 @@ document.addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-sacar]') && me) { probando = {}; renderMine(false); return; }
-  const gf = e.target.closest('[data-gift]');
-  if (gf && me) {
-    const id = gf.dataset.gift;
-    if (me.claim && giftConfirm !== id) { giftConfirm = id; renderShop(); return; }
-    look.regalo = id; look.ropa = { c: id, t: id, p: id, f: id }; look.piezas = 'ctpf'; probando = {}; giftConfirm = null;
-    if (me.claim) save(); else changed();
-    return;
-  }
   const pz = e.target.closest('[data-pz]');
   if (pz && me && sel) {
     const k = pz.dataset.pz;
@@ -1068,7 +1054,6 @@ function abrirCompra(img, title, txt, yes, fn) {
 $('buyNo').onclick = () => { $('buyBox').hidden = true; compra = null; };
 $('buyYes').onclick = async () => { if (!compra) return; $('buyYes').disabled = true; $('buyMsg').textContent = ''; const ok = await compra(); $('buyYes').disabled = false; if (ok) $('buyBox').hidden = true; };
 function pedirCompra(id, ks) {
-  if (me.pagos === 'pronto') { abrirCompra(c => drawHD(c, { ...curMe(true).L, traje: { ...puesto(), ...Object.fromEntries(ks.map(k => [k, id])) } }, 24, 6, 3, {}), 'MUY PRONTO', 'La tienda abre muy pronto. Mientras tanto, probate todo lo que quieras.', 'OK', async () => true); return; }
   const pr = precioDe(id, ks), nombres = pr.f.map(k => PIEZAS.find(p => p[0] === k)[1].toLowerCase()), lista = nombres.join(', ').replace(/, ([^,]*)$/, ' y $1');
   const que = pr.f.length === 4 ? `el traje <b>${TR[id].n}</b> completo` : `${lista} de <b>${TR[id].n}</b>`;
   const saldo = me.coins || 0, falta = pr.coins - saldo;
@@ -1082,7 +1067,7 @@ function pedirCompra(id, ks) {
     if (r.error) { $('buyMsg').textContent = r.error; return false; }
     me.coins = r.coins; me.armario = r.armario;
     const o = puesto(); for (const k of r.compradas) { o[k] = id; delete probando[k]; } look.ropa = o;
-    if (me.claim) save(); else changed();
+    if (me.claim) await save(); else changed();
     $('claimMsg').textContent = `🎉 ¡Compraste ${pr.f.length === 4 ? 'el traje ' + TR[id].n : lista + ' de ' + TR[id].n}! Ya lo tenés puesto.`;
     return true;
   });
@@ -1115,7 +1100,7 @@ async function save() {
   $('claimBtn').disabled = false;
   if (r.error) { $('claimMsg').textContent = r.error; return; }
   const keep = me.islas; me = r; me.islas = keep; look = { ...LOOK0, ...r.claim.look };
-  $('claimMsg').textContent = first ? `¡Es tuyo! Sos el fundador #${r.claim.ord} y tu @ ya salta con los colores de Los Pixelitos ✨${r.claim.look.regalo ? ' Y te llevás el traje ' + TR[r.claim.look.regalo].n + ' gratis 🎁' : r.claim.look.regaloOk ? ' Elegí tu traje gratis en la tienda 🎁' : ''}` : 'Cambios guardados.';
+  $('claimMsg').textContent = first ? `¡Es tuyo! Sos el fundador #${r.claim.ord} y tu @ ya salta con los colores de Los Pixelitos ✨${!r.claim.look.regalo && r.claim.look.regaloOk ? ` Y te regalamos ${REGALO_COINS} Pixel Coins para la tienda 🎁` : ''}` : 'Cambios guardados.';
   renderMine(false); makeShare();
   if (first) { confetti(); setTimeout(() => $('shareCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 900); }
 }

@@ -32,7 +32,7 @@ const RESET_MIN = 60;
    Afuera (Xsolla) solo se venden paquetes de coins. Adentro, las coins compran piezas:
    100 cada una; el traje completo cuesta 300 (o 100 por cada pieza que te falte, si ya tenés alguna). */
 const PACKS = { 'monedas-300': [300, 3], 'monedas-500': [500, 5], 'monedas-1100': [1100, 10], 'monedas-3000': [3000, 25], 'monedas-6500': [6500, 50], 'monedas-14000': [14000, 100] };
-const PIEZA_COINS = 100, TRAJE_COINS = 300, SLOTS = 'ctpf';
+const REGALO_COINS = 300, PIEZA_COINS = 100, TRAJE_COINS = 300, SLOTS = 'ctpf';
 const piezaId = (traje, k) => `${traje}-${k}`;
 // Opciones de personalización (las mismas que en public/index.html)
 const OPC = {
@@ -225,6 +225,7 @@ async function mine(db, D, env, handle) {
   if (!p) return null;
   const c = await db.prepare('SELECT ord, look, t FROM reclamos WHERE handle=?').bind(handle).first();
   const cu = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(handle).first();
+  if (c) { const L = JSON.parse(c.look); if (L.regaloOk && !L.regalo) await acreditar(db, handle, REGALO_COINS, 'regalo', 'Regalo de fundador', 'regalo-' + handle); }
   return { pixelito: p, claim: c ? { ord: c.ord, t: c.t, look: JSON.parse(c.look) } : null, tieneClave: !!cu, ...(await bolsillo(db, handle)), pagos: pagosModo(env), islas: islasCon(D), stats: await stats(db, D, env) };
 }
 async function bolsillo(db, handle) {
@@ -452,7 +453,8 @@ export async function onRequest(ctx) {
       const L = cleanLook(bl, D.islas.map(i => i.day));
       // El regalo se gana al reclamar antes de los 1.000 y, una vez elegido, no se cambia
       L.regaloOk = prev ? !!prev.regaloOk : (await stats(db, D, env)).total < META_REGALO;
-      L.regalo = prev && prev.regalo ? prev.regalo : (L.regaloOk && TRAJES.includes(bl.regalo) ? bl.regalo : '');
+      // Antes el regalo era un traje (quien lo eligió lo conserva); ahora son REGALO_COINS Pixel Coins
+      L.regalo = prev && prev.regalo ? prev.regalo : '';
       // Ropa puesta por lugar (gorra, remera, pantalón, zapatos): solo piezas tuyas; hoy, las del traje de regalo
       const ropa = bl.ropa && typeof bl.ropa === 'object' ? bl.ropa : null;
       L.ropa = {};
