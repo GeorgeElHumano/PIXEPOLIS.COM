@@ -557,6 +557,15 @@ function decor(c, isla, x, y, w, h, t, e) {
     F(c, fx - 6 * e, fy + fh / 2 - 8 * e, 6 * e, 16 * e, '#E0E0E0'); F(c, fx + fw, fy + fh / 2 - 8 * e, 6 * e, 16 * e, '#E0E0E0');
     const q = (t % 160) / 160, bx = fx + fw * (0.15 + 0.7 * (q < .5 ? q * 2 : 2 - q * 2)), by = fy + fh * (0.3 + 0.2 * Math.sin(q * 12)) - Math.abs(Math.sin(q * 30)) * 4 * e;
     F(c, bx, by, 3 * e, 3 * e, '#FFFFFF'); F(c, bx + e, by + e, e, e, INK);
+  } else if (a === 'americano') {
+    const fx = x + 8 * e, fy = y + 4 * e, fw = w - 16 * e, fh = h - 8 * e, ez = fw * 0.09, L = Math.max(1, 1.2 * e);
+    F(c, fx, fy, fw, fh, '#4FA83A'); F(c, fx, fy, ez, fh, '#1565C0'); F(c, fx + fw - ez, fy, ez, fh, '#C62828');
+    for (let i = 1; i < 10; i++) F(c, fx + ez + (fw - 2 * ez) * i / 10, fy, L, fh, '#fff');
+    F(c, fx, fy, fw, L, '#fff'); F(c, fx, fy + fh - L, fw, L, '#fff');
+    [fx - 5 * e, fx + fw + 2 * e].forEach(gx => { F(c, gx, fy + fh / 2 - 10 * e, 2 * e, 20 * e, '#FFD600'); F(c, gx - 3 * e, fy + fh / 2 - e, 8 * e, 2 * e, '#FFD600'); });
+    const q = (t % 140) / 140, bx = fx + fw * (0.2 + 0.6 * q), by = fy + fh * 0.5 - Math.sin(q * Math.PI) * 18 * e;
+    F(c, bx - 2 * e, by - e, 4 * e, 2.4 * e, '#8D4E2A'); F(c, bx - e, by - 1.6 * e, 2 * e, 3.6 * e, '#8D4E2A'); F(c, bx - e, by - 0.1 * e, 2 * e, 0.5 * e, '#FFFFFF');
+    if (q > 0.85) txt(c, 'TOUCHDOWN!', x + w / 2, y - 9 * e, 5 * e, '#FFE14D');
   } else if (a === 'quince') {
     const fw = w * 0.5, fx = x + w * 0.25, fy = y + 2 * e, fh = h * 0.42, n = 8, m = 3, tw = fw / n, th = fh / m;
     for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) F(c, fx + i * tw, fy + j * th, tw - 0.6 * e, th - 0.6 * e, CONF[(i + j + Math.floor(t / 8)) % 7]);
