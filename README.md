@@ -26,8 +26,8 @@ Está armado igual que NOX: Cloudflare Pages + Functions (`functions/api/[[path]
 
 - **15 trajes** (cowboy, astronauta, pirata, chef, bombero, mago, caballero, ninja, rockero, surfista, explorador, superhéroe, navideño, vampiro y robot), cada uno con 4 piezas: cabeza, torso, piernas y pies. Se pueden probar gratis y comprar con Pixel Coins (las coins del regalo ya se pueden gastar; los paquetes figuran "muy pronto" hasta activar Xsolla).
 - **Pixel Coins:** la moneda del juego. Pieza 100, traje completo 300 (se compran adentro del juego). Afuera solo se venden paquetes de Pixel Coins: 300 ($3), 500 ($5), 1.100 ($10), 3.000 ($25), 6.500 ($50) y 14.000 ($100), por **Xsolla** (comerciante 951393, proyecto 324051; catálogo en `public/tienda/catalogo-xsolla.json`). Lemon Squeezy cerró, Fungies no acepta vendedores nuevos y Dodo no acepta juegos.
-- **Metas:** 1.000 seguidores (300 Pixel Coins de regalo para los que reclamaron antes), 2.500 (evento en los Reels), 5.000 (abre Pixépolis).
-- **Regalo de fundador:** quien reclama su pixelito antes de los 1.000 seguidores recibe **300 Pixel Coins** (un traje completo o 3 piezas sueltas). El servidor lo decide al reclamar (`regaloOk`) y las acredita una sola vez (movimiento `regalo-<@>`). Quien ya había elegido un traje gratis con el sistema anterior lo conserva.
+- **Metas:** 2.500 (evento en los Reels), 5.000 (abre Pixépolis).
+- **Regalo de fundador:** los **primeros 1.000 en reclamar** su pixelito reciben **300 Pixel Coins** (un traje completo o 3 piezas sueltas). El servidor lo decide al reclamar (`regaloOk`) y las acredita una sola vez (movimiento `regalo-<@>`). Quien ya había elegido un traje gratis con el sistema anterior lo conserva.
 - Aviso en la tienda: lo comprado se ve en la web y en el video diario; si sos menor, pedile a un adulto.
 
 ## Cómo se actualiza con cada Reel (automático)

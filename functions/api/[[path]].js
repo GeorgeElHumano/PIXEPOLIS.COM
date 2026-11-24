@@ -25,7 +25,7 @@ import { ALERT_TYPES, alertSchema, alert, once, vapid, pyDay, pyDayStart } from 
 
 const LINK_HOURS = 24;
 const ADMIN = env => handleOf(env.ADMIN || 'georgeelhumano'); // cuenta de administrador (panel /admin/)
-// Tienda: 15 trajes (los mismos ids que en public/index.html). Los que reclaman antes de META_REGALO seguidores eligen uno gratis.
+// Tienda: 15 trajes (los mismos ids que en public/index.html). Los primeros META_REGALO en reclamar reciben REGALO_COINS Pixel Coins.
 const TRAJES = ['cowboy', 'astronauta', 'pirata', 'chef', 'bombero', 'mago', 'caballero', 'ninja', 'rockero', 'surfista', 'explorador', 'heroe', 'navidad', 'vampiro', 'robot'];
 const META_REGALO = 1000;
 const WORD = /\breclamar\b/i;
@@ -133,7 +133,7 @@ async function stats(db, D, env) {
   const claimed = results.filter(r => { const p = D.P.get(r.handle); return p ? !p.out : true; }).length;
   const ig = await seguidores(env);
   // total = seguidores de Instagram en vivo; sin conexión a Instagram, los pixelitos conocidos
-  return { total: ig ?? enReel + nuevos, claimed, day: D.day, enVivo: ig !== null };
+  return { total: ig ?? enReel + nuevos, claimed, reclamos: results.length, day: D.day, enVivo: ig !== null };
 }
 // Avisos de seguidores (cada 100 y las metas) y de Instagram desconectado
 async function metaCheck(db, st, env) {
@@ -142,7 +142,7 @@ async function metaCheck(db, st, env) {
     if (!st.enVivo) return;
     const c = Math.floor(st.total / 100) * 100;
     if (c >= 100 && await once(db, 'meta:' + c, 3650 * 864e5)) {
-      const META = { 1000: '¡1.000 seguidores! Se terminó el regalo de 300 Pixel Coins.', 2500: '¡2.500 seguidores! Toca el evento especial en los Reels.', 5000: '¡5.000 seguidores! Abre Pixépolis.' };
+      const META = { 1000: '¡1.000 seguidores!', 2500: '¡2.500 seguidores! Toca el evento especial en los Reels.', 5000: '¡5.000 seguidores! Abre Pixépolis.' };
       await alert(db, 'meta', META[c] ? 'Meta cumplida' : `${c.toLocaleString('es')} seguidores`, META[c] || `Llegamos a ${c.toLocaleString('es')} seguidores (${st.claimed} pixelitos reclamados).`, { url: '/admin/' });
     }
   } catch (e) {}
@@ -489,7 +489,7 @@ export async function onRequest(ctx) {
       const prev = prevRow ? JSON.parse(prevRow.look) : null, bl = b.look || {};
       const L = cleanLook(bl, D.islas.map(i => i.day));
       // El regalo se gana al reclamar antes de los 1.000 y, una vez elegido, no se cambia
-      L.regaloOk = prev ? !!prev.regaloOk : (await stats(db, D, env)).total < META_REGALO;
+      L.regaloOk = prev ? !!prev.regaloOk : ((await db.prepare('SELECT COUNT(*) n FROM reclamos').first()).n || 0) < META_REGALO; // primeros 1.000 en reclamar
       // Antes el regalo era un traje (quien lo eligió lo conserva); ahora son REGALO_COINS Pixel Coins
       L.regalo = prev && prev.regalo ? prev.regalo : '';
       // Ropa puesta por lugar (gorra, remera, pantalón, zapatos): solo piezas tuyas; hoy, las del traje de regalo

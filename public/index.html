@@ -378,7 +378,10 @@ const OPC = {
 const INK = '#14121F';
 const CONF = ['#FF3D7F', '#FFE14D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8'];
 const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto', outfit: 'remera', acc: '', regalo: '', piezas: '', ropa: null, isla: null };
-const REGALO_COINS = 300, META_REGALO = 1000, METAS = [[1000, `${REGALO_COINS} Pixel Coins para los que reclamaron antes`], [2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
+// regalo: los primeros META_REGALO en reclamar su pixelito reciben REGALO_COINS Pixel Coins
+const REGALO_COINS = 300, META_REGALO = 1000, METAS = [[2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
+const miles = n => String(Math.round(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // 1.100, 2.500 (con punto, como en Paraguay)
+const quedan = s => Math.max(0, META_REGALO - (s.reclamos ?? s.claimed ?? 0));
 const PIEZAS = [['c', 'Gorra', '🧢'], ['t', 'Remera', '👕'], ['p', 'Pantalón', '👖'], ['f', 'Zapatos', '👟']];
 const SLOTS = 'ctpf';
 // solo se guardan puestas las piezas que son tuyas (hoy: las del traje de regalo)
@@ -752,7 +755,7 @@ function makeDemoApi(data) {
   const pick = a => a[Math.floor(Math.random() * a.length)];
   const nuevo = h => store.nuevos[h] ? { num: null, handle: h, day: (data.day || 0) + 1, act: 'llega en el próximo Reel', ...store.nuevos[h], out: 0, nuevo: true } : null;
   const pix = h => { const p = P.get(h); return p && !p.out ? p : nuevo(h) || p || null; };
-  const stats = () => { let total = 0, claimed = 0; P.forEach(p => { if (!p.out) { total++; if (store.claims[p.handle]) claimed++; } }); Object.keys(store.nuevos).forEach(h => { if (!P.has(h) || P.get(h).out) { total++; if (store.claims[h]) claimed++; } }); return { total, claimed, islas: ISLAS, enVivo: false }; };
+  const stats = () => { let total = 0, claimed = 0; P.forEach(p => { if (!p.out) { total++; if (store.claims[p.handle]) claimed++; } }); Object.keys(store.nuevos).forEach(h => { if (!P.has(h) || P.get(h).out) { total++; if (store.claims[h]) claimed++; } }); return { total, claimed, reclamos: Object.keys(store.claims).length, islas: ISLAS, enVivo: false }; };
   const byDay = {}; P.forEach(p => { if (!p.out) (byDay[p.day] = byDay[p.day] || []).push(p); });
   const islas = () => ISLAS.map(i => ({ ...i, vecinos: (byDay[i.day] || []).slice().sort(() => Math.random() - .5).slice(0, 4) }));
   store.coins = store.coins || {}; store.armario = store.armario || {};
@@ -792,7 +795,7 @@ function makeDemoApi(data) {
       if (pix(h).out) return { error: 'Tu pixelito se fue en cohete.' };
       const c = store.claims[h];
       const prev = c ? c.look : null, L = cleanLook(look, ISLAS.map(i => i.day));
-      L.regaloOk = prev ? !!prev.regaloOk : stats().total < 1000;
+      L.regaloOk = prev ? !!prev.regaloOk : Object.keys(store.claims).length < META_REGALO;
       L.regalo = prev && prev.regalo ? prev.regalo : '';
       if (!c && L.regaloOk) store.coins[h] = (store.coins[h] || 0) + REGALO_COINS;
       L.ropa = ropaOk(look.ropa, L.regalo, look.piezas, store.armario[h]); L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
@@ -895,8 +898,9 @@ async function refreshCount() {
   $('cnt').textContent = `${s.claimed} / ${s.total}`;
   $('cntLbl').textContent = s.enVivo ? 'Reclamados · seguidores en vivo' : 'Reclamados de los seguidores';
   const next = METAS.find(([n]) => s.total < n);
-  $('metaTxt').innerHTML = s.total < META_REGALO ? `Somos <b>${s.total}</b>. Si reclamás tu pixelito antes de los <b>1.000 seguidores</b>, te regalamos <b>${REGALO_COINS} Pixel Coins</b> para la tienda. Faltan ${META_REGALO - s.total}.` : next ? `Somos <b>${s.total}</b>. Próxima meta: ${next[0].toLocaleString('es')}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`;
-  $('metas').innerHTML = METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${n.toLocaleString('es')}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
+  const q = quedan(s), rec = META_REGALO - q;
+  $('metaTxt').innerHTML = (q ? `🎁 Los <b>primeros 1.000</b> en reclamar su pixelito se llevan <b>${REGALO_COINS} Pixel Coins</b> gratis. Quedan <b>${miles(q)}</b>. ` : '') + (next ? `Somos <b>${s.total}</b>. Próxima meta: ${miles(next[0])}.` : `Somos <b>${s.total}</b>. ¡Pixépolis está abierto!`);
+  $('metas').innerHTML = `<div class="meta ${q ? '' : 'done'}"><div class="mt"><span>${q ? '' : '✓ '}${REGALO_COINS} Pixel Coins gratis · fundadores</span><em>${miles(rec)}/1.000</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, rec / 10))}%"></i></div></div>` + METAS.map(([n, txt]) => `<div class="meta ${s.total >= n ? 'done' : ''}"><div class="mt"><span>${s.total >= n ? '✓ ' : ''}${txt}</span><em>${miles(n)}</em></div><div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * s.total / n))}%"></i></div></div>`).join('');
   $('bar').style.width = (s.total ? Math.max(2, 100 * s.claimed / s.total) : 0) + '%';
 }
 
@@ -925,7 +929,7 @@ const tuyas = () => TRAJES.filter(id => SLOTS.split('').every(k => esTuya(k, id)
 const algunaTuya = id => SLOTS.split('').some(k => esTuya(k, id));
 const PACKS = [['monedas-300', 300, 3], ['monedas-500', 500, 5], ['monedas-1100', 1100, 10, '+10%'], ['monedas-3000', 3000, 25, '+20%'], ['monedas-6500', 6500, 50, '+30%'], ['monedas-14000', 14000, 100, '+40%']];
 const PIEZA_COINS = 100, TRAJE_COINS = 300;
-const fmt = n => n.toLocaleString('es');
+const fmt = miles;
 const precioDe = (id, ks) => { const f = ks.filter(k => !esTuya(k, id)); return { f, coins: f.length === 4 ? TRAJE_COINS : f.length * PIEZA_COINS }; };
 function puesto() {
   if (look.ropa) return { ...look.ropa };
@@ -993,12 +997,12 @@ function renderShop() {
   $('packNote').textContent = me.pagos === 'pronto' ? 'Paquetes de Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.' : 'Los paquetes grandes traen coins de regalo. Las coins no se pueden cambiar por dinero.';
   $('packs').innerHTML = PACKS.map(([sku, n, usd, bonus]) => `<button type="button" class="${me.pagos === 'pronto' ? 'pronto' : ''}" data-pack="${sku}"><b>${fmt(n)}</b><span>$${usd}</span>${bonus ? `<em>${bonus}</em>` : ''}</button>`).join('');
   $('pzBox').innerHTML = z;
-  // regalo de fundador: 300 Pixel Coins al reclamar antes de los 1.000 (alcanzan para un traje o 3 piezas sueltas)
+  // regalo de fundador: 300 Pixel Coins a los primeros 1.000 en reclamar (alcanzan para un traje o 3 piezas sueltas)
   let h = '';
   if (look.regalo) h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>. Sus 4 piezas son tuyas: combinalas con lo que quieras.`;
-  else if (c && c.look && c.look.regaloOk) h = `🎁 Reclamaste antes de los 1.000 seguidores: te regalamos <b>${REGALO_COINS} Pixel Coins</b>. Alcanzan para un traje completo o 3 piezas de trajes distintos.`;
-  else if (!c && total < META_REGALO) h = `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te regalamos ${REGALO_COINS} Pixel Coins</b>: un traje completo o 3 piezas de los que quieras. Faltan ${Math.max(0, META_REGALO - total)} seguidores.`;
-  else h = c ? `El regalo de ${REGALO_COINS} Pixel Coins era para los que reclamaron antes de los 1.000 seguidores. Igual tenés tu @ de fundador ✨` : `Ya llegamos a los 1.000 seguidores: el regalo de fundador se terminó. Igual tenés el @ de fundador ✨`;
+  else if (c && c.look && c.look.regaloOk) h = `🎁 Estás entre los primeros 1.000 en reclamar: te regalamos <b>${REGALO_COINS} Pixel Coins</b>. Alcanzan para un traje completo o 3 piezas de trajes distintos.`;
+  else if (!c && quedan(me.stats || {})) h = `🎁 Los primeros 1.000 en reclamar su pixelito se llevan <b>${REGALO_COINS} Pixel Coins gratis</b>: un traje completo o 3 piezas de los que quieras. Quedan ${miles(quedan(me.stats))}.`;
+  else h = c ? `El regalo de ${REGALO_COINS} Pixel Coins era para los primeros 1.000 en reclamar. Igual tenés tu @ de fundador ✨` : `Ya reclamaron los primeros 1.000: el regalo de fundador se terminó. Igual tenés el @ de fundador ✨`;
   $('giftBox').innerHTML = h;
 }
 function renderMine(first) {

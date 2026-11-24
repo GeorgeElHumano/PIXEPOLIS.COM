@@ -130,8 +130,8 @@ const V = {
     const max = Math.max(1, ...r.dias.map(d => d.reclamos)), maxU = Math.max(1, ...r.dias.map(d => d.usd));
     const modo = { pronto: 'Pagos: esperando Xsolla (los paquetes dicen “muy pronto”)', prueba: 'Pagos: MODO PRUEBA (no cobra)', xsolla: 'Pagos: Xsolla activo' }[r.pagos];
     return `<div class="kpis">
-      <div class="kpi b"><span>Seguidores ${r.enVivo ? '(en vivo)' : '(sin Instagram)'}</span><b>${n(r.seguidores)}</b><em>${r.seguidores < r.meta ? 'faltan ' + n(r.meta - r.seguidores) + ' para 1.000' : 'meta 1.000 cumplida'}</em></div>
-      <div class="kpi y"><span>Fundadores (reclamaron)</span><b>${n(r.reclamos.total)}</b><em>+${n(r.reclamos.hoy)} hoy · +${n(r.reclamos.semana)} en 7 días</em></div>
+      <div class="kpi b"><span>Seguidores ${r.enVivo ? '(en vivo)' : '(sin Instagram)'}</span><b>${n(r.seguidores)}</b><em>próxima meta: ${r.seguidores < 2500 ? '2.500' : '5.000'}</em></div>
+      <div class="kpi y"><span>Fundadores (reclamaron)</span><b>${n(r.reclamos.total)}</b><em>+${n(r.reclamos.hoy)} hoy · quedan ${n(Math.max(0, r.meta - r.reclamos.total))} regalos</em></div>
       <div class="kpi g"><span>Ventas (Xsolla)</span><b>${usd(r.ventas.usd)}</b><em>${n(r.ventas.n)} paquetes · ${usd(r.ventas.semana)} en 7 días</em></div>
       <div class="kpi p"><span>Compras de ropa</span><b>${n(r.compras.n)}</b><em>${n(r.compras.personas)} personas · ${n(r.coins.gastadas)} coins</em></div>
     </div>
