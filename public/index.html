@@ -129,6 +129,16 @@
   .gift b { color:var(--pink); }
   .gift .btn { margin-top:10px; }
   .gift .chips { margin-top:10px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .pzbox { border:3px solid var(--ink); border-radius:10px; background:#FFF8D6; padding:12px; margin:12px 0 4px; }
+  .pzbox .pzh { font:800 15px Inter, sans-serif; margin-bottom:8px; }
+  .pzbox .pzs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+  .pzbox .pzs button { font:700 13px/1.25 Inter, sans-serif; padding:9px 6px; min-height:52px; border-radius:8px; border:3px solid var(--ink); background:#fff; cursor:pointer; color:var(--ink); }
+  .pzbox .pzs button.on { background:var(--yel); }
+  .pzbox .pzs button.mio { background:#E8F7FF; }
+  .pzbox .pzs button.mio.on { background:#9FDCFF; }
+  .pzbox .pzs small { display:block; font:600 11px Inter, sans-serif; color:#555; margin-top:2px; }
+  .pzbox .row { display:flex; gap:8px; margin-top:8px; }
+  .pzbox .row .btn { flex:1; margin:0; font-size:9px; padding:10px 6px; }
   .packs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
   .packs div { border:3px solid var(--ink); border-radius:8px; padding:8px 4px; text-align:center; background:#fff; opacity:.75; }
   .packs b { display:block; font:11px 'Press Start 2P', monospace; color:#B8860B; }
@@ -241,8 +251,9 @@
     <div class="card" id="shopCard">
       <h2>TIENDA · MUY PRONTO</h2>
       <div class="gift" id="giftBox"></div>
-      <p class="note" style="margin-top:12px">Cada traje trae 4 piezas: cabeza, torso, piernas y pies. Pieza suelta: 100 monedas ($1). Traje completo: 300 monedas ($3). Tocá uno para probártelo.</p>
+      <p class="note" style="margin-top:12px">Cada traje trae 4 piezas: <b>gorra, remera, pantalón y zapatos</b>. Se compran por separado (100 monedas, $1 cada una) o el traje completo (300 monedas, $3). Tocá un traje para probarte sus piezas y combinarlas con las de otros.</p>
       <div class="trajes" id="trajes"></div>
+      <div id="pzBox"></div>
       <div class="lbl">PAQUETES DE MONEDAS</div>
       <div class="packs" id="packs"><div><b>300</b><span>$3</span></div><div><b>500</b><span>$5</span></div><div><b>1.100</b><span>$10</span></div><div><b>3.000</b><span>$25</span></div><div><b>6.500</b><span>$50</span></div><div><b>14.000</b><span>$100</span></div></div>
       <p class="note" style="margin-top:6px">Monedas: próximamente. Los paquetes grandes traen monedas de regalo.</p>
@@ -301,9 +312,16 @@ const OPC = {
 };
 const INK = '#14121F';
 const CONF = ['#FF3D7F', '#FFE14D', '#2F80ED', '#27AE60', '#FF9F1C', '#9B51E0', '#00C2A8'];
-const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto', outfit: 'remera', acc: '', regalo: '', piezas: '', isla: null };
+const LOOK0 = { shirt: null, pants: null, hair: null, skin: null, style: 'corto', outfit: 'remera', acc: '', regalo: '', piezas: '', ropa: null, isla: null };
 const META_REGALO = 1000, METAS = [[1000, 'Traje gratis para los que reclamaron antes'], [2500, 'Evento especial en los Reels'], [5000, '¡Abre Pixépolis!']];
-const PIEZAS = [['c', 'Cabeza'], ['t', 'Torso'], ['p', 'Piernas'], ['f', 'Pies']];
+const PIEZAS = [['c', 'Gorra', '🧢'], ['t', 'Remera', '👕'], ['p', 'Pantalón', '👖'], ['f', 'Zapatos', '👟']];
+const SLOTS = 'ctpf';
+// solo se guardan puestas las piezas que son tuyas (hoy: las del traje de regalo)
+function ropaOk(ropa, regalo, piezas) {
+  const o = {}; ropa = ropa && typeof ropa === 'object' ? ropa : null;
+  for (const k of SLOTS) { const v = ropa ? ropa[k] : (regalo && String(piezas || '').includes(k) ? regalo : ''); o[k] = regalo && v === regalo ? regalo : ''; }
+  return o;
+}
 const shade = (hex, k) => { const n = parseInt(hex.slice(1), 16); const f = v => Math.max(0, Math.min(255, Math.round(v * k))); return '#' + [f(n >> 16), f((n >> 8) & 255), f(n & 255)].map(v => v.toString(16).padStart(2, '0')).join(''); };
 const F = (c, x, y, w, h, col) => { c.fillStyle = col; c.fillRect(Math.round(x), Math.round(y), Math.max(1, Math.round(w)), Math.max(1, Math.round(h))); };
 function txt(c, s, x, y, sz, col) { c.font = `${Math.max(4, sz)}px "Press Start 2P", monospace`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = col; c.fillText(s, x, y); }
@@ -700,7 +718,7 @@ function makeDemoApi(data) {
       const prev = c ? c.look : null, L = cleanLook(look, ISLAS.map(i => i.day));
       L.regaloOk = prev ? !!prev.regaloOk : stats().total < 1000;
       L.regalo = prev && prev.regalo ? prev.regalo : (L.regaloOk && TRAJES.includes(look.regalo) ? look.regalo : '');
-      L.piezas = L.regalo ? [...new Set(String(look.piezas || '').replace(/[^ctpf]/g, ''))].join('') : '';
+      L.ropa = ropaOk(look.ropa, L.regalo, look.piezas); L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
       store.claims[h] = { ord: c ? c.ord : Object.keys(store.claims).length + 1, t: c ? c.t : Date.now(), look: L }; save();
       return mine(h);
     },
@@ -762,12 +780,19 @@ $('simSend').onclick = simSend;
 $('simUser').addEventListener('keydown', e => { if (e.key === 'Enter') simSend(); });
 
 const curIsla = () => { const d = look.isla || me.pixelito.day; return me.islas.find(i => i.day === d) || me.islas.find(i => i.day === me.pixelito.day) || me.islas[me.islas.length - 1] || null; };
-let probando = null, giftConfirm = null;
-function trajeActual(share) {
-  if (probando && !share) return { c: probando, t: probando, p: probando, f: probando };
-  const r = look.regalo, z = look.piezas || '';
-  return r ? { c: z.includes('c') ? r : '', t: z.includes('t') ? r : '', p: z.includes('p') ? r : '', f: z.includes('f') ? r : '' } : {};
+// probando: piezas que te estás probando (vista previa), por lugar: { c: 'cowboy', f: 'pirata' }
+// sel: el traje abierto en la tienda. look.ropa: lo que tenés puesto (solo piezas tuyas)
+let probando = {}, sel = null, giftConfirm = null;
+const tuyas = () => look.regalo ? [look.regalo] : [];           // por ahora: las 4 piezas del traje de regalo
+const esTuya = (k, id) => tuyas().includes(id);
+function puesto() {
+  if (look.ropa) return { ...look.ropa };
+  const r = look.regalo, z = look.piezas || '', o = {};          // compatibilidad con el formato anterior
+  for (const k of SLOTS) o[k] = r && z.includes(k) ? r : '';
+  return o;
 }
+const probandoAlgo = () => SLOTS.split('').some(k => probando[k]);
+function trajeActual(share) { const o = puesto(); if (!share) for (const k of SLOTS) if (probando[k]) o[k] = probando[k]; return o; }
 function curMe(share) { const p = me.pixelito; return { L: { s: look.shirt || p.shirt, pa: look.pants || p.pants, h: look.hair || p.hair, k: look.skin || p.skin, style: look.style, outfit: look.outfit, traje: trajeActual(share) }, acc: look.acc, name: p.handle, founder: me.claim ? me.claim.ord : 0 }; }
 function swatches(el, key, orig) {
   el.innerHTML = [`<button data-k="${key}" data-v="" style="background:${orig}" class="${look[key] ? '' : 'on'}" aria-label="Como en el video">★</button>`]
@@ -794,31 +819,46 @@ function renderShop() {
   const base = { ...curMe(true).L, traje: null }, c = me.claim, total = me.stats ? me.stats.total : 0;
   const locked = !!(c && c.look && c.look.regalo);
   const canGift = !locked && (c ? !!(c.look && c.look.regaloOk) : total < META_REGALO);
+  const pu = puesto();
   $('trajes').innerHTML = TRAJES.map(id => {
-    const mio = look.regalo === id, on = probando === id;
-    const tag = mio ? '<span class="tg b">TU REGALO</span>' : on ? '<span class="tg y">PROBANDO</span>' : '<span class="tg">MUY PRONTO</span>';
-    return `<button class="traje ${on ? 'on' : ''} ${mio ? 'mio' : ''}" data-tr="${id}"><canvas width="54" height="117" data-tt="${id}"></canvas><div class="tn">${TR[id].n}</div><div class="tp">300 monedas</div>${tag}</button>`;
+    const mio = tuyas().includes(id), on = sel === id, prueba = SLOTS.split('').some(k => probando[k] === id);
+    const tag = mio ? '<span class="tg b">TUYO</span>' : prueba ? '<span class="tg y">PROBANDO</span>' : '<span class="tg">MUY PRONTO</span>';
+    return `<button class="traje ${on ? 'on' : ''} ${mio ? 'mio' : ''}" data-tr="${id}"><canvas width="54" height="117" data-tt="${id}"></canvas><div class="tn">${TR[id].n}</div><div class="tp">300 · pieza 100</div>${tag}</button>`;
   }).join('');
   TRAJES.forEach(id => { const cv = document.querySelector(`[data-tt="${id}"]`), x = cv.getContext('2d'); x.clearRect(0, 0, 54, 117); drawHD(x, { ...base, traje: { c: id, t: id, p: id, f: id } }, 3, 30, 3, {}); });
+  // piezas del traje abierto
+  let z = '';
+  if (sel) {
+    const mio = tuyas().includes(sel);
+    z = `<div class="pzbox"><div class="pzh">${TR[sel].n} por partes</div><div class="pzs">`
+      + PIEZAS.map(([k, n, ic]) => {
+        const puesta = pu[k] === sel, prueba = probando[k] === sel;
+        const sub = mio ? (puesta ? 'Puesta ✓ · tocá para sacarla' : 'Tuya · tocá para ponértela') : (prueba ? 'Probándotela · muy pronto' : '100 monedas · probátela');
+        return `<button data-pz="${k}" class="${mio ? 'mio' : ''} ${(mio ? puesta : prueba) ? 'on' : ''}">${ic} ${n}<small>${sub}</small></button>`;
+      }).join('') + `</div><div class="row">`
+      + (mio ? `<button class="btn" data-todo="${sel}">Ponerme todo</button>` : `<button class="btn" data-todo="${sel}">Probarme todo</button>`)
+      + (probandoAlgo() ? `<button class="btn" data-sacar="1">Sacarme lo que pruebo</button>` : '')
+      + `</div></div>`;
+  }
+  $('pzBox').innerHTML = z;
+  // regalo de fundador: un traje completo (sus 4 piezas quedan tuyas y las combinás como quieras)
   let h = '';
   if (look.regalo) {
-    h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>${locked ? '' : ' (se guarda cuando reclamás tu pixelito; hasta entonces lo podés cambiar)'}. Elegí qué piezas te ponés:`
-      + `<div class="chips">${PIEZAS.map(([k, n]) => `<button data-pz="${k}" class="${(look.piezas || '').includes(k) ? 'on' : ''}">${(look.piezas || '').includes(k) ? '✓ ' : ''}${n}</button>`).join('')}</div>`;
-    if (canGift && probando && probando !== look.regalo) h += `<button class="btn main" data-gift="${probando}">Cambiar mi regalo por ${TR[probando].n}</button>`;
+    h = `🎁 Tu traje de regalo de fundador: <b>${TR[look.regalo].n}</b>${locked ? '' : ' (se guarda cuando reclamás tu pixelito; hasta entonces lo podés cambiar)'}. Sus 4 piezas son tuyas: abrilo abajo y ponete las que quieras, mezcladas con las que te pruebes de otros trajes.`;
+    if (canGift && sel && sel !== look.regalo) h += `<button class="btn main" data-gift="${sel}">Cambiar mi regalo por ${TR[sel].n}</button>`;
   } else if (canGift) {
-    h = c ? `🎁 Reclamaste antes de los 1.000 seguidores: <b>elegí un traje gratis</b>. Es para siempre, así que probate varios primero.` : `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te llevás un traje gratis</b>. Faltan ${Math.max(0, META_REGALO - total)}. Probate uno y elegilo.`;
-    if (probando) h += `<button class="btn main" data-gift="${probando}">${giftConfirm === probando ? `Confirmar: ${TR[probando].n} es mi regalo para siempre` : `Elegir ${TR[probando].n} como mi regalo`}</button>`;
+    h = c ? `🎁 Reclamaste antes de los 1.000 seguidores: <b>elegí un traje gratis</b> (las 4 piezas). Es para siempre, así que probate varios primero.` : `🎁 Si reclamás tu pixelito antes de los 1.000 seguidores, <b>te llevás un traje gratis</b> (las 4 piezas). Faltan ${Math.max(0, META_REGALO - total)} seguidores.`;
+    if (sel) h += `<button class="btn main" data-gift="${sel}">${giftConfirm === sel ? `Confirmar: ${TR[sel].n} es mi regalo para siempre` : `Elegir ${TR[sel].n} como mi regalo`}</button>`;
   } else {
     h = c ? 'El traje gratis era para los que reclamaron antes de los 1.000 seguidores. Igual tenés tu @ de fundador ✨' : 'Ya llegamos a los 1.000 seguidores: el traje gratis de fundador se terminó. Igual tenés el @ de fundador ✨';
   }
-  if (probando) h += `<button class="btn" data-tr="${probando}">Sacarme el ${TR[probando].n} (vista previa)</button>`;
   $('giftBox').innerHTML = h;
 }
 function renderMine(first) {
   const p = me.pixelito, c = me.claim, isla = curIsla();
   $('mNum').textContent = p.num ? '#' + p.num : 'NUEVO';
   $('mHandle').innerHTML = c ? [...p.handle].map((ch, i) => `<span class="fz" style="color:${RAINBOW[i % RAINBOW.length]};animation-delay:${i * .1}s">${esc(ch)}</span>`).join('') : esc(p.handle);
-  $('mDay').textContent = probando ? `Probándote el traje ${TR[probando].n} (vista previa)` : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el próximo Reel' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
+  $('mDay').textContent = probandoAlgo() ? 'Probándote ropa de la tienda (vista previa)' : p.nuevo && !look.isla ? 'Pixelito nuevo: llega en el próximo Reel' : isla ? `Isla del día ${isla.day} · ${isla.label}` : `Llegó el día ${p.day}`;
   $('mBadge').innerHTML = c ? `<span class="badge">★ FUNDADOR #${c.ord}</span>` : '';
   $('lookTitle').textContent = c ? 'TU PIXELITO' : 'PASO 1 · ARMÁ TU PIXELITO';
   $('islaTitle').textContent = c ? 'TU ISLA' : 'PASO 2 · TU ISLA';
@@ -839,17 +879,30 @@ document.addEventListener('click', e => {
   const b = e.target.closest('button[data-k]');
   if (b && me) { const k = b.dataset.k; look[k] = b.dataset.v || (k in DEF ? DEF[k] : null); changed(); return; }
   const tj = e.target.closest('[data-tr]');
-  if (tj && me) { const id = tj.dataset.tr; probando = probando === id ? null : id; giftConfirm = null; renderMine(false); return; }
+  if (tj && me) { const id = tj.dataset.tr; sel = sel === id ? null : id; giftConfirm = null; renderShop(); if (sel) $('pzBox').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  const td = e.target.closest('[data-todo]');
+  if (td && me) {
+    const id = td.dataset.todo;
+    if (esTuya('', id)) { const o = puesto(); for (const k of SLOTS) { o[k] = id; delete probando[k]; } look.ropa = o; changed(); }
+    else { for (const k of SLOTS) probando[k] = id; renderMine(false); }
+    return;
+  }
+  if (e.target.closest('[data-sacar]') && me) { probando = {}; renderMine(false); return; }
   const gf = e.target.closest('[data-gift]');
   if (gf && me) {
     const id = gf.dataset.gift;
     if (me.claim && giftConfirm !== id) { giftConfirm = id; renderShop(); return; }
-    look.regalo = id; look.piezas = 'ctpf'; probando = null; giftConfirm = null;
+    look.regalo = id; look.ropa = { c: id, t: id, p: id, f: id }; look.piezas = 'ctpf'; probando = {}; giftConfirm = null;
     if (me.claim) save(); else changed();
     return;
   }
   const pz = e.target.closest('[data-pz]');
-  if (pz && me) { const k = pz.dataset.pz, z = look.piezas || ''; look.piezas = z.includes(k) ? z.replace(k, '') : z + k; changed(); return; }
+  if (pz && me && sel) {
+    const k = pz.dataset.pz;
+    if (esTuya(k, sel)) { const o = puesto(); o[k] = o[k] === sel ? '' : sel; delete probando[k]; look.ropa = o; changed(); }
+    else { probando[k] = probando[k] === sel ? '' : sel; renderMine(false); }
+    return;
+  }
   const is = e.target.closest('[data-isla]');
   if (is && me) { const d = +is.dataset.isla; look.isla = d === me.pixelito.day ? null : d; changed(); }
 });

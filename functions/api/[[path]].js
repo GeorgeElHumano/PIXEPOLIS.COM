@@ -245,7 +245,11 @@ export async function onRequest(ctx) {
       // El regalo se gana al reclamar antes de los 1.000 y, una vez elegido, no se cambia
       L.regaloOk = prev ? !!prev.regaloOk : (await stats(db, D, env)).total < META_REGALO;
       L.regalo = prev && prev.regalo ? prev.regalo : (L.regaloOk && TRAJES.includes(bl.regalo) ? bl.regalo : '');
-      L.piezas = L.regalo ? [...new Set(String(bl.piezas || '').replace(/[^ctpf]/g, ''))].join('') : '';
+      // Ropa puesta por lugar (gorra, remera, pantalón, zapatos): solo piezas tuyas; hoy, las del traje de regalo
+      const ropa = bl.ropa && typeof bl.ropa === 'object' ? bl.ropa : null;
+      L.ropa = {};
+      for (const k of 'ctpf') { const v = ropa ? ropa[k] : (L.regalo && String(bl.piezas || '').includes(k) ? L.regalo : ''); L.ropa[k] = L.regalo && v === L.regalo ? L.regalo : ''; }
+      L.piezas = 'ctpf'.split('').filter(k => L.ropa[k]).join('');
       const look = JSON.stringify(L);
       const t = now();
       await db.prepare(`INSERT INTO reclamos(handle, num, ord, look, t, upd) VALUES(?1, ?2, (SELECT COALESCE(MAX(ord),0)+1 FROM reclamos), ?3, ?4, ?4)
