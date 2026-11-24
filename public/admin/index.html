@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixépolis Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#14121F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pixépolis Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="manifest" href="/admin/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root { --sky:#1FB6FF; --ink:#14121F; --yel:#FFE14D; --pink:#FF3D7F; --grn:#27AE60; --blue:#2F80ED; --mut:#5B5870; color-scheme:light; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#EAF7FF; color:var(--ink); font:15px/1.45 Inter, system-ui, sans-serif; min-height:100vh; padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+  header { position:sticky; top:0; z-index:5; background:var(--ink); color:#fff; padding:calc(10px + env(safe-area-inset-top)) 16px 10px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  header h1 { margin:0; font:12px/1.3 'Press Start 2P', monospace; color:var(--yel); }
+  header small { font:600 12px Inter, sans-serif; color:#C9C6D8; }
+  header button { background:none; border:2px solid #fff4; color:#fff; border-radius:8px; padding:6px 10px; font:600 12px Inter, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:14px; }
+  .card { background:#fff; border:3px solid var(--ink); border-radius:12px; box-shadow:4px 4px 0 var(--ink); padding:14px; margin:0 0 14px; }
+  .card h2 { margin:0 0 10px; font:11px/1.4 'Press Start 2P', monospace; color:var(--pink); }
+  .kpis { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; margin:0 0 14px; }
+  @media (min-width:640px) { .kpis { grid-template-columns:repeat(4, minmax(0,1fr)); } }
+  .kpi { background:#fff; border:3px solid var(--ink); border-radius:12px; box-shadow:3px 3px 0 var(--ink); padding:10px 12px; }
+  .kpi span { display:block; font:600 12px Inter, sans-serif; color:var(--mut); }
+  .kpi b { display:block; font:16px/1.5 'Press Start 2P', monospace; margin-top:4px; }
+  .kpi em { font-style:normal; font:600 12px Inter, sans-serif; color:var(--grn); }
+  .kpi.y { background:#FFF6C2; } .kpi.p { background:#FFE3EE; } .kpi.b { background:#DDF3FF; } .kpi.g { background:#E2F7E9; }
+  .muted { color:var(--mut); font-size:13px; }
+  .bars { display:flex; align-items:flex-end; gap:4px; height:120px; margin-top:8px; }
+  .bars div { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:3px; height:100%; min-width:0; }
+  .bars i { display:block; width:100%; border-radius:4px 4px 0 0; background:var(--sky); border:2px solid var(--ink); border-bottom:0; min-height:2px; }
+  .bars i.u { background:var(--grn); }
+  .bars small { font:600 10px Inter, sans-serif; color:var(--mut); }
+  .bars u { text-decoration:none; font:700 10px Inter, sans-serif; }
+  .legend { display:flex; gap:14px; font:600 12px Inter, sans-serif; color:var(--mut); margin-top:8px; }
+  .legend i { display:inline-block; width:10px; height:10px; border:2px solid var(--ink); border-radius:3px; vertical-align:-1px; margin-right:5px; background:var(--sky); }
+  .legend i.u { background:var(--grn); }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; font:700 11px Inter, sans-serif; text-transform:uppercase; letter-spacing:.04em; color:var(--mut); padding:6px 4px; border-bottom:2px solid var(--ink); }
+  td { padding:8px 4px; border-bottom:1px solid #E3E1EC; vertical-align:top; }
+  td.n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .tag { display:inline-block; font:700 10px Inter, sans-serif; padding:2px 6px; border-radius:6px; border:2px solid var(--ink); background:#fff; white-space:nowrap; }
+  .tag.v { background:#E2F7E9; } .tag.c { background:#DDF3FF; } .tag.r { background:#FFF6C2; } .tag.t { background:#EEE; } .tag.x { background:#FFE3EE; }
+  .seg { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 10px; }
+  .seg button, .btn { font:700 13px Inter, sans-serif; border:2px solid var(--ink); background:#fff; color:var(--ink); border-radius:8px; padding:7px 11px; cursor:pointer; }
+  .seg button.on { background:var(--yel); }
+  .btn { box-shadow:3px 3px 0 var(--ink); }
+  .btn.main { background:var(--yel); }
+  .btn.pk { background:var(--pink); color:#fff; }
+  input[type=search], input[type=text], input[type=password] { width:100%; font:16px Inter, sans-serif; padding:10px 12px; border:3px solid var(--ink); border-radius:10px; }
+  .empty { padding:18px; text-align:center; color:var(--mut); }
+  nav { position:fixed; left:0; right:0; bottom:0; z-index:5; background:#fff; border-top:3px solid var(--ink); display:grid; grid-template-columns:repeat(5,1fr); padding:6px 4px calc(6px + env(safe-area-inset-bottom)); }
+  nav a { text-align:center; text-decoration:none; color:var(--ink); font:700 11px Inter, sans-serif; padding:4px 0; border-radius:8px; position:relative; }
+  nav a .ic { display:block; font-size:20px; line-height:1.2; }
+  nav a.on { background:#FFF6C2; }
+  nav a .bd { position:absolute; top:0; right:18%; background:var(--pink); color:#fff; border-radius:10px; font:800 10px Inter, sans-serif; padding:1px 5px; }
+  .login { max-width:380px; margin:40px auto; }
+  .login label { display:block; font:700 13px Inter, sans-serif; margin:12px 0 6px; }
+  .msg { min-height:20px; color:#C62828; font:600 13px Inter, sans-serif; margin-top:10px; }
+  .row { display:flex; gap:10px; align-items:center; justify-content:space-between; }
+  .pref { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #E3E1EC; }
+  .pref small { color:var(--mut); display:block; font-size:11px; text-transform:uppercase; font-weight:700; }
+  .sw { appearance:none; width:44px; height:26px; border-radius:20px; background:#ccc; border:2px solid var(--ink); position:relative; flex:none; cursor:pointer; }
+  .sw:checked { background:var(--grn); }
+  .sw::after { content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; border:2px solid var(--ink); box-sizing:border-box; transition:left .15s; }
+  .sw:checked::after { left:20px; }
+  ol.steps { padding-left:20px; } ol.steps li { margin:6px 0; }
+  .toast { position:fixed; left:50%; bottom:calc(90px + env(safe-area-inset-bottom)); transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 14px; border-radius:10px; font:600 14px Inter, sans-serif; z-index:9; max-width:90%; }
+  .pill { font:600 12px Inter, sans-serif; color:var(--mut); }
+  .top li { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #E3E1EC; }
+  .top { list-style:none; padding:0; margin:0; }
+</style>
+</head>
+<body>
+<header><div><h1>PIXÉPOLIS ADMIN</h1><small id="who">@somoslospixelitos</small></div><button id="out" hidden>Salir</button></header>
+<main id="app"></main>
+<nav id="nav" hidden>
+  <a href="#resumen" data-v="resumen"><span class="ic">📊</span>Resumen</a>
+  <a href="#fundadores" data-v="fundadores"><span class="ic">👾</span>Fundadores</a>
+  <a href="#ventas" data-v="ventas"><span class="ic">🪙</span>Ventas</a>
+  <a href="#pedidos" data-v="pedidos"><span class="ic">📮</span>Pedidos<span class="bd" id="bdPed" hidden></span></a>
+  <a href="#avisos" data-v="avisos"><span class="ic">🔔</span>Avisos</a>
+</nav>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const n = x => Number(x || 0).toLocaleString('es-PY');
+const usd = x => 'US$ ' + Number(x || 0).toLocaleString('es-PY');
+const cuando = t => { const d = new Date(t), h = (Date.now() - t) / 36e5; return h < 1 ? `hace ${Math.max(1, Math.round(h * 60))} min` : h < 24 ? `hace ${Math.round(h)} h` : d.toLocaleDateString('es-PY', { day: 'numeric', month: 'short' }) + ' ' + d.toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }); };
+const TRN = { cowboy: 'Cowboy', astronauta: 'Astronauta', pirata: 'Pirata', chef: 'Chef', bombero: 'Bombero', mago: 'Mago', caballero: 'Caballero', ninja: 'Ninja', rockero: 'Rockero', surfista: 'Surfista', explorador: 'Explorador', heroe: 'Superhéroe', navidad: 'Navideño', vampiro: 'Vampiro', robot: 'Robot' };
+const PZ = { c: 'gorra', t: 'remera', p: 'pantalón', f: 'zapatos' };
+const SES = { get() { try { return localStorage.getItem('pxSesion'); } catch (e) { return null; } }, set(v) { try { v ? localStorage.setItem('pxSesion', v) : localStorage.removeItem('pxSesion'); } catch (e) {} } };
+function toast(t) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+async function api(m, p, body) {
+  const r = await fetch('/api/admin/' + p, { method: m, headers: { authorization: 'Bearer ' + (SES.get() || ''), ...(body ? { 'content-type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401 || r.status === 403) { const e = new Error(j.error || 'Sin acceso'); e.auth = r.status; throw e; }
+  if (!r.ok || j.error) throw new Error(j.error || 'Error ' + r.status);
+  return j;
+}
+
+/* ---------- entrar ---------- */
+function login(msg) {
+  $('nav').hidden = true; $('out').hidden = true;
+  $('app').innerHTML = `<div class="card login"><h2>ENTRAR</h2><p class="muted">Solo la cuenta administradora (@georgeelhumano), con la misma contraseña de pixepolis.com.</p>
+    <form id="lf"><label for="lu">Usuario de Instagram</label><input id="lu" type="text" autocomplete="username" autocapitalize="none" value="@georgeelhumano">
+    <label for="lp">Contraseña</label><input id="lp" type="password" autocomplete="current-password">
+    <div class="msg" id="lm">${esc(msg || '')}</div><button class="btn main" style="width:100%;margin-top:6px">ENTRAR</button></form>
+    <p class="muted">¿No tenés contraseña? Mandá <b>RECLAMAR</b> (o <b>RESTABLECER</b>) por DM a @somoslospixelitos, entrá con el link y creala.</p></div>`;
+  $('lf').onsubmit = async e => {
+    e.preventDefault(); $('lm').textContent = '';
+    const r = await fetch('/api/entrar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ usuario: $('lu').value, clave: $('lp').value }) }).then(r => r.json()).catch(() => ({ error: 'No pudimos conectar.' }));
+    if (r.error) { $('lm').textContent = r.error; return; }
+    SES.set(r.sesion); go();
+  };
+}
+$('out').onclick = async () => { await fetch('/api/salir', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: SES.get() }) }).catch(() => {}); SES.set(null); login(); };
+
+/* ---------- vistas ---------- */
+const V = {
+  async resumen() {
+    const r = await api('GET', 'resumen');
+    $('bdPed').hidden = !r.pedidos; $('bdPed').textContent = r.pedidos;
+    const max = Math.max(1, ...r.dias.map(d => d.reclamos)), maxU = Math.max(1, ...r.dias.map(d => d.usd));
+    const modo = { pronto: 'Pagos: esperando Xsolla (los paquetes dicen “muy pronto”)', prueba: 'Pagos: MODO PRUEBA (no cobra)', xsolla: 'Pagos: Xsolla activo' }[r.pagos];
+    return `<div class="kpis">
+      <div class="kpi b"><span>Seguidores ${r.enVivo ? '(en vivo)' : '(sin Instagram)'}</span><b>${n(r.seguidores)}</b><em>${r.seguidores < r.meta ? 'faltan ' + n(r.meta - r.seguidores) + ' para 1.000' : 'meta 1.000 cumplida'}</em></div>
+      <div class="kpi y"><span>Fundadores (reclamaron)</span><b>${n(r.reclamos.total)}</b><em>+${n(r.reclamos.hoy)} hoy · +${n(r.reclamos.semana)} en 7 días</em></div>
+      <div class="kpi g"><span>Ventas (Xsolla)</span><b>${usd(r.ventas.usd)}</b><em>${n(r.ventas.n)} paquetes · ${usd(r.ventas.semana)} en 7 días</em></div>
+      <div class="kpi p"><span>Compras de ropa</span><b>${n(r.compras.n)}</b><em>${n(r.compras.personas)} personas · ${n(r.coins.gastadas)} coins</em></div>
+    </div>
+    <div class="card"><h2>ÚLTIMOS 14 DÍAS</h2>
+      <div class="bars">${r.dias.map(d => `<div title="${d.day}: ${d.reclamos} reclamos, US$ ${d.usd}"><u>${d.reclamos || ''}</u><i style="height:${d.reclamos / max * 80}%"></i><small>${+d.day.slice(8)}</small></div>`).join('')}</div>
+      <div class="legend"><span><i></i>Pixelitos reclamados por día</span></div>
+      ${r.ventas.usd ? `<div class="bars" style="height:80px">${r.dias.map(d => `<div><u>${d.usd || ''}</u><i class="u" style="height:${d.usd / maxU * 70}%"></i><small>${+d.day.slice(8)}</small></div>`).join('')}</div><div class="legend"><span><i class="u"></i>US$ vendidos por día</span></div>` : ''}
+    </div>
+    <div class="card"><h2>PIXEL COINS</h2>
+      <table><tr><td>En las billeteras ahora</td><td class="n"><b>${n(r.coins.enBilleteras)}</b></td></tr>
+      <tr><td>Regaladas a fundadores (300 c/u)</td><td class="n">${n(r.coins.regaladas)}</td></tr>
+      <tr><td>Vendidas en paquetes</td><td class="n">${n(r.coins.vendidas)}</td></tr>
+      <tr><td>Gastadas en ropa</td><td class="n">${n(r.coins.gastadas)}</td></tr></table>
+      <p class="muted" style="margin:10px 0 0">${esc(modo)}${r.ventas.prueba ? ` · ${n(r.ventas.prueba)} paquetes de prueba (no cuentan)` : ''}</p></div>
+    <div class="card"><h2>TRAJES MÁS COMPRADOS</h2>${r.top.length ? `<ul class="top">${r.top.map(t => `<li><span>${esc(TRN[t.traje] || t.traje)}</span><b>${n(t.piezas)} piezas</b></li>`).join('')}</ul>` : '<div class="empty">Todavía nadie compró ropa.</div>'}</div>
+    <div class="card"><h2>ESTADO</h2><table>
+      <tr><td>Día del último Reel</td><td class="n">${n(r.dia)}</td></tr>
+      <tr><td>Pixelitos en los Reels</td><td class="n">${n(r.pixelitos)}</td></tr>
+      <tr><td>Con contraseña creada</td><td class="n">${n(r.conClave)}</td></tr>
+      <tr><td>Pedidos sin resolver</td><td class="n">${n(r.pedidos)}</td></tr></table>
+      <p class="muted" style="margin:10px 0 0"><a href="/api/ig-estado" target="_blank" rel="noopener">Ver conexión con Instagram</a></p></div>`;
+  },
+  async fundadores() {
+    const q = V._q || '';
+    const r = await api('GET', 'fundadores?q=' + encodeURIComponent(q));
+    setTimeout(() => { const i = $('fq'); if (i) { i.oninput = () => { clearTimeout(V._qt); V._qt = setTimeout(() => { V._q = i.value; show('fundadores', true); }, 350); }; } });
+    return `<div class="card"><h2>FUNDADORES · ${n(r.fundadores.length)}${r.fundadores.length === 300 ? '+' : ''}</h2>
+      <input id="fq" type="search" placeholder="Buscar @…" value="${esc(q)}" autocapitalize="none" style="margin-bottom:10px">
+      ${r.fundadores.length ? `<table><tr><th>#</th><th>@</th><th class="n">Coins</th><th class="n">Piezas</th></tr>${r.fundadores.map(f => `<tr><td>${f.ord}</td><td><b>${esc(f.handle)}</b><br><span class="pill">${cuando(f.t)}${f.clave ? ' · 🔑' : ''}${f.regaloOk ? ' · 🎁' : ''}${f.traje ? ' · traje ' + esc(TRN[f.traje] || f.traje) : ''}${f.num ? ' · pixelito #' + f.num : ' · nuevo'}</span></td><td class="n">${n(f.coins)}</td><td class="n">${n(f.piezas)}</td></tr>`).join('')}</table>
+      <p class="muted">🔑 tiene contraseña · 🎁 recibió el regalo de fundador</p>` : '<div class="empty">Nadie con ese @.</div>'}</div>`;
+  },
+  async ventas() {
+    const tipo = V._t || '';
+    const r = await api('GET', 'ventas' + (tipo ? '?tipo=' + tipo : ''));
+    const TT = { pack: ['Venta', 'v'], compra: ['Compra', 'c'], regalo: ['Regalo', 'r'] };
+    const det = m => m.tipo === 'compra' ? (() => { const [tr, pz] = String(m.detalle || '').split(':'); return (pz || '').length === 4 ? 'Traje ' + (TRN[tr] || tr) + ' completo' : (pz || '').split('').map(k => PZ[k]).join(', ') + ' de ' + (TRN[tr] || tr); })() : m.tipo === 'pack' ? String(m.detalle || '').replace(/monedas-/g, '').replace(' (prueba)', '') + ' coins' : 'Regalo de fundador';
+    return `<div class="card"><h2>MOVIMIENTOS</h2>
+      <div class="seg">${[['', 'Todo'], ['pack', 'Ventas US$'], ['compra', 'Compras de ropa'], ['regalo', 'Regalos'], ['prueba', 'Pruebas']].map(([k, t]) => `<button data-t="${k}" class="${tipo === k ? 'on' : ''}">${t}</button>`).join('')}</div>
+      ${r.movimientos.length ? `<table><tr><th>Qué</th><th>@</th><th class="n">Coins</th></tr>${r.movimientos.map(m => `<tr><td><span class="tag ${m.prueba ? 't' : (TT[m.tipo] || ['', 't'])[1]}">${m.prueba ? 'Prueba' : (TT[m.tipo] || [m.tipo])[0]}</span>${m.usd ? ` <b>${usd(m.usd)}</b>` : ''}<br><span class="pill">${esc(det(m))} · ${cuando(m.t)}</span></td><td>${esc(m.handle)}</td><td class="n" style="color:${m.coins < 0 ? '#C62828' : 'var(--grn)'}">${m.coins > 0 ? '+' : ''}${n(m.coins)}</td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hay movimientos acá.</div>'}</div>`;
+  },
+  async pedidos() {
+    const r = await api('GET', 'pedidos');
+    const pend = r.pedidos.filter(p => !p.hecho).length; $('bdPed').hidden = !pend; $('bdPed').textContent = pend;
+    return `<div class="card"><h2>PEDIDOS POR DM</h2><p class="muted" style="margin-top:0">Cuando alguien manda <b>BORRAR</b> por DM llega acá. Borrá sus datos a mano y marcalo como hecho.</p>
+      ${r.pedidos.length ? `<table>${r.pedidos.map(p => `<tr><td><span class="tag ${p.hecho ? 't' : 'x'}">${p.tipo === 'borrar' ? 'BORRAR' : esc(p.tipo)}</span> <b>${esc(p.handle)}</b><br><span class="pill">${cuando(p.t)}${p.hecho ? ' · hecho ' + cuando(p.hecho) : ''}</span>${p.texto ? `<br><span class="muted">“${esc(p.texto)}”</span>` : ''}</td><td class="n"><button class="btn ${p.hecho ? '' : 'main'}" data-hecho="${p.id}" data-des="${p.hecho ? 1 : ''}">${p.hecho ? 'Reabrir' : 'Hecho'}</button></td></tr>`).join('')}</table>` : '<div class="empty">No hay pedidos.</div>'}</div>`;
+  },
+  async avisos() {
+    const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent), app = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    const ok = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+    let sub = null; if (ok) { try { const reg = await navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }); await navigator.serviceWorker.ready; sub = await reg.pushManager.getSubscription(); } catch (e) {} }
+    const r = await api('GET', 'avisos' + (sub ? '?ep=' + encodeURIComponent(sub.endpoint) : '')); V._av = r;
+    let top;
+    if (!ok && isIOS && !app) top = `<h2>PASO PREVIO EN IPHONE</h2><p class="muted">En iPhone los avisos solo funcionan desde la app agregada a la pantalla de inicio (iOS 16.4 o más).</p>
+      <ol class="steps"><li>Tocá <b>Compartir</b> en Safari (el cuadrado con la flecha).</li><li>Elegí <b>Agregar a inicio</b> → <b>Agregar</b>. Se llama “Pixépolis Admin”.</li><li>Abrila desde el inicio, entrá a <b>Avisos</b> y tocá <b>Activar avisos</b>.</li></ol>`;
+    else if (!ok) top = `<h2>AVISOS</h2><p class="muted">Este navegador no admite notificaciones.</p>`;
+    else if (Notification.permission === 'denied') top = `<h2>AVISOS BLOQUEADOS</h2><p class="muted">${isIOS ? 'Abrí Ajustes → Notificaciones → Pixépolis Admin y activá “Permitir notificaciones”.' : 'Permitilos desde el candado de la barra de direcciones y recargá.'}</p>`;
+    else if (!r.sub) top = `<h2>AVISOS EN ESTE DISPOSITIVO</h2><p class="muted">Te llega una notificación con cada venta, compra, fundador nuevo, pedido por DM o problema.</p><button class="btn main" data-a="on">🔔 Activar avisos</button>`;
+    else top = `<h2>AVISOS ACTIVADOS ✅</h2><p class="muted">Elegí qué te llega a este dispositivo.</p>
+      ${r.types.map(t => `<div class="pref"><span><small>${esc(t.g)}</small>${esc(t.name)}</span><input type="checkbox" class="sw" data-p="${t.id}" ${r.sub.prefs[t.id] === false ? '' : 'checked'} aria-label="${esc(t.name)}"></div>`).join('')}
+      <div class="row" style="margin-top:12px"><button class="btn main" data-a="test">Mandar prueba</button><button class="btn" data-a="off">Desactivar acá</button></div>`;
+    return `<div class="card">${top}<p class="muted" style="margin-bottom:0">Dispositivos con avisos: ${n(r.dispositivos)}</p></div>
+      <div class="card"><h2>ÚLTIMOS AVISOS</h2>${r.log.length ? `<table>${r.log.map(a => `<tr><td><b>${esc(a.title)}</b><br><span class="muted">${esc(a.body)}</span><br><span class="pill">${cuando(a.t)} · ${a.sent ? 'llegó a ' + a.sent : 'sin dispositivos'}</span></td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hubo avisos.</div>'}</div>`;
+  },
+};
+const unb64 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); };
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-t]'); if (t) { V._t = t.dataset.t; show('ventas', true); return; }
+  const h = e.target.closest('[data-hecho]'); if (h) { await api('POST', 'pedidos/hecho', { id: +h.dataset.hecho, deshacer: !!h.dataset.des }); show('pedidos', true); return; }
+  const a = e.target.closest('[data-a]'); if (!a) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (a.dataset.a === 'on') {
+      if ((await Notification.requestPermission()) !== 'granted') { show('avisos', true); return; }
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: unb64(V._av.pub) });
+      await api('POST', 'push', { sub: sub.toJSON() }); toast('Avisos activados en este dispositivo');
+    }
+    if (a.dataset.a === 'test') { const r = await api('POST', 'push/test'); toast(r.sent ? 'Aviso enviado: te llega en unos segundos' : 'No llegó. Desactivá y volvé a activar.'); }
+    if (a.dataset.a === 'off') { const sub = await reg.pushManager.getSubscription(); if (sub) { await api('POST', 'push/off', { ep: sub.endpoint }); await sub.unsubscribe(); } toast('Avisos desactivados acá'); }
+    show('avisos', true);
+  } catch (err) { toast(err.message || 'No se pudo'); }
+});
+document.addEventListener('change', async e => {
+  const c = e.target.closest('[data-p]'); if (!c) return;
+  const prefs = {}; document.querySelectorAll('[data-p]').forEach(x => { prefs[x.dataset.p] = x.checked; });
+  try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); await api('POST', 'push/prefs', { ep: sub.endpoint, prefs }); toast(c.checked ? 'Ese aviso te llega' : 'Ese aviso ya no te llega acá'); } catch (err) { c.checked = !c.checked; toast('No se pudo guardar'); }
+});
+
+let cur = null;
+async function show(v, quiet) {
+  if (!V[v]) v = 'resumen'; cur = v;
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  if (!quiet) $('app').innerHTML = '<div class="empty">Cargando…</div>';
+  try { const html = await V[v](); if (cur === v) { const y = scrollY; $('app').innerHTML = html; if (quiet) scrollTo(0, y); } }
+  catch (e) { if (e.auth) { SES.set(e.auth === 403 ? SES.get() : null); login(e.auth === 403 ? 'Esa cuenta no es administradora. Entrá con @georgeelhumano.' : ''); } else $('app').innerHTML = `<div class="card"><div class="empty">${esc(e.message)}</div><button class="btn" onclick="show(cur)">Reintentar</button></div>`; }
+}
+addEventListener('hashchange', () => show(location.hash.slice(1)));
+navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.nav) { location.href = e.data.nav; show(location.hash.slice(1)); } });
+// se actualiza solo cada minuto mientras está abierto
+setInterval(() => { if (!document.hidden && cur && cur !== 'avisos' && !$('nav').hidden && !(document.activeElement && document.activeElement.id === 'fq')) show(cur, true); }, 60e3);
+function go() {
+  if (!SES.get()) return login();
+  $('nav').hidden = false; $('out').hidden = false; $('who').textContent = '@georgeelhumano';
+  show(location.hash.slice(1) || 'resumen');
+}
+go();
+</script>
+</body>
+</html>

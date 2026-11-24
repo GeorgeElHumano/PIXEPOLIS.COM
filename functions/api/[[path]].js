@@ -13,6 +13,7 @@
 //   POST /api/dev/dm           {from, text}  simula el DM (solo con la variable DEV=1, para probar en local)
 //   GET  /api/ig               verificación del webhook de Instagram (Meta)
 //   POST /api/ig               mensajes de Instagram: responde a RECLAMAR con el link
+//   GET  /api/admin/...        panel de administración (solo @georgeelhumano): resumen, reclamos, ventas y avisos push
 //
 // Variables (wrangler secret put / panel de Cloudflare):
 //   DEV=1            habilita /api/dev/dm (NO ponerla en producción)
@@ -20,7 +21,10 @@
 //   IG_APP_SECRET    secreto de la app de Meta (firma de los avisos)
 //   IG_TOKEN         token de la cuenta @somoslospixelitos para responder mensajes
 
+import { ALERT_TYPES, alertSchema, alert, once, vapid, pyDay, pyDayStart } from '../../lib/alerts.js';
+
 const LINK_HOURS = 24;
+const ADMIN = env => handleOf(env.ADMIN || 'georgeelhumano'); // cuenta de administrador (panel /admin/)
 // Tienda: 15 trajes (los mismos ids que en public/index.html). Los que reclaman antes de META_REGALO seguidores eligen uno gratis.
 const TRAJES = ['cowboy', 'astronauta', 'pirata', 'chef', 'bombero', 'mago', 'caballero', 'ninja', 'rockero', 'surfista', 'explorador', 'heroe', 'navidad', 'vampiro', 'robot'];
 const META_REGALO = 1000;
@@ -66,6 +70,7 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS intentos(k TEXT PRIMARY KEY, n INTEGER NOT NULL, t INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS billetera(handle TEXT PRIMARY KEY, coins INTEGER NOT NULL DEFAULT 0, upd INTEGER)`,
   `CREATE TABLE IF NOT EXISTS armario(handle TEXT NOT NULL, pieza TEXT NOT NULL, t INTEGER NOT NULL, PRIMARY KEY(handle, pieza))`,
+  `CREATE TABLE IF NOT EXISTS pedidos(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT NOT NULL, tipo TEXT NOT NULL, texto TEXT, t INTEGER NOT NULL, hecho INTEGER)`,
   `CREATE TABLE IF NOT EXISTS movimientos(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT NOT NULL, tipo TEXT NOT NULL, coins INTEGER NOT NULL, detalle TEXT, ref TEXT UNIQUE, t INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS movimientos_handle ON movimientos(handle)`,
 ];
@@ -129,6 +134,18 @@ async function stats(db, D, env) {
   const ig = await seguidores(env);
   // total = seguidores de Instagram en vivo; sin conexión a Instagram, los pixelitos conocidos
   return { total: ig ?? enReel + nuevos, claimed, day: D.day, enVivo: ig !== null };
+}
+// Avisos de seguidores (cada 100 y las metas) y de Instagram desconectado
+async function metaCheck(db, st, env) {
+  try {
+    if (env.IG_TOKEN && IGERR) await alert(db, 'problema', 'Instagram no responde', 'No pudimos leer los seguidores: ' + IGERR.slice(0, 120), { key: 'igerr', every: 6 * 3600e3, url: '/admin/' });
+    if (!st.enVivo) return;
+    const c = Math.floor(st.total / 100) * 100;
+    if (c >= 100 && await once(db, 'meta:' + c, 3650 * 864e5)) {
+      const META = { 1000: '¡1.000 seguidores! Se terminó el regalo de 300 Pixel Coins.', 2500: '¡2.500 seguidores! Toca el evento especial en los Reels.', 5000: '¡5.000 seguidores! Abre Pixépolis.' };
+      await alert(db, 'meta', META[c] ? 'Meta cumplida' : `${c.toLocaleString('es')} seguidores`, META[c] || `Llegamos a ${c.toLocaleString('es')} seguidores (${st.claimed} pixelitos reclamados).`, { url: '/admin/' });
+    }
+  } catch (e) {}
 }
 const pickC = arr => arr[Math.floor(Math.random() * arr.length)];
 // Pixelito de alguien que nos sigue pero todavía no salió en un Reel
@@ -303,15 +320,23 @@ async function igSend(env, id, text) {
   const j = await r.json().catch(() => ({}));
   log({ ev: r.ok ? 'respuesta enviada' : 'respuesta error', msg: r.ok ? undefined : (j.error && j.error.message) || r.status });
 }
-async function igHandle(env, db, D, payload, origin) {
+const BORRAR = /\bborrar\b/i;
+async function igHandle(env, db, D, payload, origin, av) {
   for (const e of payload.entry || []) {
     for (const m of e.messaging || []) {
       const text = m.message && !m.message.is_echo ? m.message.text || '' : '';
-      const modo = RESET.test(text) ? 'reset' : WORD.test(text) ? 'reclamar' : null;
+      const modo = RESET.test(text) ? 'reset' : WORD.test(text) ? 'reclamar' : BORRAR.test(text) ? 'borrar' : null;
       log({ ev: 'mensaje', modo });
       if (!modo) continue;
       const u = await igPerfil(env, m.sender.id);
       if (!u) continue;
+      if (modo === 'borrar') {
+        await db.prepare('INSERT INTO pedidos(handle, tipo, texto, t) VALUES(?,?,?,?)').bind(u.handle, 'borrar', text.slice(0, 300), now()).run();
+        av('borrar', 'Pedido de BORRAR datos', `${u.handle} pidió borrar sus datos. Revisalo en el panel.`, { url: '/admin/#pedidos' });
+        await igSend(env, m.sender.id, 'Recibimos tu pedido para borrar tus datos de Pixépolis. Lo hacemos a mano en los próximos días y te avisamos por acá.');
+        continue;
+      }
+      if (modo === 'reset') av('restablecer', 'Pedido de contraseña', `${u.handle} pidió restablecer su contraseña por DM.`, { url: '/admin/#fundadores' });
       const r = await botReply(db, D, env, u.handle, origin, u.sigue, modo);
       await igSend(env, m.sender.id, r.text);
     }
@@ -328,8 +353,14 @@ export async function onRequest(ctx) {
   try {
     await init(db);
     const D = await loadData(ctx);
+    // avisos push al admin: se mandan después de responder, así no demoran nada
+    const av = (type, title, body, opt) => ctx.waitUntil(alert(db, type, title, body, opt));
 
-    if (path === 'stats' && M === 'GET') return json({ ...(await stats(db, D, env)), islas: D.islas });
+    if (path === 'stats' && M === 'GET') {
+      const st = await stats(db, D, env);
+      ctx.waitUntil(metaCheck(db, st, env));
+      return json({ ...st, islas: D.islas });
+    }
     if (path === 'ig-estado' && M === 'GET') {
       const n = await seguidores(env);
       return json({ conectado: n !== null, seguidores: n, tipo: env.IG_TOKEN ? (String(env.IG_TOKEN).startsWith('IG') ? 'instagram' : 'facebook') : 'sin token', error: IGERR || null, ultimos: LOG });
@@ -351,6 +382,7 @@ export async function onRequest(ctx) {
       if (!claveOk(b.clave)) return fail('La contraseña tiene que tener entre 6 y 72 caracteres.');
       const ya = await db.prepare('SELECT 1 FROM cuentas WHERE handle=?').bind(ti.handle).first();
       if (ya && !ti.dm) return fail('Para cambiar la contraseña, mandá RESTABLECER por DM y entrá con el link que te llega.', 403);
+      if (!ya) av('cuenta', 'Contraseña nueva', `${ti.handle} creó su contraseña y ya entra directo en pixepolis.com.`, { url: '/admin/#fundadores' });
       const salt = hex(crypto.getRandomValues(new Uint8Array(16))), h = await pbkdf2(b.clave, salt), t = now();
       await db.batch([
         db.prepare('INSERT INTO cuentas(handle, salt, hash, t, upd) VALUES(?1,?2,?3,?4,?4) ON CONFLICT(handle) DO UPDATE SET salt=excluded.salt, hash=excluded.hash, upd=excluded.upd').bind(ti.handle, salt, h, t),
@@ -416,13 +448,15 @@ export async function onRequest(ctx) {
         ...faltan.map(k => db.prepare('INSERT OR IGNORE INTO armario(handle, pieza, t) VALUES(?,?,?)').bind(h, piezaId(b.traje, k), t)),
         db.prepare('INSERT INTO movimientos(handle, tipo, coins, detalle, t) VALUES(?,?,?,?,?)').bind(h, 'compra', -precio, `${b.traje}:${faltan.join('')}`, t),
       ]);
+      const NOM = { c: 'gorra', t: 'remera', p: 'pantalón', f: 'zapatos' };
+      av('compra', `Compra · ${precio} coins`, `${h} compró ${faltan.length === 4 ? 'el traje ' + b.traje + ' completo' : faltan.map(k => NOM[k]).join(', ') + ' de ' + b.traje}.`, { url: '/admin/#ventas' });
       return json({ ok: true, precio, compradas: faltan, ...(await bolsillo(db, h)) });
     }
 
     // Avisos de Xsolla: validar usuario y acreditar coins cuando el pago se confirma
     if (path === 'xsolla' && M === 'POST') {
       const body = await req.text();
-      if (!(await xsollaValido(req, body, env.XSOLLA_WEBHOOK_SECRET))) return json({ error: { code: 'INVALID_SIGNATURE' } }, 400);
+      if (!(await xsollaValido(req, body, env.XSOLLA_WEBHOOK_SECRET))) { av('problema', 'Aviso de pago rechazado', 'Llegó un aviso a /api/xsolla con firma inválida (puede ser la clave del webhook mal cargada).', { key: 'xsfirma', every: 3600e3, url: '/admin/' }); return json({ error: { code: 'INVALID_SIGNATURE' } }, 400); }
       let n = {}; try { n = JSON.parse(body); } catch (e) {}
       const h = handleOf(n.user && (n.user.external_id || n.user.id));
       log({ ev: 'xsolla', tipo: n.notification_type });
@@ -434,7 +468,10 @@ export async function onRequest(ctx) {
         const items = (n.items || (n.purchase && n.purchase.virtual_items && n.purchase.virtual_items.items) || []);
         const ref = 'xs-' + ((n.order && n.order.id) || (n.transaction && n.transaction.id) || '');
         let coins = 0; for (const it of items) { const pk = PACKS[it.sku]; if (pk) coins += pk[0] * (+it.quantity || 1); }
-        if (HANDLE_RE.test(h) && coins > 0 && ref !== 'xs-') await acreditar(db, h, coins, 'pack', items.map(i => i.sku).join(','), ref);
+        if (HANDLE_RE.test(h) && coins > 0 && ref !== 'xs-' && await acreditar(db, h, coins, 'pack', items.map(i => i.sku).join(','), ref)) {
+          const usd = items.reduce((a, it) => a + ((PACKS[it.sku] || [0, 0])[1] * (+it.quantity || 1)), 0);
+          av('venta', `Venta · US$ ${usd}`, `${h} compró ${coins.toLocaleString('es')} Pixel Coins.`, { url: '/admin/#ventas' });
+        }
         return new Response(null, { status: 204 });
       }
       if (n.notification_type === 'refund' || n.notification_type === 'order_canceled') log({ ev: 'xsolla devolución', ref: n.order && n.order.id });
@@ -466,9 +503,76 @@ export async function onRequest(ctx) {
       L.piezas = 'ctpf'.split('').filter(k => L.regalo && L.ropa[k] === L.regalo).join('');
       const look = JSON.stringify(L);
       const t = now();
+      if (!prevRow) av('reclamo', 'Nuevo fundador', `${h} reclamó su pixelito${L.regaloOk ? ' (con 300 Pixel Coins de regalo)' : ''}.`, { url: '/admin/#fundadores' });
       await db.prepare(`INSERT INTO reclamos(handle, num, ord, look, t, upd) VALUES(?1, ?2, (SELECT COALESCE(MAX(ord),0)+1 FROM reclamos), ?3, ?4, ?4)
         ON CONFLICT(handle) DO UPDATE SET look=excluded.look, upd=excluded.upd`).bind(h, p.num || 0, look, t).run();
       return json(await mine(db, D, env, h));
+    }
+
+    /* ---------- panel de administración (/admin/) · solo la cuenta ADMIN ---------- */
+    if (path.startsWith('admin/')) {
+      const tok = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '') || url.searchParams.get('t');
+      const ti = await tokenInfo(db, tok);
+      if (!ti) return fail('Entrá con tu @ y tu contraseña.', 401);
+      if (ti.handle !== ADMIN(env)) return fail('Esta cuenta no es administradora.', 403);
+      await alertSchema(db);
+      const sub = path.slice(6), all = async (q, ...b) => (await db.prepare(q).bind(...b).all()).results || [], one = async (q, ...b) => (await db.prepare(q).bind(...b).first()) || {};
+      const usdDe = det => String(det || '').split(',').reduce((a, sku) => a + ((PACKS[sku.trim()] || [0, 0])[1]), 0);
+      const REAL = "tipo='pack' AND ref NOT LIKE 'prueba-%'";
+
+      if (sub === 'resumen' && M === 'GET') {
+        const st = await stats(db, D, env), hoy = pyDayStart(pyDay()), sem = now() - 7 * 864e5, d14 = pyDayStart(pyDay(now() - 13 * 864e5));
+        const rc = await one('SELECT COUNT(*) n, SUM(t>=?) hoy, SUM(t>=?) sem FROM reclamos', hoy, sem);
+        const cl = await one('SELECT COUNT(*) n FROM cuentas');
+        const bil = await one('SELECT COALESCE(SUM(coins),0) n FROM billetera');
+        const mv = await one(`SELECT COALESCE(SUM(CASE WHEN tipo='regalo' THEN coins END),0) regaladas, COALESCE(SUM(CASE WHEN ${REAL} THEN coins END),0) vendidas, COALESCE(-SUM(CASE WHEN tipo='compra' THEN coins END),0) gastadas, COUNT(CASE WHEN tipo='compra' THEN 1 END) compras, COUNT(DISTINCT CASE WHEN tipo='compra' THEN handle END) compradores, COUNT(CASE WHEN tipo='pack' AND ref LIKE 'prueba-%' THEN 1 END) prueba FROM movimientos`);
+        const packs = await all(`SELECT detalle, t FROM movimientos WHERE ${REAL}`);
+        let usd = 0, usdHoy = 0, usdSem = 0; for (const x of packs) { const u = usdDe(x.detalle); usd += u; if (x.t >= hoy) usdHoy += u; if (x.t >= sem) usdSem += u; }
+        // últimos 14 días: reclamos, compras con coins y US$ vendidos
+        const dias = []; for (let i = 13; i >= 0; i--) dias.push({ day: pyDay(now() - i * 864e5), reclamos: 0, compras: 0, usd: 0 });
+        const idx = t => dias.findIndex(d => d.day === pyDay(t));
+        for (const r of await all('SELECT t FROM reclamos WHERE t>=?', d14)) { const i = idx(r.t); if (i >= 0) dias[i].reclamos++; }
+        for (const r of await all("SELECT t FROM movimientos WHERE tipo='compra' AND t>=?", d14)) { const i = idx(r.t); if (i >= 0) dias[i].compras++; }
+        for (const r of packs) if (r.t >= d14) { const i = idx(r.t); if (i >= 0) dias[i].usd += usdDe(r.detalle); }
+        const top = await all("SELECT substr(pieza,1,instr(pieza,'-')-1) traje, COUNT(*) piezas FROM armario GROUP BY traje ORDER BY piezas DESC LIMIT 8");
+        const pend = await one('SELECT COUNT(*) n FROM pedidos WHERE hecho IS NULL');
+        return json({ seguidores: st.total, enVivo: st.enVivo, dia: D.day, pixelitos: D.P.size, reclamos: { total: rc.n || 0, hoy: rc.hoy || 0, semana: rc.sem || 0 }, conClave: cl.n || 0,
+          coins: { enBilleteras: bil.n, regaladas: mv.regaladas, vendidas: mv.vendidas, gastadas: mv.gastadas }, compras: { n: mv.compras, personas: mv.compradores },
+          ventas: { usd, hoy: usdHoy, semana: usdSem, n: packs.length, prueba: mv.prueba }, dias, top, pedidos: pend.n || 0, pagos: pagosModo(env), meta: META_REGALO });
+      }
+      if (sub === 'fundadores' && M === 'GET') {
+        const q = '%' + String(url.searchParams.get('q') || '').toLowerCase().replace(/[%_]/g, '') + '%';
+        const rows = await all(`SELECT r.handle, r.ord, r.num, r.t, r.look, COALESCE(b.coins,0) coins, (SELECT COUNT(*) FROM armario a WHERE a.handle=r.handle) piezas, (SELECT COUNT(*) FROM cuentas c WHERE c.handle=r.handle) clave
+          FROM reclamos r LEFT JOIN billetera b ON b.handle=r.handle WHERE r.handle LIKE ? ORDER BY r.ord DESC LIMIT 300`, q);
+        return json({ fundadores: rows.map(r => { let L = {}; try { L = JSON.parse(r.look); } catch (e) {} return { handle: r.handle, ord: r.ord, num: r.num, t: r.t, coins: r.coins, piezas: r.piezas, clave: !!r.clave, regaloOk: !!L.regaloOk, traje: L.regalo || '' }; }) });
+      }
+      if (sub === 'ventas' && M === 'GET') {
+        const tipo = url.searchParams.get('tipo');
+        const w = tipo === 'pack' ? `WHERE ${REAL}` : tipo === 'compra' ? "WHERE tipo='compra'" : tipo === 'regalo' ? "WHERE tipo='regalo'" : tipo === 'prueba' ? "WHERE tipo='pack' AND ref LIKE 'prueba-%'" : '';
+        const rows = await all(`SELECT id, handle, tipo, coins, detalle, ref, t FROM movimientos ${w} ORDER BY id DESC LIMIT 200`);
+        return json({ movimientos: rows.map(r => ({ ...r, usd: r.tipo === 'pack' && !String(r.ref || '').startsWith('prueba-') ? usdDe(r.detalle) : 0, prueba: String(r.ref || '').startsWith('prueba-') })) });
+      }
+      if (sub === 'pedidos' && M === 'GET') return json({ pedidos: await all('SELECT * FROM pedidos ORDER BY (hecho IS NOT NULL), id DESC LIMIT 200') });
+      if (sub === 'pedidos/hecho' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('UPDATE pedidos SET hecho=? WHERE id=?').bind(b.deshacer ? null : now(), +b.id || 0).run(); return json({ ok: true }); }
+      if (sub === 'avisos' && M === 'GET') {
+        const ep = url.searchParams.get('ep'), V = await vapid(db);
+        const s1 = ep ? await db.prepare('SELECT prefs FROM pushsub WHERE ep=?').bind(ep).first() : null;
+        const n = await one('SELECT COUNT(*) n FROM pushsub');
+        return json({ pub: V.pub, types: ALERT_TYPES, sub: s1 ? { prefs: JSON.parse(s1.prefs || '{}') } : null, dispositivos: n.n || 0, log: await all('SELECT type, title, body, t, sent FROM alertlog ORDER BY id DESC LIMIT 40') });
+      }
+      if (sub === 'push' && M === 'POST') {
+        const b = await req.json().catch(() => ({})), x = b.sub || {};
+        if (!/^https:\/\//.test(x.endpoint || '') || !x.keys || !x.keys.p256dh || !x.keys.auth) return fail('Suscripción inválida.');
+        await db.prepare("INSERT INTO pushsub(ep, uid, p256, auth, prefs, ua, t) VALUES(?,?,?,?,'{}',?,?) ON CONFLICT(ep) DO UPDATE SET p256=excluded.p256, auth=excluded.auth, uid=excluded.uid, fails=0").bind(x.endpoint, ti.handle, x.keys.p256dh, x.keys.auth, (req.headers.get('user-agent') || '').slice(0, 160), now()).run();
+        return json({ ok: true });
+      }
+      if (sub === 'push/off' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('DELETE FROM pushsub WHERE ep=?').bind(String(b.ep || '')).run(); return json({ ok: true }); }
+      if (sub === 'push/prefs' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('UPDATE pushsub SET prefs=? WHERE ep=?').bind(JSON.stringify(b.prefs || {}), String(b.ep || '')).run(); return json({ ok: true }); }
+      if (sub === 'push/test' && M === 'POST') {
+        const sent = await alert(db, 'meta', 'Prueba de avisos ✅', 'Así te van a llegar los avisos de Pixépolis.', { url: '/admin/' });
+        return json({ sent });
+      }
+      return fail('No existe', 404);
     }
 
     if (path === 'dev/dm' && M === 'POST') {
@@ -477,6 +581,8 @@ export async function onRequest(ctx) {
       const h = handleOf(b.from);
       if (!HANDLE_RE.test(h)) return fail('Usuario no válido');
       const modo = RESET.test(b.text || '') ? 'reset' : WORD.test(b.text || '') ? 'reclamar' : null;
+      if (!modo && BORRAR.test(b.text || '')) { await db.prepare('INSERT INTO pedidos(handle, tipo, texto, t) VALUES(?,?,?,?)').bind(h, 'borrar', String(b.text).slice(0, 300), now()).run(); av('borrar', 'Pedido de BORRAR datos', `${h} pidió borrar sus datos.`, { url: '/admin/#pedidos' }); return json({ kind: 'ok', text: 'Recibimos tu pedido para borrar tus datos.' }); }
+      if (modo === 'reset') av('restablecer', 'Pedido de contraseña', `${h} pidió restablecer su contraseña por DM.`, { url: '/admin/#fundadores' });
       if (!modo) return json({ kind: 'ignore', text: '(El bot responde a RECLAMAR y a RESTABLECER)' });
       return json(await botReply(db, D, env, h, url.origin, typeof b.sigue === 'boolean' ? b.sigue : undefined, modo));
     }
@@ -491,7 +597,7 @@ export async function onRequest(ctx) {
       if (!(await igValid(req, body, env.IG_APP_SECRET))) { log({ ev: 'firma inválida' }); return new Response('firma', { status: 401 }); }
       let pl = {}; try { pl = JSON.parse(body); } catch (e) {}
       log({ ev: 'webhook', obj: pl.object, campos: (pl.entry || []).map(e => Object.keys(e).join('+')).join(',') });
-      ctx.waitUntil(igHandle(env, db, D, pl, url.origin).catch(e => log({ ev: 'error', msg: String(e && e.message || e) })));
+      ctx.waitUntil(igHandle(env, db, D, pl, url.origin, av).catch(e => log({ ev: 'error', msg: String(e && e.message || e) })));
       return new Response('ok');
     }
 

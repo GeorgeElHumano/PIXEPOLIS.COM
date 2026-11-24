@@ -92,3 +92,11 @@ Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_A
 - Paquetes (únicos productos en Xsolla): 300/$3, 500/$5, 1.100/$10, 3.000/$25, 6.500/$50, 14.000/$100.
 - Modos (`pagos` en `/api/yo`): `pronto` (producción sin claves: los paquetes dicen "muy pronto", pero las coins que ya tenés se gastan igual), `prueba` (DEV=1: los paquetes se acreditan gratis), `xsolla` (con XSOLLA_API_KEY, XSOLLA_PROJECT, XSOLLA_MERCHANT y XSOLLA_WEBHOOK_SECRET: abre la página de pago y las coins entran por el webhook `/api/xsolla`). Vuelve a `/?t=…&pago=ok` y la web espera la confirmación.
 - `XSOLLA_SANDBOX` = sandbox por defecto; poner `0` para cobrar de verdad.
+
+## Panel de administración (/admin/)
+
+- `https://pixepolis.com/admin/`: solo entra **@georgeelhumano** (variable opcional `ADMIN` para cambiarlo), con la misma contraseña de pixepolis.com.
+- **Resumen:** seguidores en vivo, fundadores (hoy / 7 días), ventas en US$ (solo pagos reales de Xsolla), compras de ropa, Pixel Coins (en billeteras, regaladas, vendidas, gastadas), gráfico de 14 días y trajes más comprados.
+- **Fundadores:** lista con buscador (coins, piezas, si tiene contraseña y regalo). **Ventas:** todos los movimientos, con filtros. **Pedidos:** los BORRAR que llegan por DM, para marcarlos como hechos.
+- **Avisos push** (igual que NOX, Web Push con claves VAPID guardadas en D1, sin secretos): venta, compra, fundador nuevo, contraseña creada, cada 100 seguidores y metas, BORRAR, RESTABLECER y problemas (Instagram caído o aviso de pago con firma inválida). En iPhone hay que agregar "Pixépolis Admin" a inicio (iOS 16.4+) y activar desde la pestaña Avisos.
+- Archivos: `public/admin/` (página, `sw.js`, manifest), `lib/alerts.js`. Tablas: `pedidos`, `pushsub`, `pushkv`, `alertlog`.
