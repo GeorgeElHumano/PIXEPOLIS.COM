@@ -137,6 +137,9 @@
   .gift .btn { margin-top:10px; }
   .gift .chips { margin-top:10px; grid-template-columns:repeat(2,minmax(0,1fr)); }
   .pzbox { border:3px solid var(--ink); border-radius:10px; background:#FFF8D6; padding:12px; margin:12px 0 4px; }
+  .trajes #pzBox { grid-column:1 / -1; }
+  .trajes #pzBox .pzbox { margin:2px 0 6px; animation:pzIn .18s ease-out; }
+  @keyframes pzIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
   .pzbox .pzh { font:800 15px Inter, sans-serif; margin-bottom:8px; }
   .pzbox .pzs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
   .pzbox .pzs button { font:700 13px/1.25 Inter, sans-serif; padding:9px 6px; min-height:52px; border-radius:8px; border:3px solid var(--ink); background:#fff; cursor:pointer; color:var(--ink); }
@@ -954,11 +957,14 @@ function renderIslas() {
 function renderShop() {
   const base = { ...curMe(true).L, traje: null }, c = me.claim, total = me.stats ? me.stats.total : 0;
   const pu = puesto();
+  $('trajes').after($('pzBox')); // lo sacamos de la grilla antes de redibujarla
   $('trajes').innerHTML = TRAJES.map(id => {
     const mio = tuyas().includes(id), algo = algunaTuya(id), on = sel === id, prueba = SLOTS.split('').some(k => probando[k] === id);
     const tag = mio ? '<span class="tg b">TUYO</span>' : prueba ? '<span class="tg y">PROBANDO</span>' : algo ? '<span class="tg b">TENÉS PIEZAS</span>' : '<span class="tg">300 COINS</span>';
     return `<button class="traje ${on ? 'on' : ''} ${mio ? 'mio' : ''}" data-tr="${id}"><canvas width="54" height="117" data-tt="${id}"></canvas><div class="tn">${TR[id].n}</div><div class="tp">300 · pieza 100</div>${tag}</button>`;
   }).join('');
+  // las partes se abren justo debajo de la fila del traje tocado (3 por fila)
+  if (sel) { const i = TRAJES.indexOf(sel), fin = Math.min(TRAJES.length - 1, Math.floor(i / 3) * 3 + 2); document.querySelector(`[data-tr="${TRAJES[fin]}"]`).after($('pzBox')); }
   TRAJES.forEach(id => { const cv = document.querySelector(`[data-tt="${id}"]`), x = cv.getContext('2d'); x.clearRect(0, 0, 54, 117); drawHD(x, { ...base, traje: { c: id, t: id, p: id, f: id } }, 3, 30, 3, {}); });
   // piezas del traje abierto
   let z = '';
@@ -1017,7 +1023,13 @@ document.addEventListener('click', e => {
   const b = e.target.closest('button[data-k]');
   if (b && me) { const k = b.dataset.k; look[k] = b.dataset.v || (k in DEF ? DEF[k] : null); changed(); return; }
   const tj = e.target.closest('[data-tr]');
-  if (tj && me) { const id = tj.dataset.tr; sel = sel === id ? null : id; giftConfirm = null; renderShop(); if (sel) $('pzBox').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  if (tj && me) {
+    const id = tj.dataset.tr, antes = tj.getBoundingClientRect().top;
+    sel = sel === id ? null : id; giftConfirm = null; renderShop();
+    // que el traje tocado quede en el mismo lugar de la pantalla (sin saltos)
+    const ahora = document.querySelector(`[data-tr="${id}"]`).getBoundingClientRect().top; if (ahora !== antes) window.scrollBy(0, ahora - antes);
+    return;
+  }
   const pk = e.target.closest('[data-pack]');
   if (pk && me) { comprarPack(pk.dataset.pack); return; }
   const bu = e.target.closest('[data-buy]');
