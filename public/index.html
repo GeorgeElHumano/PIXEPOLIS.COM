@@ -162,6 +162,8 @@
   .pzbox .row { display:flex; gap:8px; margin-top:8px; }
   .pzbox .row .btn { flex:1; margin:0; font-size:9px; padding:10px 6px; }
   .packs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .avpref { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid #E3E1EC; font:600 14px Inter, sans-serif; }
+  .avpref input { width:22px; height:22px; accent-color:var(--grn); flex:none; }
   .pronto { margin:0 0 14px; padding:10px 12px; background:#E6F7FF; border:3px dashed var(--ink); border-radius:10px; font:600 14px/1.45 Inter, sans-serif; }
   .packs button { border:3px solid var(--ink); border-radius:8px; padding:8px 4px; text-align:center; background:#fff; cursor:pointer; font:inherit; color:inherit; box-shadow:3px 3px 0 var(--ink); }
   .packs button:active { transform:translate(2px,2px); box-shadow:1px 1px 0 var(--ink); }
@@ -262,6 +264,11 @@
       <div class="lbl" style="margin-top:0">POR RECLAMOS</div>
       <div data-st="metas"></div>
     </div>
+    <div class="card avisosCard">
+      <h2>🔔 AVISOS</h2>
+      <p class="muted" style="margin:0 0 10px">Te avisamos cuando sale el Reel nuevo, cuando llega ropa nueva a la tienda y cuánto falta para la próxima meta.</p>
+      <div data-avisos></div>
+    </div>
     <div class="card">
       <h2>PASO A PASO</h2>
       <ol class="steps">
@@ -348,6 +355,11 @@
       <p class="muted" style="margin:14px 0 14px" data-st="metaTxt"></p>
       <div class="lbl" style="margin-top:0">POR RECLAMOS</div>
       <div data-st="metas"></div>
+    </div>
+    <div class="card avisosCard">
+      <h2>🔔 AVISOS</h2>
+      <p class="muted" style="margin:0 0 10px">Te avisamos cuando sale el Reel nuevo, cuando llega ropa nueva a la tienda y cuánto falta para la próxima meta.</p>
+      <div data-avisos></div>
     </div>
   </section>
 
@@ -1293,6 +1305,44 @@ function confetti() {
   (function f() { c.clearRect(0, 0, cv.width, cv.height); let alive = 0; ps.forEach(p => { if (p.l-- <= 0) return; alive++; p.x += p.vx; p.y += p.vy; p.vy += .45; p.vx *= .98; c.fillStyle = p.c; c.fillRect(p.x, p.y, p.s, p.s); }); if (alive) requestAnimationFrame(f); else c.clearRect(0, 0, cv.width, cv.height); })();
 }
 
+/* ---------- avisos (notificaciones push) ---------- */
+const unb64 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); };
+async function avisosRender() {
+  const els = document.querySelectorAll('[data-avisos]'); if (!els.length) return;
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent), app = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const ok = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  let html;
+  if (!ok && ios && !app) html = `<p class="note" style="margin:0">En iPhone los avisos funcionan desde la app: tocá <b>📲 Agregar a inicio</b>, abrila desde la pantalla de inicio y activalos acá.</p>`;
+  else if (!ok) html = `<p class="note" style="margin:0">Este navegador no permite avisos.</p>`;
+  else if (Notification.permission === 'denied') html = `<p class="note" style="margin:0">Bloqueaste los avisos. ${ios ? 'Activalos en Ajustes → Notificaciones → Pixépolis.' : 'Permitilos desde el candado de la barra de direcciones.'}</p>`;
+  else {
+    let sub = null; try { sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); } catch (e) {}
+    let st = { activo: false, prefs: {} }, tipos = [];
+    try { const c = await (await fetch('/api/avisos/clave')).json(); tipos = c.tipos; avisosRender.pub = c.pub; if (sub) st = await (await fetch('/api/avisos/estado?ep=' + encodeURIComponent(sub.endpoint))).json(); } catch (e) {}
+    html = sub && st.activo ? tipos.map(x => `<label class="avpref"><span>${esc(x.name)}</span><input type="checkbox" data-avp="${x.id}" ${st.prefs[x.id] === false ? '' : 'checked'}></label>`).join('') + `<button class="btn" data-av="off" style="margin-top:12px">Desactivar avisos</button>`
+      : `<button class="btn main" data-av="on">🔔 ACTIVAR AVISOS</button>`;
+  }
+  els.forEach(el => { el.innerHTML = html; });
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-av]'); if (!b) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (b.dataset.av === 'on') {
+      if ((await Notification.requestPermission()) !== 'granted') return avisosRender();
+      if (!avisosRender.pub) avisosRender.pub = (await (await fetch('/api/avisos/clave')).json()).pub;
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: unb64(avisosRender.pub) });
+      await fetch('/api/avisos', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), t: (typeof token !== 'undefined' && token) || SES.get() || '' }) });
+    } else { const sub = await reg.pushManager.getSubscription(); if (sub) { await fetch('/api/avisos/off', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ep: sub.endpoint }) }); await sub.unsubscribe(); } }
+  } catch (err) {}
+  avisosRender();
+});
+document.addEventListener('change', async e => {
+  if (!e.target.closest('[data-avp]')) return;
+  const prefs = {}; e.target.closest('[data-avisos]').querySelectorAll('[data-avp]').forEach(x => { prefs[x.dataset.avp] = x.checked; });
+  try { const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription(); await fetch('/api/avisos/prefs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ep: sub.endpoint, prefs }) }); } catch (err) {}
+});
+
 (async function boot() {
   // Modo retrato (?retrato=@x): solo el pixelito reclamado, fondo transparente. Lo usa la rutina del Reel (sorteo diario).
   if (qs.get('retrato')) {
@@ -1320,6 +1370,7 @@ function confetti() {
   }
   $('demoBar').hidden = !DEMO;
   $('simCard').hidden = !(DEMO || qs.get('sim') === '1');
+  avisosRender();
   if (qs.get('t')) route(qs.get('t'), true);
   else if (!DEMO && SES.get()) route(SES.get(), false);
   else route(null);

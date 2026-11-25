@@ -22,7 +22,7 @@
 //   IG_APP_SECRET    secreto de la app de Meta (firma de los avisos)
 //   IG_TOKEN         token de la cuenta @somoslospixelitos para responder mensajes
 
-import { ALERT_TYPES, alertSchema, alert, once, vapid, pyDay, pyDayStart } from '../../lib/alerts.js';
+import { ALERT_TYPES, alertSchema, alert, once, vapid, pyDay, pyDayStart, PX_TYPES, pxSchema, difundir } from '../../lib/alerts.js';
 
 const LINK_HOURS = 24;
 const ADMIN = env => handleOf(env.ADMIN || 'georgeelhumano'); // cuenta de administrador (panel /admin/)
@@ -140,7 +140,21 @@ async function stats(db, D, env) {
 async function metaCheck(db, st, env) {
   try {
     if (env.IG_TOKEN && IGERR) await alert(db, 'problema', 'Instagram no responde', 'No pudimos leer los seguidores: ' + IGERR.slice(0, 120), { key: 'igerr', every: 6 * 3600e3, url: '/admin/' });
+    // Avisos a usuarios: salió el Reel nuevo (cuando la web pasa a un día nuevo) y "faltan X seguidores"
+    await pxSchema(db);
+    const kv = await db.prepare("SELECT v FROM pushkv WHERE k='px:reeldia'").first();
+    if (!kv) await db.prepare("INSERT OR IGNORE INTO pushkv(k,v,t) VALUES('px:reeldia',?,?)").bind(String(st.day), Date.now()).run();
+    else if (+st.day > +kv.v) {
+      const up = await db.prepare("UPDATE pushkv SET v=?, t=? WHERE k='px:reeldia' AND CAST(v AS INTEGER)<? RETURNING k").bind(String(st.day), Date.now(), +st.day).first();
+      if (up) await difundir(db, 'reel', `¡Salió el Reel del día ${st.day}! 🎬`, 'Mirá qué hicieron los pixelitos y quién ganó el sorteo.', { url: 'https://www.instagram.com/somoslospixelitos/' });
+    }
     if (!st.enVivo) return;
+    const METAS_PX = [[1000, 'los pixelitos cambian de escenario'], [2500, 'evento especial en los Reels'], [5000, '¡abre Pixépolis Club!']];
+    const nx = METAS_PX.find(([n]) => st.total < n);
+    if (nx) for (const th of [100, 50, 10]) {
+      const falta = nx[0] - st.total;
+      if (falta <= th) { await difundir(db, 'metas', `¡Faltan ${falta} seguidores para los ${nx[0].toLocaleString('es')}!`, `Al llegar: ${nx[1]}. Compartí tu pixelito para sumar gente 👾`, { key: `meta:${nx[0]}:${th}`, url: '/' }); break; }
+    }
     const c = Math.floor(st.total / 100) * 100;
     if (c >= 100 && await once(db, 'meta:' + c, 3650 * 864e5)) {
       const META = { 1000: '¡1.000 seguidores!', 2500: '¡2.500 seguidores! Toca el evento especial en los Reels.', 5000: '¡5.000 seguidores! Abre Pixépolis.' };
@@ -531,6 +545,23 @@ export async function onRequest(ctx) {
       return json(await mine(db, D, env, h));
     }
 
+    /* ---------- avisos de la app para los usuarios (notificaciones push) ---------- */
+    if (path.startsWith('avisos')) {
+      await pxSchema(db);
+      const b = M === 'POST' ? await req.json().catch(() => ({})) : {};
+      if (path === 'avisos/clave' && M === 'GET') return json({ pub: (await vapid(db)).pub, tipos: PX_TYPES });
+      if (path === 'avisos/estado' && M === 'GET') { const r = await db.prepare('SELECT prefs FROM pxsub WHERE ep=?').bind(url.searchParams.get('ep') || '').first(); return json({ activo: !!r, prefs: r ? JSON.parse(r.prefs || '{}') : {} }); }
+      if (path === 'avisos' && M === 'POST') {
+        const x = b.sub || {}; const ti = b.t ? await tokenInfo(db, b.t) : null;
+        if (!/^https:\/\//.test(x.endpoint || '') || !x.keys || !x.keys.p256dh || !x.keys.auth) return fail('Suscripción inválida.');
+        await db.prepare("INSERT INTO pxsub(ep, handle, p256, auth, prefs, t) VALUES(?,?,?,?,'{}',?) ON CONFLICT(ep) DO UPDATE SET p256=excluded.p256, auth=excluded.auth, handle=COALESCE(excluded.handle, pxsub.handle), fails=0").bind(x.endpoint, ti ? ti.handle : null, x.keys.p256dh, x.keys.auth, now()).run();
+        return json({ ok: true });
+      }
+      if (path === 'avisos/prefs' && M === 'POST') { await db.prepare('UPDATE pxsub SET prefs=? WHERE ep=?').bind(JSON.stringify(b.prefs || {}), String(b.ep || '')).run(); return json({ ok: true }); }
+      if (path === 'avisos/off' && M === 'POST') { await db.prepare('DELETE FROM pxsub WHERE ep=?').bind(String(b.ep || '')).run(); return json({ ok: true }); }
+      return fail('No existe', 404);
+    }
+
     /* ---------- panel de administración (/admin/) · solo la cuenta ADMIN ---------- */
     if (path.startsWith('admin/')) {
       const tok = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '') || url.searchParams.get('t');
@@ -590,6 +621,17 @@ export async function onRequest(ctx) {
       }
       if (sub === 'push/off' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('DELETE FROM pushsub WHERE ep=?').bind(String(b.ep || '')).run(); return json({ ok: true }); }
       if (sub === 'push/prefs' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('UPDATE pushsub SET prefs=? WHERE ep=?').bind(JSON.stringify(b.prefs || {}), String(b.ep || '')).run(); return json({ ok: true }); }
+      if (sub === 'difusion' && M === 'GET') {
+        await pxSchema(db);
+        const n = await one('SELECT COUNT(*) n FROM pxsub');
+        return json({ suscriptos: n.n || 0, tipos: PX_TYPES, log: await all('SELECT tipo, title, body, t, sent, total FROM difusion ORDER BY id DESC LIMIT 30') });
+      }
+      if (sub === 'difundir' && M === 'POST') {
+        const b = await req.json().catch(() => ({}));
+        if (!String(b.titulo || '').trim() || !String(b.cuerpo || '').trim()) return fail('Falta el título o el texto.');
+        const sent = await difundir(db, b.tipo || 'tienda', b.titulo, b.cuerpo, { url: '/' });
+        return json({ sent });
+      }
       if (sub === 'push/test' && M === 'POST') {
         const sent = await alert(db, 'meta', 'Prueba de avisos ✅', 'Así te van a llegar los avisos de Pixépolis.', { url: '/admin/' });
         return json({ sent });

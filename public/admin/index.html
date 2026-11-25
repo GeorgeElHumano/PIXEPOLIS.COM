@@ -186,6 +186,15 @@ const V = {
     const ok = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
     let sub = null; if (ok) { try { const reg = await navigator.serviceWorker.register('/admin/sw.js', { scope: '/admin/' }); await navigator.serviceWorker.ready; sub = await reg.pushManager.getSubscription(); } catch (e) {} }
     const r = await api('GET', 'avisos' + (sub ? '?ep=' + encodeURIComponent(sub.endpoint) : '')); V._av = r;
+    const dif = await api('GET', 'difusion').catch(() => ({ suscriptos: 0, tipos: [], log: [] }));
+    const difHtml = `<div class="card"><h2>AVISAR A LOS USUARIOS</h2>
+      <p class="muted" style="margin-top:0">${n(dif.suscriptos)} dispositivos tienen los avisos de la app activados. El aviso de "Reel nuevo" sale solo cuando la web pasa al día siguiente, y los de "faltan X seguidores" salen solos a 100, 50 y 10 de cada meta.</p>
+      <form id="difForm"><label class="muted" for="difTipo">Tipo</label>
+      <select id="difTipo" style="width:100%;font:16px Inter,sans-serif;padding:10px;border:3px solid var(--ink);border-radius:10px;margin:4px 0 10px">${dif.tipos.map(x => `<option value="${x.id}" ${x.id === 'tienda' ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select>
+      <input id="difTit" type="text" maxlength="80" placeholder="Título (ej: ¡Llegó ropa nueva! 👕)" style="margin-bottom:8px">
+      <input id="difTxt" type="text" maxlength="240" placeholder="Texto (ej: Entrá a pixepolis.com y probátela)" style="margin-bottom:10px">
+      <button class="btn main" style="width:100%">Mandar aviso</button><div class="msg" id="difMsg"></div></form>
+      ${dif.log.length ? `<table style="margin-top:10px">${dif.log.map(a => `<tr><td><b>${esc(a.title)}</b><br><span class="muted">${esc(a.body)}</span><br><span class="pill">${cuando(a.t)} · llegó a ${n(a.sent)} de ${n(a.total)}</span></td></tr>`).join('')}</table>` : ''}</div>`;
     let top;
     if (!ok && isIOS && !app) top = `<h2>PASO PREVIO EN IPHONE</h2><p class="muted">En iPhone los avisos solo funcionan desde la app agregada a la pantalla de inicio (iOS 16.4 o más).</p>
       <ol class="steps"><li>Tocá <b>Compartir</b> en Safari (el cuadrado con la flecha).</li><li>Elegí <b>Agregar a inicio</b> → <b>Agregar</b>. Se llama “Pixépolis Admin”.</li><li>Abrila desde el inicio, entrá a <b>Avisos</b> y tocá <b>Activar avisos</b>.</li></ol>`;
@@ -196,7 +205,8 @@ const V = {
       ${r.types.map(t => `<div class="pref"><span><small>${esc(t.g)}</small>${esc(t.name)}</span><input type="checkbox" class="sw" data-p="${t.id}" ${r.sub.prefs[t.id] === false ? '' : 'checked'} aria-label="${esc(t.name)}"></div>`).join('')}
       <div class="row" style="margin-top:12px"><button class="btn main" data-a="test">Mandar prueba</button><button class="btn" data-a="off">Desactivar acá</button></div>`;
     return `<div class="card">${top}<p class="muted" style="margin-bottom:0">Dispositivos con avisos: ${n(r.dispositivos)}</p></div>
-      <div class="card"><h2>ÚLTIMOS AVISOS</h2>${r.log.length ? `<table>${r.log.map(a => `<tr><td><b>${esc(a.title)}</b><br><span class="muted">${esc(a.body)}</span><br><span class="pill">${cuando(a.t)} · ${a.sent ? 'llegó a ' + a.sent : 'sin dispositivos'}</span></td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hubo avisos.</div>'}</div>`;
+      ${difHtml}
+      <div class="card"><h2>ÚLTIMOS AVISOS (A VOS)</h2>${r.log.length ? `<table>${r.log.map(a => `<tr><td><b>${esc(a.title)}</b><br><span class="muted">${esc(a.body)}</span><br><span class="pill">${cuando(a.t)} · ${a.sent ? 'llegó a ' + a.sent : 'sin dispositivos'}</span></td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hubo avisos.</div>'}</div>`;
   },
 };
 const unb64 = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return Uint8Array.from(atob(s), c => c.charCodeAt(0)); };
@@ -215,6 +225,14 @@ document.addEventListener('click', async e => {
     if (a.dataset.a === 'off') { const sub = await reg.pushManager.getSubscription(); if (sub) { await api('POST', 'push/off', { ep: sub.endpoint }); await sub.unsubscribe(); } toast('Avisos desactivados acá'); }
     show('avisos', true);
   } catch (err) { toast(err.message || 'No se pudo'); }
+});
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'difForm') return; e.preventDefault();
+  const tit = $('difTit').value.trim(), txt = $('difTxt').value.trim(), tipo = $('difTipo').value;
+  if (!tit || !txt) { $('difMsg').textContent = 'Completá título y texto.'; return; }
+  if (!e.target.dataset.ok) { e.target.dataset.ok = '1'; $('difMsg').textContent = 'Tocá de nuevo para confirmar: se manda a todos.'; return; }
+  try { const r = await api('POST', 'difundir', { tipo, titulo: tit, cuerpo: txt }); toast(`Aviso enviado a ${r.sent} dispositivos`); show('avisos', true); }
+  catch (err) { $('difMsg').textContent = err.message; delete e.target.dataset.ok; }
 });
 document.addEventListener('change', async e => {
   const c = e.target.closest('[data-p]'); if (!c) return;
