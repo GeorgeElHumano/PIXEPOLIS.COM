@@ -107,7 +107,7 @@ En "Mi pixelito", después de reclamar, aparecen **Copiá el baile** y **Memoria
 
 - **Copiá el baile:** tu pixelito (con tu ropa) baila una secuencia y la repetís con 4 botones. Cada ronda suma un paso. Récord = pasos seguidos.
 - **Memoria:** pares de pixelitos reales de quienes reclamaron (aparece su @). Niveles de 6, 8 y 12 pares. Récord = menor tiempo.
-- La secuencia y el tablero son los mismos para todos durante el día (semilla = fecha de Paraguay).
+- Copiá el baile: cada partida es una secuencia nueva al azar. Memoria: el tablero es el mismo para todos durante el día (semilla = fecha de Paraguay).
 - Récords: tabla `juegos` en D1. `GET /api/juegos?t=` y `POST /api/juegos {t, juego, valor}`.
 - Botón "Compartir en historia" con imagen 1080×1920 del resultado.
 - Código: `public/juegos.js` (usa `window.PX`, el puente que expone `index.html`).

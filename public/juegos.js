@@ -96,8 +96,8 @@
   /* =================== COPIÁ EL BAILE =================== */
   const PASOS = { up: ['👐', 'ARRIBA', '#FF3D7F', 784], down: ['⬇️', 'ABAJO', '#2F80ED', 392], left: ['⬅️', 'IZQUIERDA', '#27AE60', 523], right: ['➡️', 'DERECHA', '#FF9F1C', 659] };
   const KEYS = Object.keys(PASOS);
-  function secuenciaDelDia() {
-    const rnd = semilla('baile-' + info.dia), s = [];
+  function secuenciaNueva() { // cada partida, un baile distinto al azar (sin repetir 3 veces seguidas el mismo paso)
+    const rnd = Math.random, s = [];
     while (s.length < 200) { const k = KEYS[Math.floor(rnd() * 4)]; if (s.length >= 2 && s[s.length - 1] === k && s[s.length - 2] === k) continue; s.push(k); }
     return s;
   }
@@ -107,7 +107,7 @@
       <div class="jstage"><canvas id="bCv" width="720" height="720"></canvas><div class="jmsg" id="bMsg"></div></div>
       <div class="jpad" id="bPad">${KEYS.map(k => `<button data-p="${k}" style="--c:${PASOS[k][2]}"><i>${PASOS[k][0]}</i>${PASOS[k][1]}</button>`).join('')}</div>
       <div class="jpanel" id="bPanel"></div>`;
-    const cv = $('bCv'), c = cv.getContext('2d'), seq = secuenciaDelDia(), m = curMe(true);
+    const cv = $('bCv'), c = cv.getContext('2d'), m = curMe(true); let seq = secuenciaNueva();
     const S = { fase: 'listo', n: 3, i: 0, mov: null, movT: 0, movD: 400, show: [], t0: 0, cae: 0, msgT: 0 };
     JX.run = S;
     const msg = (s, ms = 1100) => { $('bMsg').textContent = s; $('bMsg').classList.add('on'); S.msgT = performance.now() + ms; };
@@ -121,12 +121,12 @@
         <button class="btn pink" id="bGo">${S.fase === 'fin' ? 'Otra vez' : '¡EMPEZAR!'}</button>
         ${S.fase === 'fin' && S.score ? '<button class="btn" id="bShare" style="margin-top:10px">Compartir en historia</button>' : ''}
         <div class="lbl">RÉCORDS DE HOY</div>${topHtml('baile')}
-        <p class="note">Mirá el baile de tu pixelito y repetilo tocando los botones. Cada ronda suma un paso. La secuencia del día es la misma para todos.</p>`;
+        <p class="note">Mirá el baile de tu pixelito y repetilo tocando los botones. Cada ronda suma un paso. Cada partida es un baile nuevo.</p>`;
       $('bGo').onclick = empezar;
       if ($('bShare')) $('bShare').onclick = () => compartir(`BAILÉ ${S.score} PASOS`, 'EN COPIÁ EL BAILE', 'up');
       $('bPanel').hidden = false;
     }
-    function empezar() { audio(); S.cae = 0; S.fase = 'listo'; S.n = 3; S.score = 0; $('bPanel').hidden = true; msg('¡Mirá bien!', 900); setTimeout(() => mostrar(), 900); }
+    function empezar() { audio(); seq = secuenciaNueva(); S.cae = 0; S.fase = 'listo'; S.n = 3; S.score = 0; $('bPanel').hidden = true; msg('¡Mirá bien!', 900); setTimeout(() => mostrar(), 900); }
     function mostrar() {
       if (JX.run !== S) return;
       S.fase = 'muestra'; S.i = 0; const d = vel();
