@@ -1305,8 +1305,8 @@ function confetti() {
       const c = document.getElementById('retrato').getContext('2d'), L = r.look, b = r.base;
       const LL = { s: L.shirt || b.shirt, pa: L.pants || b.pants, h: L.hair || b.hair, k: L.skin || b.skin, style: L.style, outfit: L.outfit, traje: L.ropa || {} };
       c.imageSmoothingEnabled = false;
-      drawHD(c, LL, 140, 230, 20, { acc: L.acc });
-      nameTag(c, r.handle, 300, 120, 34, 0, r.fundador, 560, 6);
+      drawHD(c, LL, 140, 262, 20, { acc: L.acc });
+      nameTag(c, r.handle, 300, 64, 34, 0, r.fundador, 560, 6);
       document.title = 'RETRATO_OK';
     } catch (e) { document.title = 'RETRATO_ERROR ' + e.message; }
     return;
