@@ -1294,6 +1294,23 @@ function confetti() {
 }
 
 (async function boot() {
+  // Modo retrato (?retrato=@x): solo el pixelito reclamado, fondo transparente. Lo usa la rutina del Reel (sorteo diario).
+  if (qs.get('retrato')) {
+    document.documentElement.style.background = 'transparent'; document.body.style.background = 'transparent';
+    document.body.innerHTML = '<canvas id="retrato" width="600" height="840" style="display:block"></canvas>';
+    try {
+      const r = await (await fetch('/api/retrato?h=' + encodeURIComponent(qs.get('retrato')))).json();
+      if (r.error) throw new Error(r.error);
+      try { await document.fonts.load('40px "Press Start 2P"'); } catch (e) {}
+      const c = document.getElementById('retrato').getContext('2d'), L = r.look, b = r.base;
+      const LL = { s: L.shirt || b.shirt, pa: L.pants || b.pants, h: L.hair || b.hair, k: L.skin || b.skin, style: L.style, outfit: L.outfit, traje: L.ropa || {} };
+      c.imageSmoothingEnabled = false;
+      drawHD(c, LL, 140, 230, 20, { acc: L.acc });
+      nameTag(c, r.handle, 300, 120, 34, 0, r.fundador, 560, 6);
+      document.title = 'RETRATO_OK';
+    } catch (e) { document.title = 'RETRATO_ERROR ' + e.message; }
+    return;
+  }
   try { const r = await fetch('/api/stats', { cache: 'no-store' }); if (r.ok && (r.headers.get('content-type') || '').includes('json')) API = realApi; } catch (e) {}
   if (!API) {
     DEMO = true;

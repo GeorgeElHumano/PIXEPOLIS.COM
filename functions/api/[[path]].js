@@ -357,6 +357,20 @@ export async function onRequest(ctx) {
     // avisos push al admin: se mandan después de responder, así no demoran nada
     const av = (type, title, body, opt) => ctx.waitUntil(alert(db, type, title, body, opt));
 
+    // Retrato de un pixelito reclamado (lo usa la rutina del Reel para el ganador del sorteo diario)
+    if (path === 'retrato' && M === 'GET') {
+      const h = handleOf(url.searchParams.get('h') || '');
+      const c = HANDLE_RE.test(h) ? await db.prepare('SELECT ord, look FROM reclamos WHERE handle=?').bind(h).first() : null;
+      if (!c) return fail('No reclamado', 404);
+      const p = await pixelito(db, D, h); let L = {}; try { L = JSON.parse(c.look); } catch (e) {}
+      return json({ handle: h, ord: c.ord, fundador: !!L.regaloOk, base: p ? { shirt: p.shirt, pants: p.pants, hair: p.hair, skin: p.skin } : {},
+        look: { shirt: L.shirt, pants: L.pants, hair: L.hair, skin: L.skin, style: L.style, outfit: L.outfit, acc: L.acc, ropa: L.ropa || {}, isla: L.isla } });
+    }
+    // Lista de los que reclamaron (para el sorteo diario): solo @
+    if (path === 'reclamados' && M === 'GET') {
+      const { results } = await db.prepare('SELECT handle FROM reclamos ORDER BY ord').all();
+      return json({ handles: results.map(r => r.handle) });
+    }
     // Colores elegidos por los que reclamaron: la rutina diaria los usa para dibujarlos así en el Reel
     if (path === 'looks' && M === 'GET') {
       const { results } = await db.prepare('SELECT handle, look FROM reclamos').all();
