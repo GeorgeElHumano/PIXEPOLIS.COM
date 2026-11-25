@@ -371,7 +371,7 @@
     </div>
   </section>
 
-  <footer>@somoslospixelitos · <a href="https://instagram.com/somoslospixelitos" target="_blank" rel="noopener">Instagram</a> · <a href="/privacidad/">Privacidad</a></footer>
+  <footer>@somoslospixelitos · <a href="https://instagram.com/somoslospixelitos" target="_blank" rel="noopener">Instagram</a> · <a href="/terminos/">Términos</a> · <a href="/privacidad/">Privacidad</a></footer>
 </main>
 <div class="dock" id="dock" hidden><div class="in">
   <button class="btn big main" id="claimBtn">¡RECLAMAR MI PIXELITO!</button>
@@ -1044,7 +1044,7 @@ function renderShop() {
   $('coinBar').innerHTML = `<span>${coin}<b>${fmt(me.coins || 0)}</b> <small>Pixel Coins</small></span><small>${me.pagos === 'pronto' ? 'Compra de coins: muy pronto' : me.pagos === 'prueba' ? 'MODO PRUEBA · no se cobra' : 'Pago seguro con Xsolla'}</small>`;
   coinIcon($('coinIco'));
   $('shopTit').textContent = 'TIENDA';
-  $('packNote').textContent = me.pagos === 'pronto' ? 'Paquetes de Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.' : 'Los paquetes grandes traen coins de regalo. Las coins no se pueden cambiar por dinero.';
+  $('packNote').innerHTML = (me.pagos === 'pronto' ? 'Paquetes de Pixel Coins: muy pronto. Los paquetes grandes traen coins de regalo.' : 'Los paquetes grandes traen coins de regalo. Las coins no se pueden cambiar por dinero.') + ' <a href="/terminos/" target="_blank" rel="noopener">Términos y reembolsos</a>.';
   $('packs').innerHTML = PACKS.map(([sku, n, usd, bonus]) => `<button type="button" class="${me.pagos === 'pronto' ? 'pronto' : ''}" data-pack="${sku}"><b>${fmt(n)}</b><span>$${usd}</span>${bonus ? `<em>${bonus}</em>` : ''}</button>`).join('');
   $('pzBox').innerHTML = z;
   // regalo de fundador: 300 Pixel Coins a los primeros 1.000 en reclamar (alcanzan para un traje o 3 piezas sueltas)
@@ -1131,7 +1131,7 @@ function pedirCompra(id, ks) {
     abrirCompra(dibujo, `${fmt(pr.coins)} COINS`, `Para comprar ${que} te faltan <b>${fmt(falta)} Pixel Coins</b>. Tenés ${fmt(saldo)}.`, 'VER PAQUETES', async () => { $('packs').scrollIntoView({ behavior: 'smooth', block: 'center' }); return true; });
     return;
   }
-  abrirCompra(dibujo, `${fmt(pr.coins)} COINS`, `¿Comprás ${que}?<br>Te quedan <b>${fmt(saldo - pr.coins)}</b> Pixel Coins. Es para siempre y se ve en la web y en los Reels.`, 'COMPRAR', async () => {
+  abrirCompra(dibujo, `${fmt(pr.coins)} COINS`, `¿Comprás ${que}?<br>Te quedan <b>${fmt(saldo - pr.coins)}</b> Pixel Coins. Es para siempre y se ve en la web y en los Reels.<br><small><a href="/terminos/" target="_blank" rel="noopener">Términos y condiciones</a></small>`, 'COMPRAR', async () => {
     const r = await API.comprar(token, id, pr.f.join('')).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
     if (r.error) { $('buyMsg').textContent = r.error; return false; }
     me.coins = r.coins; me.armario = r.armario;
@@ -1145,7 +1145,7 @@ function comprarPack(sku) {
   const p = PACKS.find(x => x[0] === sku); if (!p) return;
   const dibujo = c => { c.save(); c.scale(5, 5); c.translate(1.5, 1.5); coinIcon({ getContext: () => c }); c.restore(); };
   if (me.pagos === 'pronto') { abrirCompra(dibujo, `${fmt(p[1])} COINS`, 'La compra de Pixel Coins abre muy pronto.', 'OK', async () => true); return; }
-  const txt = `Vas a pagar <b>$${p[2]}</b> por <b>${fmt(p[1])} Pixel Coins</b>${p[3] ? ` (${p[3]} de regalo)` : ''}.<br>` + (me.pagos === 'prueba' ? '<b>Modo prueba:</b> no se cobra nada.' : 'El pago se hace en la página segura de Xsolla con tarjeta u otros medios. Al confirmarse, las coins aparecen en tu cuenta.') + '<br><small>Si sos menor de edad, pedile a un adulto.</small>';
+  const txt = `Vas a pagar <b>$${p[2]}</b> por <b>${fmt(p[1])} Pixel Coins</b>${p[3] ? ` (${p[3]} de regalo)` : ''}.<br>` + (me.pagos === 'prueba' ? '<b>Modo prueba:</b> no se cobra nada.' : 'El pago se hace en la página segura de Xsolla con tarjeta u otros medios. Al confirmarse, las coins aparecen en tu cuenta.') + '<br><small>Si sos menor de edad, pedile a un adulto. Al comprar aceptás los <a href="/terminos/" target="_blank" rel="noopener">Términos y condiciones</a> (incluye <a href="/terminos/#reembolsos" target="_blank" rel="noopener">reembolsos</a>).</small>';
   abrirCompra(dibujo, `${fmt(p[1])} COINS`, txt, me.pagos === 'prueba' ? 'COMPRAR (PRUEBA)' : 'IR A PAGAR', async () => {
     const r = await API.pack(token, sku).catch(() => ({ error: 'No pudimos conectar. Probá de nuevo.' }));
     if (r.error) { $('buyMsg').textContent = r.error; return false; }
