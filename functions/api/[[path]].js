@@ -8,6 +8,7 @@
 //
 // Rutas:
 //   GET  /api/stats            pixelitos, reclamados e islas
+//   GET  /api/looks            colores elegidos por cada @ que reclamó (los usa la rutina del Reel diario)
 //   GET  /api/yo?t=TOKEN       el pixelito del dueño del link, con las islas
 //   POST /api/reclamar         {t, look}  reclama o cambia el look (pelo, piel, ropa, accesorio, isla)
 //   POST /api/dev/dm           {from, text}  simula el DM (solo con la variable DEV=1, para probar en local)
@@ -356,6 +357,13 @@ export async function onRequest(ctx) {
     // avisos push al admin: se mandan después de responder, así no demoran nada
     const av = (type, title, body, opt) => ctx.waitUntil(alert(db, type, title, body, opt));
 
+    // Colores elegidos por los que reclamaron: la rutina diaria los usa para dibujarlos así en el Reel
+    if (path === 'looks' && M === 'GET') {
+      const { results } = await db.prepare('SELECT handle, look FROM reclamos').all();
+      const out = {};
+      for (const r of results) { let L = {}; try { L = JSON.parse(r.look); } catch (e) {} const o = {}; for (const k of ['shirt', 'pants', 'hair', 'skin']) if (L[k]) o[k] = L[k]; if (Object.keys(o).length) out[r.handle] = o; }
+      return json({ looks: out, t: now() });
+    }
     if (path === 'stats' && M === 'GET') {
       const st = await stats(db, D, env);
       ctx.waitUntil(metaCheck(db, st, env));
