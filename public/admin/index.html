@@ -20,6 +20,8 @@
   header { position:sticky; top:0; z-index:5; background:var(--ink); color:#fff; padding:calc(10px + env(safe-area-inset-top)) 16px 10px; display:flex; align-items:center; justify-content:space-between; gap:10px; }
   header h1 { margin:0; font:12px/1.3 'Press Start 2P', monospace; color:var(--yel); }
   header small { font:600 12px Inter, sans-serif; color:#C9C6D8; }
+  header .hb { display:flex; gap:8px; }
+  header button.girando { opacity:.6; }
   header button { background:none; border:2px solid #fff4; color:#fff; border-radius:8px; padding:6px 10px; font:600 12px Inter, sans-serif; }
   main { max-width:760px; margin:0 auto; padding:14px; }
   .card { background:#fff; border:3px solid var(--ink); border-radius:12px; box-shadow:4px 4px 0 var(--ink); padding:14px; margin:0 0 14px; }
@@ -78,7 +80,7 @@
 </style>
 </head>
 <body>
-<header><div><h1>PIXÉPOLIS ADMIN</h1><small id="who">@somoslospixelitos</small></div><button id="out" hidden>Salir</button></header>
+<header><div><h1>PIXÉPOLIS ADMIN</h1><small id="who">@somoslospixelitos</small></div><div class="hb"><button id="upd" hidden aria-label="Actualizar">↻ Actualizar</button><button id="out" hidden>Salir</button></div></header>
 <main id="app"></main>
 <nav id="nav" hidden>
   <a href="#resumen" data-v="resumen"><span class="ic">📊</span>Resumen</a>
@@ -107,7 +109,7 @@ async function api(m, p, body) {
 
 /* ---------- entrar ---------- */
 function login(msg) {
-  $('nav').hidden = true; $('out').hidden = true;
+  $('nav').hidden = true; $('out').hidden = true; $('upd').hidden = true;
   $('app').innerHTML = `<div class="card login"><h2>ENTRAR</h2><p class="muted">Solo la cuenta administradora (@georgeelhumano), con la misma contraseña de pixepolis.com.</p>
     <form id="lf"><label for="lu">Usuario de Instagram</label><input id="lu" type="text" autocomplete="username" autocapitalize="none" value="@georgeelhumano">
     <label for="lp">Contraseña</label><input id="lp" type="password" autocomplete="current-password">
@@ -120,6 +122,7 @@ function login(msg) {
     SES.set(r.sesion); go();
   };
 }
+$('upd').onclick = async () => { const b = $('upd'); if (b.disabled) return; b.disabled = true; b.classList.add('girando'); b.textContent = '↻ Actualizando…'; await show(cur || 'resumen', true); b.disabled = false; b.classList.remove('girando'); b.textContent = '↻ Actualizar'; toast('Actualizado'); };
 $('out').onclick = async () => { await fetch('/api/salir', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: SES.get() }) }).catch(() => {}); SES.set(null); login(); };
 
 /* ---------- vistas ---------- */
@@ -233,7 +236,7 @@ navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e
 setInterval(() => { if (!document.hidden && cur && cur !== 'avisos' && !$('nav').hidden && !(document.activeElement && document.activeElement.id === 'fq')) show(cur, true); }, 60e3);
 function go() {
   if (!SES.get()) return login();
-  $('nav').hidden = false; $('out').hidden = false; $('who').textContent = '@georgeelhumano';
+  $('nav').hidden = false; $('out').hidden = false; $('upd').hidden = false; $('who').textContent = '@georgeelhumano';
   show(location.hash.slice(1) || 'resumen');
 }
 go();
