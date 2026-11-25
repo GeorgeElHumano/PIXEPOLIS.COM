@@ -161,7 +161,11 @@ const V = {
     const q = V._q || '';
     const r = await api('GET', 'fundadores?q=' + encodeURIComponent(q));
     setTimeout(() => { const i = $('fq'); if (i) { i.oninput = () => { clearTimeout(V._qt); V._qt = setTimeout(() => { V._q = i.value; show('fundadores', true); }, 350); }; } });
-    return `<div class="card"><h2>FUNDADORES · ${n(r.fundadores.length)}${r.fundadores.length === 300 ? '+' : ''}</h2>
+    return `<div class="card"><h2>CUENTA DE PRUEBA</h2><p class="muted" style="margin-top:0">Para revisiones (por ejemplo Xsolla): crea un pixelito con un @ inventado y te da un link de 24 h para entrar y crear la contraseña. Las coins de prueba no son ventas.</p>
+      <form id="cpForm"><input id="cpH" type="text" autocapitalize="none" placeholder="@xsolla.prueba.pxp" value="@xsolla.prueba.pxp" style="margin-bottom:8px">
+      <label class="muted" for="cpC">Pixel Coins de prueba</label><input id="cpC" type="text" inputmode="numeric" value="1000" style="margin:4px 0 10px">
+      <button class="btn main" style="width:100%">Crear cuenta de prueba</button><div class="msg" id="cpMsg"></div></form></div>
+      <div class="card"><h2>FUNDADORES · ${n(r.fundadores.length)}${r.fundadores.length === 300 ? '+' : ''}</h2>
       <input id="fq" type="search" placeholder="Buscar @…" value="${esc(q)}" autocapitalize="none" style="margin-bottom:10px">
       ${r.fundadores.length ? `<table><tr><th>#</th><th>@</th><th class="n">Coins</th><th class="n">Piezas</th></tr>${r.fundadores.map(f => `<tr><td>${f.ord}</td><td><b>${esc(f.handle)}</b><br><span class="pill">${cuando(f.t)}${f.clave ? ' · 🔑' : ''}${f.regaloOk ? ' · 🎁' : ''}${f.traje ? ' · traje ' + esc(TRN[f.traje] || f.traje) : ''}${f.num ? ' · pixelito #' + f.num : ' · nuevo'}</span></td><td class="n">${n(f.coins)}</td><td class="n">${n(f.piezas)}</td></tr>`).join('')}</table>
       <p class="muted">🔑 tiene contraseña · 🎁 recibió el regalo de fundador</p>` : '<div class="empty">Nadie con ese @.</div>'}</div>`;
@@ -225,6 +229,12 @@ document.addEventListener('click', async e => {
     if (a.dataset.a === 'off') { const sub = await reg.pushManager.getSubscription(); if (sub) { await api('POST', 'push/off', { ep: sub.endpoint }); await sub.unsubscribe(); } toast('Avisos desactivados acá'); }
     show('avisos', true);
   } catch (err) { toast(err.message || 'No se pudo'); }
+});
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'cpForm') return; e.preventDefault();
+  try { const r = await api('POST', 'cuenta-prueba', { handle: $('cpH').value, coins: +$('cpC').value || 0 });
+    $('cpMsg').style.color = 'var(--ink)'; $('cpMsg').innerHTML = `Listo: <b>${esc(r.handle)}</b>${r.coins ? ` con ${n(r.coins)} coins` : ''}. Abrí este link, creá la contraseña y pasala a quien revisa:<br><a href="${esc(r.url)}" target="_blank" rel="noopener" style="word-break:break-all">${esc(r.url)}</a>`; }
+  catch (err) { $('cpMsg').style.color = ''; $('cpMsg').textContent = err.message; }
 });
 document.addEventListener('submit', async e => {
   if (e.target.id !== 'difForm') return; e.preventDefault();

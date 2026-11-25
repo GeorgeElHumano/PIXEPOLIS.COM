@@ -621,6 +621,16 @@ export async function onRequest(ctx) {
       }
       if (sub === 'push/off' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('DELETE FROM pushsub WHERE ep=?').bind(String(b.ep || '')).run(); return json({ ok: true }); }
       if (sub === 'push/prefs' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('UPDATE pushsub SET prefs=? WHERE ep=?').bind(JSON.stringify(b.prefs || {}), String(b.ep || '')).run(); return json({ ok: true }); }
+      // Cuenta de prueba (para revisiones como la de Xsolla): crea un pixelito "nuevo" y devuelve un link de 24 h para crear la contraseña
+      if (sub === 'cuenta-prueba' && M === 'POST') {
+        const b = await req.json().catch(() => ({})); const h = handleOf(b.handle || '');
+        if (!HANDLE_RE.test(h)) return fail('Usuario no válido (solo letras, números, punto y guion bajo).');
+        const r = await botReply(db, D, env, h, url.origin, true, 'reclamar');
+        if (r.kind !== 'link') return fail(r.text || 'No se pudo crear.');
+        const coins = Math.max(0, Math.min(5000, +b.coins || 0));
+        if (coins) await acreditar(db, h, coins, 'pack', 'cuenta de prueba (prueba)', 'prueba-cuenta-' + h);
+        return json({ ok: true, handle: h, url: r.url, coins });
+      }
       if (sub === 'difusion' && M === 'GET') {
         await pxSchema(db);
         const n = await one('SELECT COUNT(*) n FROM pxsub');
