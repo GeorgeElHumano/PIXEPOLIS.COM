@@ -250,17 +250,17 @@
       <h2>RECLAMÁ TU PIXELITO</h2>
       <canvas class="scene" id="homeScene" width="200" height="150"></canvas>
       <div class="stats" id="statsBox">
-        <div class="st"><b id="stSeg">…</b><span id="stSegL">seguidores</span></div>
-        <div class="st"><b id="stRec">…</b><span>pixelitos reclamados</span></div>
-        <div class="st y"><b id="stFun">…</b><span>lugares de Fundador libres</span></div>
+        <div class="st"><b data-st="seg">…</b><span data-st="segL">seguidores</span></div>
+        <div class="st"><b data-st="rec">…</b><span>pixelitos reclamados</span></div>
+        <div class="st y"><b data-st="fun">…</b><span>lugares de Fundador libres</span></div>
       </div>
       <p class="muted" style="margin:12px 0 0">Pixépolis Club es el archipiélago de los pixelitos: cada Reel suma una isla nueva. Los <b>primeros 1.000</b> en reclamar su pixelito son <b>Fundadores</b>: ganan el @ de Fundador (su nombre con los colores y el salto del logo de Los Pixelitos, que después no se va a poder conseguir nunca más) y 300 Pixel Coins gratis.</p>
     </div>
     <div class="card">
       <h2>METAS</h2>
-      <p class="muted" style="margin:0 0 14px" id="metaTxt"></p>
+      <p class="muted" style="margin:0 0 14px" data-st="metaTxt"></p>
       <div class="lbl" style="margin-top:0">POR RECLAMOS</div>
-      <div id="metas"></div>
+      <div data-st="metas"></div>
     </div>
     <div class="card">
       <h2>PASO A PASO</h2>
@@ -337,6 +337,17 @@
         <button class="btn pink" id="shareVidBtn" hidden>Compartir video</button>
       </div>
       <div class="status" id="shareMsg">Etiquetá a @somoslospixelitos 💛</div>
+    </div>
+    <div class="card">
+      <h2>PIXÉPOLIS EN NÚMEROS</h2>
+      <div class="stats">
+        <div class="st"><b data-st="seg">…</b><span data-st="segL">seguidores</span></div>
+        <div class="st"><b data-st="rec">…</b><span>pixelitos reclamados</span></div>
+        <div class="st y"><b data-st="fun">…</b><span>lugares de Fundador libres</span></div>
+      </div>
+      <p class="muted" style="margin:14px 0 14px" data-st="metaTxt"></p>
+      <div class="lbl" style="margin-top:0">POR RECLAMOS</div>
+      <div data-st="metas"></div>
     </div>
   </section>
 
@@ -861,7 +872,7 @@ async function route(t, deLink) {
   }
   setUrl(deLink ? t : null); me = r; look = { ...LOOK0, ...(r.claim ? r.claim.look : {}) };
   $('claimMsg').textContent = '';
-  renderMine(true); show('vMine');
+  renderMine(true); show('vMine'); refreshCount();
   if (qs.get('pago') === 'ok') { pagoVuelta(r.coins || 0); return; }
   if (deLink && !DEMO && (!r.tieneClave || qs.get('clave') === '1')) pwOpen(!!r.tieneClave);
   if (!DEMO) $('acct').innerHTML = (deLink ? `<button type="button" class="linkbtn" id="pwChange">${r.tieneClave ? 'Cambiar mi contraseña' : 'Crear mi contraseña'}</button> · ` : '') + `<button type="button" class="linkbtn" id="logout">Salir</button>`;
@@ -919,13 +930,16 @@ async function refreshCount() {
   homeIslas = s.islas || [];
   const next = METAS.find(([n]) => s.total < n);
   const q = quedan(s), rec = META_REGALO - q;
-  $('stSeg').textContent = miles(s.total); $('stSegL').textContent = s.enVivo ? 'seguidores (en vivo)' : 'seguidores';
-  $('stRec').textContent = miles(s.reclamos ?? s.claimed); $('stFun').textContent = miles(q);
-  $('metaTxt').innerHTML = next ? `Somos <b>${miles(s.total)}</b> seguidores. Próxima meta: <b>${miles(next[0])}</b> (faltan ${miles(next[0] - s.total)}).` : `Somos <b>${miles(s.total)}</b> seguidores. ¡Pixépolis Club está abierto!`;
+  // se pinta en la portada y en "Mi pixelito" (PIXÉPOLIS EN NÚMEROS)
+  const put = (k, v, html) => document.querySelectorAll(`[data-st="${k}"]`).forEach(el => { if (html) el.innerHTML = v; else el.textContent = v; });
+  put('seg', miles(s.total)); put('segL', s.enVivo ? 'seguidores (en vivo)' : 'seguidores');
+  put('rec', miles(s.reclamos ?? s.claimed)); put('fun', miles(q));
+  const metaTxt = next ? `Somos <b>${miles(s.total)}</b> seguidores. Próxima meta: <b>${miles(next[0])}</b> (faltan ${miles(next[0] - s.total)}).` : `Somos <b>${miles(s.total)}</b> seguidores. ¡Pixépolis Club está abierto!`;
   const bar = (v, n) => `<div class="bar"><i style="width:${Math.max(2, Math.min(100, 100 * v / n))}%"></i></div>`;
-  $('metas').innerHTML = `<div class="meta ${q ? '' : 'done'}"><div class="mt"><span>${q ? '' : '✓ '}Primeros 1.000 en reclamar<small>Son Fundadores: @ animado + ${REGALO_COINS} Pixel Coins gratis</small></span><em>${miles(rec)}/1.000</em></div>${bar(rec, META_REGALO)}</div>`
+  const metasHtml = `<div class="meta ${q ? '' : 'done'}"><div class="mt"><span>${q ? '' : '✓ '}Primeros 1.000 en reclamar<small>Son Fundadores: @ animado + ${REGALO_COINS} Pixel Coins gratis</small></span><em>${miles(rec)}/1.000</em></div>${bar(rec, META_REGALO)}</div>`
     + `<div class="lbl">POR SEGUIDORES</div>`
     + METAS.map(([n, t, d]) => { const ok = s.total >= n, nx = next && next[0] === n; return `<div class="meta ${ok ? 'done' : ''} ${nx ? 'next' : ''}"><div class="mt"><span>${ok ? '✓ ' : nx ? '➜ ' : ''}${t}<small>${d}</small></span><em>${ok ? 'LOGRADO' : miles(s.total) + '/' + miles(n)}</em></div>${bar(s.total, n)}</div>`; }).join('');
+  put('metaTxt', metaTxt, true); put('metas', metasHtml, true);
 }
 
 function bubble(kind, html) { const d = document.createElement('div'); d.className = 'msg ' + kind; d.innerHTML = html; $('chat').appendChild(d); return d; }
