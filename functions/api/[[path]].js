@@ -14,6 +14,8 @@
 //   POST /api/dev/dm           {from, text}  simula el DM (solo con la variable DEV=1, para probar en local)
 //   GET  /api/ig               verificación del webhook de Instagram (Meta)
 //   POST /api/ig               mensajes de Instagram: responde a RECLAMAR con el link
+//   GET  /api/juegos?t=        minijuegos (Memoria y Copiá el baile): pixelitos del día, tus récords y el top del día
+//   POST /api/juegos           {t, juego, valor}  guarda tu marca (solo por diversión: sin coins ni premios)
 //   GET  /api/admin/...        panel de administración (solo @georgeelhumano): resumen, reclamos, ventas y avisos push
 //
 // Variables (wrangler secret put / panel de Cloudflare):
@@ -74,6 +76,8 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS pedidos(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT NOT NULL, tipo TEXT NOT NULL, texto TEXT, t INTEGER NOT NULL, hecho INTEGER)`,
   `CREATE TABLE IF NOT EXISTS movimientos(id INTEGER PRIMARY KEY AUTOINCREMENT, handle TEXT NOT NULL, tipo TEXT NOT NULL, coins INTEGER NOT NULL, detalle TEXT, ref TEXT UNIQUE, t INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS movimientos_handle ON movimientos(handle)`,
+  `CREATE TABLE IF NOT EXISTS juegos(handle TEXT NOT NULL, juego TEXT NOT NULL, dia TEXT NOT NULL, valor INTEGER NOT NULL, t INTEGER NOT NULL, PRIMARY KEY(handle, juego, dia))`,
+  `CREATE INDEX IF NOT EXISTS juegos_dia ON juegos(juego, dia)`,
 ];
 let ready = false;
 async function init(db) {
@@ -358,6 +362,38 @@ async function igHandle(env, db, D, payload, origin, av) {
   }
 }
 
+
+/* ---------- minijuegos (solo diversión: no dan coins ni premios, y nada es al azar pagando) ----------
+   Todos juegan el mismo tablero / la misma secuencia del día (semilla = fecha de Paraguay).
+   baile: pasos seguidos (más es mejor). memoria6/8/12: milisegundos (menos es mejor). */
+const JUEGOS = { baile: { max: true, min: 1, top: 500 }, memoria6: { max: false, min: 6 * 500, top: 30 * 60e3 }, memoria8: { max: false, min: 8 * 500, top: 30 * 60e3 }, memoria12: { max: false, min: 12 * 500, top: 30 * 60e3 } };
+function semilla(str) { let h = 2166136261; for (const ch of str) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return () => { h = (h + 0x6D2B79F5) | 0; let x = Math.imul(h ^ (h >>> 15), 1 | h); x ^= x + Math.imul(x ^ (x >>> 7), 61 | x); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }; }
+async function juegosInfo(db, D, handle) {
+  const dia = pyDay();
+  const { results } = await db.prepare('SELECT handle, look FROM reclamos ORDER BY ord').all();
+  const rnd = semilla('memoria-' + dia), lista = results.slice();
+  for (let i = lista.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [lista[i], lista[j]] = [lista[j], lista[i]]; }
+  const pixelitos = [];
+  for (const r of lista) {
+    if (pixelitos.length >= 12) break;
+    let L = {}; try { L = JSON.parse(r.look); } catch (e) {}
+    const p = await pixelito(db, D, r.handle);
+    if (p && p.out) continue;
+    const b = p || {};
+    pixelitos.push({ handle: r.handle, L: { s: L.shirt || b.shirt || '#FF3D7F', pa: L.pants || b.pants || '#37474F', h: L.hair || b.hair || '#633806', k: L.skin || b.skin || '#FFD3A5', style: L.style, outfit: L.outfit, traje: L.ropa || {} }, acc: L.acc || '' });
+  }
+  const mios = {}, top = {};
+  if (handle) {
+    const { results: m } = await db.prepare('SELECT juego, dia, valor FROM juegos WHERE handle=?').bind(handle).all();
+    for (const r of m) { const g = JUEGOS[r.juego]; if (!g) continue; const o = mios[r.juego] || (mios[r.juego] = {}); if (r.dia === dia) o.hoy = r.valor; if (o.siempre == null || (g.max ? r.valor > o.siempre : r.valor < o.siempre)) o.siempre = r.valor; }
+  }
+  for (const [k, g] of Object.entries(JUEGOS)) {
+    const { results: t } = await db.prepare(`SELECT handle, valor FROM juegos WHERE juego=? AND dia=? ORDER BY valor ${g.max ? 'DESC' : 'ASC'}, t ASC LIMIT 5`).bind(k, dia).all();
+    top[k] = t;
+  }
+  return { dia, pixelitos, mios, top };
+}
+
 /* ---------- rutas ---------- */
 export async function onRequest(ctx) {
   const { request: req, env, params } = ctx;
@@ -400,6 +436,22 @@ export async function onRequest(ctx) {
     if (path === 'ig-estado' && M === 'GET') {
       const n = await seguidores(env);
       return json({ conectado: n !== null, seguidores: n, tipo: env.IG_TOKEN ? (String(env.IG_TOKEN).startsWith('IG') ? 'instagram' : 'facebook') : 'sin token', error: IGERR || null, ultimos: LOG });
+    }
+
+    if (path === 'juegos' && M === 'GET') {
+      const h = await byToken(db, url.searchParams.get('t'));
+      return json(await juegosInfo(db, D, h));
+    }
+    if (path === 'juegos' && M === 'POST') {
+      const b = await req.json().catch(() => ({}));
+      const h = await byToken(db, b.t);
+      if (!h) return fail(BAD_LINK, 404);
+      if (!await db.prepare('SELECT 1 FROM reclamos WHERE handle=?').bind(h).first()) return fail('Primero reclamá tu pixelito.', 403);
+      const g = JUEGOS[b.juego], v = Math.round(+b.valor);
+      if (!g || !Number.isFinite(v) || v < g.min || v > g.top) return fail('Marca inválida.');
+      const dia = pyDay();
+      await db.prepare(`INSERT INTO juegos(handle, juego, dia, valor, t) VALUES(?,?,?,?,?) ON CONFLICT(handle, juego, dia) DO UPDATE SET valor=excluded.valor, t=excluded.t WHERE excluded.valor ${g.max ? '>' : '<'} juegos.valor`).bind(h, b.juego, dia, v, now()).run();
+      return json(await juegosInfo(db, D, h));
     }
 
     if (path === 'yo' && M === 'GET') {

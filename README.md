@@ -100,3 +100,14 @@ Variables secretas en Cloudflare: `IG_VERIFY` (una palabra que inventás), `IG_A
 - **Fundadores:** lista con buscador (coins, piezas, si tiene contraseña y regalo). **Ventas:** todos los movimientos, con filtros. **Pedidos:** los BORRAR que llegan por DM, para marcarlos como hechos.
 - **Avisos push** (igual que NOX, Web Push con claves VAPID guardadas en D1, sin secretos): venta, compra, fundador nuevo, contraseña creada, cada 100 seguidores y metas, BORRAR, RESTABLECER y problemas (Instagram caído o aviso de pago con firma inválida). En iPhone hay que agregar "Pixépolis Admin" a inicio (iOS 16.4+) y activar desde la pestaña Avisos.
 - Archivos: `public/admin/` (página, `sw.js`, manifest), `lib/alerts.js`. Tablas: `pedidos`, `pushsub`, `pushkv`, `alertlog`.
+
+## Minijuegos (🎮 Juegos)
+
+En "Mi pixelito", después de reclamar, aparecen **Copiá el baile** y **Memoria**. Son solo por diversión: no dan Pixel Coins ni premios, y no tienen azar pagando.
+
+- **Copiá el baile:** tu pixelito (con tu ropa) baila una secuencia y la repetís con 4 botones. Cada ronda suma un paso. Récord = pasos seguidos.
+- **Memoria:** pares de pixelitos reales de quienes reclamaron (aparece su @). Niveles de 6, 8 y 12 pares. Récord = menor tiempo.
+- La secuencia y el tablero son los mismos para todos durante el día (semilla = fecha de Paraguay).
+- Récords: tabla `juegos` en D1. `GET /api/juegos?t=` y `POST /api/juegos {t, juego, valor}`.
+- Botón "Compartir en historia" con imagen 1080×1920 del resultado.
+- Código: `public/juegos.js` (usa `window.PX`, el puente que expone `index.html`).
