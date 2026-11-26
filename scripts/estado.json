@@ -1,6 +1,6 @@
 {
  "account": "@somoslospixelitos",
- "day": 8,
+ "day": 9,
  "groups": [
   {
    "d": 0,
@@ -14,6 +14,8 @@
    "d": 1,
    "a": "piscina",
    "label": "fiesta en la pileta",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@georgeelhumano",
@@ -21,7 +23,7 @@
     },
     {
      "n": "@un_randomsicseben",
-     "out": false
+     "out": true
     },
     {
      "n": "@galox.23",
@@ -181,6 +183,8 @@
    "d": 2,
    "a": "hostal",
    "label": "construyendo un hostal",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@iizidoraa",
@@ -388,7 +392,7 @@
     },
     {
      "n": "@ailysson2",
-     "out": false
+     "out": true
     },
     {
      "n": "@jr.cntrs",
@@ -424,6 +428,8 @@
    "d": 3,
    "a": "boda",
    "label": "boda",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@matesaurius",
@@ -607,6 +613,8 @@
    "d": 4,
    "a": "conga",
    "label": "línea de conga",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@ruizmoreno_sebastian",
@@ -622,6 +630,8 @@
    "d": 5,
    "a": "parque",
    "label": "plaza y parque",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@witherknight",
@@ -845,7 +855,7 @@
     },
     {
      "n": "@rennaaa_11.11",
-     "out": false
+     "out": true
     },
     {
      "n": "@m_iiks",
@@ -861,7 +871,7 @@
     },
     {
      "n": "@vale_alonsovsl",
-     "out": false
+     "out": true
     },
     {
      "n": "@l_dn28394hdi",
@@ -913,6 +923,8 @@
    "d": 6,
    "a": "futbol",
    "label": "torneo de fútbol",
+   "beach": true,
+   "referee": "@nao.bl0",
    "people": [
     {
      "n": "@polancoas_p3",
@@ -1124,7 +1136,7 @@
     },
     {
      "n": "@finss_belen26",
-     "out": false
+     "out": true
     },
     {
      "n": "@yahirvm9",
@@ -1256,6 +1268,8 @@
    "d": 7,
    "a": "quince",
    "label": "quinceañero",
+   "beach": true,
+   "referee": null,
    "people": [
     {
      "n": "@val_hui11",
@@ -1263,7 +1277,7 @@
     },
     {
      "n": "@giovanni_corinaldesi",
-     "out": false
+     "out": true
     },
     {
      "n": "@emilianovbjr",
@@ -1323,7 +1337,7 @@
     },
     {
      "n": "@og_balamm_",
-     "out": false
+     "out": true
     },
     {
      "n": "@adrxx17_",
@@ -1335,7 +1349,7 @@
     },
     {
      "n": "@nitamhm",
-     "out": false
+     "out": true
     },
     {
      "n": "@guillermovladimir96",
@@ -1387,7 +1401,7 @@
     },
     {
      "n": "@bckpck._",
-     "out": false
+     "out": true
     },
     {
      "n": "@cookie_anime",
@@ -1395,7 +1409,7 @@
     },
     {
      "n": "@lautigonzalez281212",
-     "out": false
+     "out": true
     },
     {
      "n": "@07____lmx",
@@ -1591,7 +1605,7 @@
     },
     {
      "n": "@iii_luci.234",
-     "out": false
+     "out": true
     },
     {
      "n": "@x.____my7",
@@ -1864,7 +1878,7 @@
     },
     {
      "n": "@adolfo201226",
-     "out": false
+     "out": true
     },
     {
      "n": "@guillermoruano626",
@@ -1876,7 +1890,7 @@
     },
     {
      "n": "@zombtxt",
-     "out": false
+     "out": true
     },
     {
      "n": "@whooperxxl",
@@ -1907,10 +1921,6 @@
      "out": false
     },
     {
-     "n": "@_crxsthian__",
-     "out": false
-    },
-    {
      "n": "@baddfacenana",
      "out": false
     },
@@ -1924,7 +1934,7 @@
     },
     {
      "n": "@giuli._qi",
-     "out": false
+     "out": true
     },
     {
      "n": "@spicy_.blzyy",
@@ -1932,7 +1942,7 @@
     },
     {
      "n": "@its._.alvs",
-     "out": false
+     "out": true
     },
     {
      "n": "@_.pavlina__",
@@ -2040,7 +2050,7 @@
     },
     {
      "n": "@moss.paynsito_",
-     "out": false
+     "out": true
     },
     {
      "n": "@christopherlolsito",
@@ -2096,6 +2106,327 @@
     },
     {
      "n": "@rivas19_.ww",
+     "out": false
+    }
+   ]
+  },
+  {
+   "d": 9,
+   "a": "pareja",
+   "label": "fiesta de la pareja",
+   "beach": false,
+   "referee": null,
+   "people": [
+    {
+     "n": "@kxrinitaa_",
+     "out": false
+    },
+    {
+     "n": "@_crxsthian__",
+     "out": false
+    },
+    {
+     "n": "@vir_.w10",
+     "out": false
+    },
+    {
+     "n": "@_lx.11_11",
+     "out": false
+    },
+    {
+     "n": "@sofii_261014",
+     "out": false
+    },
+    {
+     "n": "@fonsee_2611",
+     "out": false
+    },
+    {
+     "n": "@leomtzg26",
+     "out": false
+    },
+    {
+     "n": "@gudido6998",
+     "out": false
+    },
+    {
+     "n": "@estradasibia",
+     "out": false
+    },
+    {
+     "n": "@edu.carte_",
+     "out": false
+    },
+    {
+     "n": "@cagadaazul",
+     "out": false
+    },
+    {
+     "n": "@regiiina_00",
+     "out": false
+    },
+    {
+     "n": "@gus_.1203",
+     "out": false
+    },
+    {
+     "n": "@lilim.09_",
+     "out": false
+    },
+    {
+     "n": "@_t.xroo",
+     "out": false
+    },
+    {
+     "n": "@whokilledvittoria",
+     "out": false
+    },
+    {
+     "n": "@fvck_dxnx",
+     "out": false
+    },
+    {
+     "n": "@tibu10012",
+     "out": false
+    },
+    {
+     "n": "@xkv.__tylzzx",
+     "out": false
+    },
+    {
+     "n": "@v3lvet_ann",
+     "out": false
+    },
+    {
+     "n": "@mregg.21",
+     "out": false
+    },
+    {
+     "n": "@cxk1.dev",
+     "out": false
+    },
+    {
+     "n": "@maaiu_09",
+     "out": false
+    },
+    {
+     "n": "@kavc1664",
+     "out": false
+    },
+    {
+     "n": "@aaron.rivera011",
+     "out": false
+    },
+    {
+     "n": "@briannitamel",
+     "out": false
+    },
+    {
+     "n": "@jbr_0117",
+     "out": false
+    },
+    {
+     "n": "@mahyy.447",
+     "out": false
+    },
+    {
+     "n": "@joselyn_.666",
+     "out": false
+    },
+    {
+     "n": "@vzg_cam",
+     "out": false
+    },
+    {
+     "n": "@lluvs33qprivvv",
+     "out": false
+    },
+    {
+     "n": "@gato7341",
+     "out": false
+    },
+    {
+     "n": "@papel.voligoma.papel",
+     "out": false
+    },
+    {
+     "n": "@sup3r34._supr",
+     "out": false
+    },
+    {
+     "n": "@ed__ri__0",
+     "out": false
+    },
+    {
+     "n": "@yumi_yams5",
+     "out": false
+    },
+    {
+     "n": "@mathi_m3dina",
+     "out": false
+    },
+    {
+     "n": "@frajav.bjj",
+     "out": false
+    },
+    {
+     "n": "@soffuica",
+     "out": false
+    },
+    {
+     "n": "@alex_guzman_dl",
+     "out": false
+    },
+    {
+     "n": "@dmejia8a",
+     "out": false
+    },
+    {
+     "n": "@ale.xisrc25",
+     "out": false
+    },
+    {
+     "n": "@nani_29139",
+     "out": false
+    },
+    {
+     "n": "@3rik._idk",
+     "out": false
+    },
+    {
+     "n": "@mini.wero15",
+     "out": false
+    },
+    {
+     "n": "@lolito8790",
+     "out": false
+    },
+    {
+     "n": "@daviortiznt",
+     "out": false
+    },
+    {
+     "n": "@_watarigani",
+     "out": false
+    },
+    {
+     "n": "@zelok21",
+     "out": false
+    },
+    {
+     "n": "@matello.aranda",
+     "out": false
+    },
+    {
+     "n": "@gueto0_0",
+     "out": false
+    },
+    {
+     "n": "@itzmaris_06",
+     "out": false
+    },
+    {
+     "n": "@paolosavon",
+     "out": false
+    },
+    {
+     "n": "@_.dxlexdy._",
+     "out": false
+    },
+    {
+     "n": "@elpapu49._.5",
+     "out": false
+    },
+    {
+     "n": "@kaynext_",
+     "out": false
+    },
+    {
+     "n": "@evnglioon",
+     "out": false
+    },
+    {
+     "n": "@dulcepriv1236",
+     "out": false
+    },
+    {
+     "n": "@bel.siwsj",
+     "out": false
+    },
+    {
+     "n": "@jose._isa89",
+     "out": false
+    },
+    {
+     "n": "@roberto.vh_",
+     "out": false
+    },
+    {
+     "n": "@razr_el",
+     "out": false
+    },
+    {
+     "n": "@persarmiguel",
+     "out": false
+    },
+    {
+     "n": "@hyun_xxz",
+     "out": false
+    },
+    {
+     "n": "@gig_ieasyfree",
+     "out": false
+    },
+    {
+     "n": "@emiliana_del_carmen",
+     "out": false
+    },
+    {
+     "n": "@carloslinbal",
+     "out": false
+    },
+    {
+     "n": "@cookie__.67",
+     "out": false
+    },
+    {
+     "n": "@kimunnnn__",
+     "out": false
+    },
+    {
+     "n": "@no._.a123",
+     "out": false
+    },
+    {
+     "n": "@duckuaki_xd2.0",
+     "out": false
+    },
+    {
+     "n": "@sof1v.ii",
+     "out": false
+    },
+    {
+     "n": "@martinbjj",
+     "out": false
+    },
+    {
+     "n": "@bianmray",
+     "out": false
+    },
+    {
+     "n": "@juan.relo",
+     "out": false
+    },
+    {
+     "n": "@cupa_s_e",
+     "out": false
+    },
+    {
+     "n": "@gdgp.priv",
+     "out": false
+    },
+    {
+     "n": "@jose_07xx",
      "out": false
     }
    ]
@@ -2189,6 +2520,28 @@
     "likes": 54
    },
    "act": "americano"
+  },
+  {
+   "day": 9,
+   "new": 77,
+   "unfollows": 16,
+   "winner": {
+    "user": "@_crxsthian__",
+    "text": "puedo estar a la par de mi noviecita @kxrinitaa_",
+    "likes": 17
+   },
+   "act": "pareja",
+   "sorteo": "@mango.manguit08"
+  }
+ ],
+ "sorteo": {
+  "day": 9,
+  "user": "@mango.manguit08"
+ },
+ "sorteos": [
+  {
+   "day": 9,
+   "user": "@mango.manguit08"
   }
  ]
 }

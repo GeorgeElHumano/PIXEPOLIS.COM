@@ -806,6 +806,9 @@ function decor(c, isla, x, y, w, h, t, e) {
     const q = (t % 140) / 140, bx = fx + fw * (0.2 + 0.6 * q), by = fy + fh * 0.5 - Math.sin(q * Math.PI) * 18 * e;
     F(c, bx - 2 * e, by - e, 4 * e, 2.4 * e, '#8D4E2A'); F(c, bx - e, by - 1.6 * e, 2 * e, 3.6 * e, '#8D4E2A'); F(c, bx - e, by - 0.1 * e, 2 * e, 0.5 * e, '#FFFFFF');
     if (q > 0.85) txt(c, 'TOUCHDOWN!', x + w / 2, y - 9 * e, 5 * e, '#FFE14D');
+  } else if (a === 'pareja') {
+    for (let i = 0; i < 6; i++) { const hx = x + w * (0.12 + i * 0.15), hy = y + 3 * e + ((t * 0.4 + i * 9) % (h * 0.5)); F(c, hx, hy, 1.4 * e, 1.4 * e, '#FF3D7F'); F(c, hx + 1.8 * e, hy, 1.4 * e, 1.4 * e, '#FF3D7F'); F(c, hx - 0.4 * e, hy + 1 * e, 3.8 * e, 1.4 * e, '#FF3D7F'); F(c, hx + 0.6 * e, hy + 2.2 * e, 1.8 * e, 1.2 * e, '#FF3D7F'); }
+    for (let i = 0; i < 10; i++) F(c, x + w * (0.05 + i * 0.1), y + 1 * e, 3 * e, 2 * e, CONF[(i + Math.floor(t / 10)) % 7]);
   } else if (a === 'quince') {
     const fw = w * 0.5, fx = x + w * 0.25, fy = y + 2 * e, fh = h * 0.42, n = 8, m = 3, tw = fw / n, th = fh / m;
     for (let i = 0; i < n; i++) for (let j = 0; j < m; j++) F(c, fx + i * tw, fy + j * th, tw - 0.6 * e, th - 0.6 * e, CONF[(i + j + Math.floor(t / 8)) % 7]);
