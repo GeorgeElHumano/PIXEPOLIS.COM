@@ -1,6 +1,6 @@
 {
  "account": "@somoslospixelitos",
- "day": 9,
+ "day": 10,
  "groups": [
   {
    "d": 0,
@@ -1160,7 +1160,7 @@
     },
     {
      "n": "@_abylovvv",
-     "out": false
+     "out": true
     },
     {
      "n": "@eliot_canul",
@@ -1309,7 +1309,7 @@
     },
     {
      "n": "@sopaa125",
-     "out": false
+     "out": true
     },
     {
      "n": "@daft_yisus",
@@ -1357,7 +1357,7 @@
     },
     {
      "n": "@axel_gt_14",
-     "out": false
+     "out": true
     },
     {
      "n": "@darink17",
@@ -1369,7 +1369,7 @@
     },
     {
      "n": "@p_rivera2010",
-     "out": false
+     "out": true
     },
     {
      "n": "@el.liam.07",
@@ -1569,7 +1569,7 @@
     },
     {
      "n": "@isaa._1656",
-     "out": false
+     "out": true
     },
     {
      "n": "@luis_vp3279",
@@ -1609,7 +1609,7 @@
     },
     {
      "n": "@x.____my7",
-     "out": false
+     "out": true
     },
     {
      "n": "@cnefftt2",
@@ -1656,7 +1656,7 @@
      "out": false
     },
     {
-     "n": "@nanii.prosita",
+     "n": "@niniichan1",
      "out": false
     },
     {
@@ -1681,7 +1681,7 @@
     },
     {
      "n": "@jbejaranogaray",
-     "out": false
+     "out": true
     },
     {
      "n": "@dylanmedrano26",
@@ -2251,7 +2251,7 @@
     },
     {
      "n": "@sup3r34._supr",
-     "out": false
+     "out": true
     },
     {
      "n": "@ed__ri__0",
@@ -2279,7 +2279,7 @@
     },
     {
      "n": "@dmejia8a",
-     "out": false
+     "out": true
     },
     {
      "n": "@ale.xisrc25",
@@ -2430,6 +2430,179 @@
      "out": false
     }
    ]
+  },
+  {
+   "d": 10,
+   "a": "boda",
+   "label": "boda al azar",
+   "beach": true,
+   "referee": null,
+   "people": [
+    {
+     "n": "@jujus_aiden",
+     "out": false
+    },
+    {
+     "n": "@tomas.cm__",
+     "out": false
+    },
+    {
+     "n": "@_cxnito.707_",
+     "out": false
+    },
+    {
+     "n": "@frlss._dms",
+     "out": false
+    },
+    {
+     "n": "@morenodidier958",
+     "out": false
+    },
+    {
+     "n": "@_simplyhatp",
+     "out": false
+    },
+    {
+     "n": "@flaco_el_doblea",
+     "out": false
+    },
+    {
+     "n": "@realwowstar55",
+     "out": false
+    },
+    {
+     "n": "@ev._z0",
+     "out": false
+    },
+    {
+     "n": "@doblederoots",
+     "out": false
+    },
+    {
+     "n": "@nahodlag",
+     "out": false
+    },
+    {
+     "n": "@lumartiinezzz_",
+     "out": false
+    },
+    {
+     "n": "@star.cier",
+     "out": false
+    },
+    {
+     "n": "@solx_ziba",
+     "out": false
+    },
+    {
+     "n": "@_sa.ucedo_",
+     "out": false
+    },
+    {
+     "n": "@leonardobtos",
+     "out": false
+    },
+    {
+     "n": "@lesssss.lie",
+     "out": false
+    },
+    {
+     "n": "@m_hochbil",
+     "out": false
+    },
+    {
+     "n": "@dayruu_",
+     "out": false
+    },
+    {
+     "n": "@lunhapucheta",
+     "out": false
+    },
+    {
+     "n": "@poloou3u",
+     "out": false
+    },
+    {
+     "n": "@dear.nanakomatsu",
+     "out": false
+    },
+    {
+     "n": "@yazmin_landa_",
+     "out": false
+    },
+    {
+     "n": "@zcmbixe_vilet",
+     "out": false
+    },
+    {
+     "n": "@dani_left",
+     "out": false
+    },
+    {
+     "n": "@tsuruoka_ali",
+     "out": false
+    },
+    {
+     "n": "@luchygonzalezz_",
+     "out": false
+    },
+    {
+     "n": "@neonone02",
+     "out": false
+    },
+    {
+     "n": "@karimcit00",
+     "out": false
+    },
+    {
+     "n": "@jorgepalominoatahui",
+     "out": false
+    },
+    {
+     "n": "@maite._2712",
+     "out": false
+    },
+    {
+     "n": "@prettygirllyy.val",
+     "out": false
+    },
+    {
+     "n": "@eliza_ssjx_gi",
+     "out": false
+    },
+    {
+     "n": "@d.degalbert",
+     "out": false
+    },
+    {
+     "n": "@alexitamonitaa._",
+     "out": false
+    },
+    {
+     "n": "@hollow_2012",
+     "out": false
+    },
+    {
+     "n": "@fergtz._8",
+     "out": false
+    },
+    {
+     "n": "@g10zx.6898",
+     "out": false
+    },
+    {
+     "n": "@sammd_er",
+     "out": false
+    },
+    {
+     "n": "@zmarlyy",
+     "out": false
+    },
+    {
+     "n": "@nate22309",
+     "out": false
+    }
+   ]
   }
  ],
  "history": [
@@ -2532,16 +2705,32 @@
    },
    "act": "pareja",
    "sorteo": "@mango.manguit08"
+  },
+  {
+   "day": 10,
+   "new": 41,
+   "unfollows": 9,
+   "winner": {
+    "user": "@luu_mdzs",
+    "text": "boda al azar de pixelitos",
+    "likes": 16
+   },
+   "act": "boda",
+   "sorteo": "@julianemma_fraga"
   }
  ],
  "sorteo": {
-  "day": 9,
-  "user": "@mango.manguit08"
+  "day": 10,
+  "user": "@julianemma_fraga"
  },
  "sorteos": [
   {
    "day": 9,
    "user": "@mango.manguit08"
+  },
+  {
+   "day": 10,
+   "user": "@julianemma_fraga"
   }
  ]
 }
