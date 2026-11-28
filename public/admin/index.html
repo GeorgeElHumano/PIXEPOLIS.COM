@@ -57,8 +57,8 @@
   .btn.pk { background:var(--pink); color:#fff; }
   input[type=search], input[type=text], input[type=password] { width:100%; font:16px Inter, sans-serif; padding:10px 12px; border:3px solid var(--ink); border-radius:10px; }
   .empty { padding:18px; text-align:center; color:var(--mut); }
-  nav { position:fixed; left:0; right:0; bottom:0; z-index:5; background:#fff; border-top:3px solid var(--ink); display:grid; grid-template-columns:repeat(5,1fr); padding:6px 4px calc(6px + env(safe-area-inset-bottom)); }
-  nav a { text-align:center; text-decoration:none; color:var(--ink); font:700 11px Inter, sans-serif; padding:4px 0; border-radius:8px; position:relative; }
+  nav { position:fixed; left:0; right:0; bottom:0; z-index:5; background:#fff; border-top:3px solid var(--ink); display:grid; grid-template-columns:repeat(6,1fr); padding:6px 4px calc(6px + env(safe-area-inset-bottom)); }
+  nav a { text-align:center; text-decoration:none; color:var(--ink); font:700 10px Inter, sans-serif; padding:4px 0; border-radius:8px; position:relative; }
   nav a .ic { display:block; font-size:20px; line-height:1.2; }
   nav a.on { background:#FFF6C2; }
   nav a .bd { position:absolute; top:0; right:18%; background:var(--pink); color:#fff; border-radius:10px; font:800 10px Inter, sans-serif; padding:1px 5px; }
@@ -86,6 +86,7 @@
   <a href="#resumen" data-v="resumen"><span class="ic">📊</span>Resumen</a>
   <a href="#fundadores" data-v="fundadores"><span class="ic">👾</span>Fundadores</a>
   <a href="#ventas" data-v="ventas"><span class="ic">🪙</span>Ventas</a>
+  <a href="#juegos" data-v="juegos"><span class="ic">🕹️</span>Juegos</a>
   <a href="#pedidos" data-v="pedidos"><span class="ic">📮</span>Pedidos<span class="bd" id="bdPed" hidden></span></a>
   <a href="#avisos" data-v="avisos"><span class="ic">🔔</span>Avisos</a>
 </nav>
@@ -178,6 +179,22 @@ const V = {
     return `<div class="card"><h2>MOVIMIENTOS</h2>
       <div class="seg">${[['', 'Todo'], ['pack', 'Ventas US$'], ['compra', 'Compras de ropa'], ['regalo', 'Regalos'], ['prueba', 'Pruebas']].map(([k, t]) => `<button data-t="${k}" class="${tipo === k ? 'on' : ''}">${t}</button>`).join('')}</div>
       ${r.movimientos.length ? `<table><tr><th>Qué</th><th>@</th><th class="n">Coins</th></tr>${r.movimientos.map(m => `<tr><td><span class="tag ${m.prueba ? 't' : (TT[m.tipo] || ['', 't'])[1]}">${m.prueba ? 'Prueba' : (TT[m.tipo] || [m.tipo])[0]}</span>${m.usd ? ` <b>${usd(m.usd)}</b>` : ''}<br><span class="pill">${esc(det(m))} · ${cuando(m.t)}</span></td><td>${esc(m.handle)}</td><td class="n" style="color:${m.coins < 0 ? '#C62828' : 'var(--grn)'}">${m.coins > 0 ? '+' : ''}${n(m.coins)}</td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hay movimientos acá.</div>'}</div>`;
+  },
+  async juegos() {
+    const r = await api('GET', 'juegos');
+    const NOM = { baile: 'Copiá el baile', memoria6: 'Memoria · 6 pares', memoria8: 'Memoria · 8 pares', memoria12: 'Memoria · 12 pares' };
+    const tot = r.juegos.reduce((a, j) => a + j.total, 0), hoy = r.juegos.reduce((a, j) => a + j.hoy, 0), sem = r.juegos.reduce((a, j) => a + j.semana, 0), max = Math.max(1, ...r.dias.map(d => d.partidas));
+    const dia = d => { const [, m, x] = d.split('-'); return +x + '/' + +m; };
+    return `<div class="kpis">
+      <div class="kpi b"><span>Partidas jugadas</span><b>${n(tot)}</b><em>${r.desde ? 'desde el ' + dia(r.desde) : 'el contador arranca con la primera partida'}</em></div>
+      <div class="kpi y"><span>Hoy</span><b>${n(hoy)}</b><em>${n(sem)} en 7 días</em></div>
+      <div class="kpi g"><span>Personas que jugaron</span><b>${n(r.personas)}</b><em>desde que se cuentan las partidas</em></div>
+      <div class="kpi p"><span>Antes del contador</span><b>${n(r.antes.personas)}</b><em>personas con marca${r.antes.desde ? ' desde el ' + dia(r.antes.desde) : ''}</em></div>
+    </div>
+    <div class="card"><h2>POR JUEGO</h2><table><tr><th>Juego</th><th class="n">Hoy</th><th class="n">7 días</th><th class="n">Total</th><th class="n">Personas</th></tr>${r.juegos.map(j => `<tr><td><b>${esc(NOM[j.juego] || j.juego)}</b></td><td class="n">${n(j.hoy)}</td><td class="n">${n(j.semana)}</td><td class="n">${n(j.total)}</td><td class="n">${n(j.personas)}</td></tr>`).join('')}</table>
+      <p class="muted">Cuenta las partidas terminadas. Las que se abandonan a la mitad no suman.</p></div>
+    <div class="card"><h2>ÚLTIMOS 14 DÍAS</h2><table><tr><th>Día</th><th>Partidas</th><th class="n">Personas</th></tr>${r.dias.slice().reverse().map(d => `<tr><td>${dia(d.day)}</td><td><span style="display:inline-block;height:10px;min-width:2px;width:${Math.round(d.partidas / max * 120)}px;background:var(--grn);border-radius:3px;vertical-align:middle"></span> <b>${n(d.partidas)}</b></td><td class="n">${n(d.personas)}</td></tr>`).join('')}</table></div>
+    <div class="card"><h2>LOS QUE MÁS JUEGAN</h2>${r.top.length ? `<table>${r.top.map((t, i) => `<tr><td>${i + 1}. <b>${esc(t.handle)}</b></td><td class="n">${n(t.partidas)} ${t.partidas === 1 ? 'partida' : 'partidas'}</td></tr>`).join('')}</table>` : '<div class="empty">Todavía no hay partidas contadas.</div>'}</div>`;
   },
   async pedidos() {
     const r = await api('GET', 'pedidos');

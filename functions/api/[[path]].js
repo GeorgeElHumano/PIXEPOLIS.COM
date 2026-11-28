@@ -15,7 +15,7 @@
 //   GET  /api/ig               verificación del webhook de Instagram (Meta)
 //   POST /api/ig               mensajes de Instagram: responde a RECLAMAR con el link
 //   GET  /api/juegos?t=        minijuegos (Memoria y Copiá el baile): pixelitos del día, tus récords y el top del día
-//   POST /api/juegos           {t, juego, valor}  guarda tu marca (solo por diversión: sin coins ni premios)
+//   POST /api/juegos           {t, juego, valor}  guarda tu marca (solo por diversión: sin coins ni premios); cada partida terminada suma al contador del panel
 //   GET  /api/admin/...        panel de administración (solo @georgeelhumano): resumen, reclamos, ventas y avisos push
 //
 // Variables (wrangler secret put / panel de Cloudflare):
@@ -78,6 +78,8 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS movimientos_handle ON movimientos(handle)`,
   `CREATE TABLE IF NOT EXISTS juegos(handle TEXT NOT NULL, juego TEXT NOT NULL, dia TEXT NOT NULL, valor INTEGER NOT NULL, t INTEGER NOT NULL, PRIMARY KEY(handle, juego, dia))`,
   `CREATE INDEX IF NOT EXISTS juegos_dia ON juegos(juego, dia)`,
+  // cuántas partidas terminó cada uno por juego y por día (solo para las estadísticas del panel)
+  `CREATE TABLE IF NOT EXISTS juegos_n(juego TEXT NOT NULL, dia TEXT NOT NULL, handle TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(juego, dia, handle))`,
 ];
 let ready = false;
 async function init(db) {
@@ -448,8 +450,11 @@ export async function onRequest(ctx) {
       if (!h) return fail(BAD_LINK, 404);
       if (!await db.prepare('SELECT 1 FROM reclamos WHERE handle=?').bind(h).first()) return fail('Primero reclamá tu pixelito.', 403);
       const g = JUEGOS[b.juego], v = Math.round(+b.valor);
-      if (!g || !Number.isFinite(v) || v < g.min || v > g.top) return fail('Marca inválida.');
+      if (!g) return fail('Marca inválida.');
       const dia = pyDay();
+      // cada partida terminada suma 1 al contador (también las que no dejan marca); tope por persona para que nadie lo infle
+      await db.prepare('INSERT INTO juegos_n(juego, dia, handle, n) VALUES(?,?,?,1) ON CONFLICT(juego, dia, handle) DO UPDATE SET n=n+1 WHERE juegos_n.n < 500').bind(b.juego, dia, h).run();
+      if (!Number.isFinite(v) || v < g.min || v > g.top) return fail('Marca inválida.');
       await db.prepare(`INSERT INTO juegos(handle, juego, dia, valor, t) VALUES(?,?,?,?,?) ON CONFLICT(handle, juego, dia) DO UPDATE SET valor=excluded.valor, t=excluded.t WHERE excluded.valor ${g.max ? '>' : '<'} juegos.valor`).bind(h, b.juego, dia, v, now()).run();
       return json(await juegosInfo(db, D, h));
     }
@@ -656,6 +661,18 @@ export async function onRequest(ctx) {
         const w = tipo === 'pack' ? `WHERE ${REAL}` : tipo === 'compra' ? "WHERE tipo='compra'" : tipo === 'regalo' ? "WHERE tipo='regalo'" : tipo === 'prueba' ? "WHERE tipo='pack' AND ref LIKE 'prueba-%'" : '';
         const rows = await all(`SELECT id, handle, tipo, coins, detalle, ref, t FROM movimientos ${w} ORDER BY id DESC LIMIT 200`);
         return json({ movimientos: rows.map(r => ({ ...r, usd: r.tipo === 'pack' && !String(r.ref || '').startsWith('prueba-') ? usdDe(r.detalle) : 0, prueba: String(r.ref || '').startsWith('prueba-') })) });
+      }
+      if (sub === 'juegos' && M === 'GET') {
+        const hoyD = pyDay(), d7 = pyDay(now() - 6 * 864e5), d14 = pyDay(now() - 13 * 864e5);
+        const tot = await all('SELECT juego, SUM(n) total, SUM(CASE WHEN dia=?1 THEN n ELSE 0 END) hoy, SUM(CASE WHEN dia>=?2 THEN n ELSE 0 END) semana, COUNT(DISTINCT handle) personas FROM juegos_n GROUP BY juego', hoyD, d7);
+        const porDia = await all('SELECT dia, juego, SUM(n) partidas, COUNT(DISTINCT handle) personas FROM juegos_n WHERE dia>=? GROUP BY dia, juego', d14);
+        const gente = await all('SELECT dia, COUNT(DISTINCT handle) personas FROM juegos_n WHERE dia>=? GROUP BY dia', d14);
+        const dias = []; for (let i = 13; i >= 0; i--) { const day = pyDay(now() - i * 864e5); dias.push({ day, partidas: porDia.filter(r => r.dia === day).reduce((a, r) => a + r.partidas, 0), personas: (gente.find(r => r.dia === day) || {}).personas || 0, juegos: Object.fromEntries(porDia.filter(r => r.dia === day).map(r => [r.juego, r.partidas])) }); }
+        const top = await all('SELECT handle, SUM(n) partidas FROM juegos_n GROUP BY handle ORDER BY partidas DESC LIMIT 10');
+        const g = await one('SELECT COUNT(DISTINCT handle) personas, MIN(dia) desde FROM juegos_n');
+        // antes del contador solo quedó la mejor marca por persona, juego y día: sirve para saber cuánta gente jugó
+        const antes = await one('SELECT COUNT(DISTINCT handle) personas, COUNT(*) marcas, MIN(dia) desde FROM juegos');
+        return json({ juegos: Object.keys(JUEGOS).map(k => ({ juego: k, total: 0, hoy: 0, semana: 0, personas: 0, ...(tot.find(t => t.juego === k) || {}) })), dias, top, personas: g.personas || 0, desde: g.desde || null, antes: { personas: antes.personas || 0, marcas: antes.marcas || 0, desde: antes.desde || null } });
       }
       if (sub === 'pedidos' && M === 'GET') return json({ pedidos: await all('SELECT * FROM pedidos ORDER BY (hecho IS NOT NULL), id DESC LIMIT 200') });
       if (sub === 'pedidos/hecho' && M === 'POST') { const b = await req.json().catch(() => ({})); await db.prepare('UPDATE pedidos SET hecho=? WHERE id=?').bind(b.deshacer ? null : now(), +b.id || 0).run(); return json({ ok: true }); }

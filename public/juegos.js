@@ -23,6 +23,8 @@
     pintarCard();
     return info;
   }
+  // partida terminada sin marca (se tropezó en el primer paso): solo suma al contador de partidas
+  function contar(juego) { if (P_.DEMO || !P_.token) return; fetch('/api/juegos', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: P_.token, juego, valor: 0 }) }).catch(() => {}); }
   async function guardar(juego, valor) {
     if (P_.DEMO || !P_.token || !(valor > 0)) { const o = info.mios[juego] || (info.mios[juego] = {}); const mx = juego === 'baile'; if (o.hoy == null || (mx ? valor > o.hoy : valor < o.hoy)) o.hoy = valor; if (o.siempre == null || (mx ? valor > o.siempre : valor < o.siempre)) o.siempre = valor; return; }
     try { const r = await fetch('/api/juegos', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: P_.token, juego, valor }) }); const d = await r.json(); if (!d.error) info = d; } catch (e) {}
@@ -141,7 +143,7 @@
       } else {
         S.fase = 'cae'; S.cae = performance.now(); buzz(); luz(k, true); setTimeout(() => luz(k, false), 300);
         msg(S.score ? `¡Uy! Bailaste ${S.score} pasos` : '¡Uy! Se tropezó', 2200);
-        setTimeout(async () => { if (JX.run !== S) return; S.fase = 'fin'; if (S.score) await guardar('baile', S.score); panel(); }, 1600);
+        setTimeout(async () => { if (JX.run !== S) return; S.fase = 'fin'; if (S.score) await guardar('baile', S.score); else contar('baile'); panel(); }, 1600);
       }
     }
     document.querySelectorAll('#bPad [data-p]').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); tocar(b.dataset.p); }));
