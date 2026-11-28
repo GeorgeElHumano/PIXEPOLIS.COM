@@ -101,6 +101,13 @@
   .btn.pink { background:var(--pink); color:#fff; }
   .btn.big { font:12px/1.5 'Press Start 2P', monospace; padding:16px 10px; }
   .btn[disabled] { opacity:.5; }
+  #comp { position:fixed; inset:0; z-index:60; background:rgba(20,18,31,.72); display:flex; align-items:center; justify-content:center; padding:14px; overflow:auto; }
+  #comp[hidden] { display:none; }
+  .compBox { background:#fff; border:4px solid var(--ink); border-radius:16px; box-shadow:6px 6px 0 var(--ink); padding:16px; width:100%; max-width:380px; text-align:center; }
+  .compBox h2 { margin:0 0 8px; }
+  .compBox p { margin:0 0 10px; font-size:15px; line-height:1.4; }
+  .compBox img { display:block; height:min(38vh,340px); width:auto; margin:0 auto 12px; border:3px solid var(--ink); border-radius:10px; }
+  .compBox .btn + p { margin-top:10px; }
   .gap { height:12px; }
   .muted { color:#555; font-size:14px; line-height:1.5; }
   .chat { background:#F3F3F7; border-radius:10px; padding:12px; min-height:60px; display:flex; flex-direction:column; gap:8px; margin:12px 0; }
@@ -401,7 +408,7 @@
       <div class="nav"><button id="isPrev" aria-label="Isla anterior">‹</button><button id="isNext" aria-label="Isla siguiente">›</button></div>
     </div>
     <div class="card" id="shareCard" hidden>
-      <h2>COMPARTILO</h2>
+      <h2>MOSTRALO EN TU HISTORIA</h2>
       <div class="tabs"><button id="tImg" class="on">IMAGEN</button><button id="tVid">VIDEO</button></div>
       <div id="paneImg">
         <img class="share-img" id="shareImg" alt="Imagen de tu pixelito para historias">
@@ -433,6 +440,16 @@
     </div>
   </section>
 
+  <div id="comp" hidden role="dialog" aria-modal="true" aria-labelledby="compT">
+    <div class="compBox">
+      <h2 id="compT">¡YA ES TUYO!</h2>
+      <p>Último paso: <b>mostralo</b>. Subilo a tu historia y etiquetá a <b>@somoslospixelitos</b>, así tus amigos buscan el suyo.</p>
+      <img id="compImg" alt="Imagen de tu pixelito lista para tu historia">
+      <button class="btn pink big" id="compBtn">COMPARTIR EN MI HISTORIA</button>
+      <p class="muted" id="compMsg">Al tocar copiamos <b>@somoslospixelitos</b>: pegalo en la historia como mención.</p>
+      <button class="btn" id="compNo">Ahora no</button>
+    </div>
+  </div>
   <section id="vErr" hidden>
     <div class="card err">
       <div class="big" id="eTitle">UPS</div>
@@ -1246,8 +1263,9 @@ async function save() {
   if (r.error) { $('claimMsg').textContent = r.error; return; }
   const keep = me.islas; me = r; me.islas = keep; look = { ...LOOK0, ...r.claim.look };
   $('claimMsg').textContent = first ? (esFundador(r.claim) ? `¡Es tuyo! Sos el Fundador #${r.claim.ord}: tu @ ya salta con los colores de Los Pixelitos ✨${!r.claim.look.regalo ? ` y te regalamos ${REGALO_COINS} Pixel Coins para la tienda 🎁` : ''}` : '¡Es tuyo! Tu pixelito ya quedó reclamado ✨') : 'Cambios guardados.';
+  if (first) pideCompartir = true;
   renderMine(false); makeShare();
-  if (first) { confetti(); setTimeout(() => $('shareCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 900); }
+  if (first) confetti();
 }
 $('claimBtn').onclick = () => save();
 
@@ -1294,8 +1312,9 @@ function drawStory(c, W, t) {
   c.fillStyle = '#FFE14D'; c.fillRect(156, 1526, 788, 128);
   c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = INK; c.font = '36px "Press Start 2P", monospace'; c.fillText(`PIXELITO #${p.num}`, 540, 1568);
   c.fillStyle = '#B23A1E'; c.font = '28px "Press Start 2P", monospace'; c.fillText(esFundador(cl) ? `FUNDADOR #${cl.ord}` : 'RECLAMADO', 540, 1618);
-  T('@somoslospixelitos', 540, 1770, 36, '#FFFFFF', 6);
-  T('pixepolis.com', 540, 1840, 30, '#FFE14D', 5);
+  T('¿Y EL TUYO? SEGUINOS Y RECLAMALO', 540, 1722, 28, '#FFE14D', 5);
+  T('@somoslospixelitos', 540, 1790, 36, '#FFFFFF', 6);
+  T('pixepolis.com', 540, 1852, 28, '#FFE14D', 5);
   c.setTransform(1, 0, 0, 1, 0, 0);
 }
 // Música de los Reels: la misma de sim.py (audio): 132 bpm, arpegio Do-Sol-La m-Fa en onda cuadrada, bajo, bombo y platillo
@@ -1316,7 +1335,7 @@ function musica(sec, SR) {
   }
   return out;
 }
-let imgBlob = null, vidBlob = null, vidExt = 'mp4', shareSeq = 0;
+let imgBlob = null, vidBlob = null, vidExt = 'mp4', shareSeq = 0; let pideCompartir = false;
 async function fonts() { try { await document.fonts.load('40px "Press Start 2P"'); } catch (e) {} }
 async function makeShare() {
   const my = ++shareSeq; await fonts(); if (my !== shareSeq || !me.claim) return;
@@ -1324,7 +1343,25 @@ async function makeShare() {
   drawStory(cv.getContext('2d'), 1080, 40);
   const b = await new Promise(ok => cv.toBlob(ok, 'image/png')); if (my !== shareSeq) return;
   imgBlob = b; $('shareImg').src = URL.createObjectURL(b); $('shareCard').dataset.ok = '1';
+  if (pideCompartir) { pideCompartir = false; abrirComp(); }
 }
+// se abre recién cuando no hay otra ventana encima (contraseña o guía de instalar)
+function abrirComp() {
+  if (!$('pwBox').hidden || !$('a2hs').hidden) { setTimeout(abrirComp, 500); return; }
+  $('compImg').src = $('shareImg').src; $('compMsg').innerHTML = 'Al tocar copiamos <b>@somoslospixelitos</b>: pegalo en la historia como mención.'; $('compNo').textContent = 'Ahora no'; $('comp').hidden = false; $('compBtn').focus();
+}
+/* paso final del reclamo: invitar a mostrar el pixelito en historias */
+const cerrarComp = () => { $('comp').hidden = true; $('shareCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+function contarCompartido() { if (!token) return; fetch('/api/compartio', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: token }) }).catch(() => {}); }
+$('compNo').onclick = cerrarComp;
+$('comp').addEventListener('click', e => { if (e.target === $('comp')) cerrarComp(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('comp').hidden) cerrarComp(); });
+$('compBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText('@somoslospixelitos'); } catch (e) {}
+  const ok = await shareFile(imgBlob, `pixepolis-${me.pixelito.num}.png`, 'image/png');
+  $('compMsg').textContent = ok ? '¡Gracias! En la historia, pegá @somoslospixelitos como mención.' : $('shareMsg').textContent;
+  if (ok) $('compNo').textContent = 'Listo';
+};
 function resetVideo() { vidBlob = null; $('shareVid').hidden = true; $('shareVidBtn').hidden = true; $('makeVid').hidden = false; $('vidProg').hidden = true; }
 $('tImg').onclick = () => { $('tImg').classList.add('on'); $('tVid').classList.remove('on'); $('paneImg').hidden = false; $('paneVid').hidden = true; };
 $('tVid').onclick = () => { $('tVid').classList.add('on'); $('tImg').classList.remove('on'); $('paneImg').hidden = true; $('paneVid').hidden = false; };
@@ -1363,8 +1400,8 @@ $('makeVid').onclick = async () => {
 async function shareFile(blob, name, type) {
   if (!blob) return;
   const file = new File([blob], name, { type });
-  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: '¡Reservé mi lugar en Pixépolis Club! pixepolis.com @somoslospixelitos' }); $('shareMsg').textContent = '¡Listo!'; return; } }
-  catch (e) { if (e && e.name === 'AbortError') return; }
+  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: '¡Reservé mi lugar en Pixépolis Club! pixepolis.com @somoslospixelitos' }); $('shareMsg').textContent = '¡Listo!'; contarCompartido(); return true; } }
+  catch (e) { if (e && e.name === 'AbortError') return false; }
   try { if (window.claude && window.claude.use) { const dl = await window.claude.use('downloads'); if (dl) { await dl.save({ filename: name, data: blob }); $('shareMsg').textContent = 'Listo. Guardalo y subilo a tu historia.'; return; } } }
   catch (e) { if (e && e.code === 'declined') return; }
   $('shareMsg').textContent = type.startsWith('image') ? 'Mantené apretada la imagen y tocá “Guardar en Fotos”.' : 'No se pudo compartir el video desde acá. Abrí la página en Safari.';
@@ -1426,7 +1463,7 @@ async function avisosAlAbrir() {
     if (Notification.permission !== 'default' || sub) return;
     let ult = 0; try { ult = +localStorage.getItem('pxAvisoPregunta') || 0; } catch (e) {}
     if (Date.now() - ult < 3 * 864e5) return;                       // si dijo "ahora no", volvemos a preguntar en 3 días
-    const esperar = () => !$('pwBox').hidden || !$('a2hs').hidden;   // no tapar la contraseña ni la guía de inicio
+    const esperar = () => !$('pwBox').hidden || !$('a2hs').hidden || !$('comp').hidden;   // no tapar la contraseña ni la guía de inicio
     for (let i = 0; i < 60 && esperar(); i++) await new Promise(r => setTimeout(r, 1000));
     if (esperar()) return;
     $('avNo').onclick = () => { try { localStorage.setItem('pxAvisoPregunta', Date.now()); } catch (e) {} $('avAsk').hidden = true; };

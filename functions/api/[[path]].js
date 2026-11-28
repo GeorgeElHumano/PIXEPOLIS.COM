@@ -78,6 +78,8 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS movimientos_handle ON movimientos(handle)`,
   `CREATE TABLE IF NOT EXISTS juegos(handle TEXT NOT NULL, juego TEXT NOT NULL, dia TEXT NOT NULL, valor INTEGER NOT NULL, t INTEGER NOT NULL, PRIMARY KEY(handle, juego, dia))`,
   `CREATE INDEX IF NOT EXISTS juegos_dia ON juegos(juego, dia)`,
+  // quién compartió su pixelito desde la web (para medir si el paso final del reclamo funciona)
+  `CREATE TABLE IF NOT EXISTS compartidos(handle TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0, t INTEGER NOT NULL)`,
   // cuántas partidas terminó cada uno por juego y por día (solo para las estadísticas del panel)
   `CREATE TABLE IF NOT EXISTS juegos_n(juego TEXT NOT NULL, dia TEXT NOT NULL, handle TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(juego, dia, handle))`,
 ];
@@ -571,6 +573,12 @@ export async function onRequest(ctx) {
       return new Response(null, { status: 204 });
     }
 
+    if (path === 'compartio' && M === 'POST') {
+      const b = await req.json().catch(() => ({})), h = await byToken(db, b.t);
+      if (!h) return fail(BAD_LINK, 404);
+      await db.prepare('INSERT INTO compartidos(handle, n, t) VALUES(?,1,?) ON CONFLICT(handle) DO UPDATE SET n=n+1, t=excluded.t WHERE compartidos.n < 50').bind(h, now()).run();
+      return json({ ok: true });
+    }
     if (path === 'reclamar' && M === 'POST') {
       const b = await req.json().catch(() => ({}));
       const h = await byToken(db, b.t);
@@ -646,7 +654,7 @@ export async function onRequest(ctx) {
         for (const r of packs) if (r.t >= d14) { const i = idx(r.t); if (i >= 0) dias[i].usd += usdDe(r.detalle); }
         const top = await all("SELECT substr(pieza,1,instr(pieza,'-')-1) traje, COUNT(*) piezas FROM armario GROUP BY traje ORDER BY piezas DESC LIMIT 8");
         const pend = await one('SELECT COUNT(*) n FROM pedidos WHERE hecho IS NULL');
-        return json({ seguidores: st.total, enVivo: st.enVivo, dia: D.day, pixelitos: D.P.size, reclamos: { total: rc.n || 0, hoy: rc.hoy || 0, semana: rc.sem || 0 }, conClave: cl.n || 0,
+        return json({ seguidores: st.total, enVivo: st.enVivo, dia: D.day, pixelitos: D.P.size, reclamos: { total: rc.n || 0, hoy: rc.hoy || 0, semana: rc.sem || 0, compartieron: (await one('SELECT COUNT(*) n FROM compartidos')).n || 0 }, conClave: cl.n || 0,
           coins: { enBilleteras: bil.n, regaladas: mv.regaladas, vendidas: mv.vendidas, gastadas: mv.gastadas }, compras: { n: mv.compras, personas: mv.compradores },
           ventas: { usd, hoy: usdHoy, semana: usdSem, n: packs.length, prueba: mv.prueba }, dias, top, pedidos: pend.n || 0, pagos: pagosModo(env), meta: META_REGALO });
       }

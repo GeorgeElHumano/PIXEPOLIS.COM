@@ -135,7 +135,7 @@ const V = {
     const modo = { pronto: 'Pagos: esperando Xsolla (los paquetes dicen “muy pronto”)', prueba: 'Pagos: MODO PRUEBA (no cobra)', xsolla: 'Pagos: Xsolla activo' }[r.pagos];
     return `<div class="kpis">
       <div class="kpi b"><span>Seguidores ${r.enVivo ? '(en vivo)' : '(sin Instagram)'}</span><b>${n(r.seguidores)}</b><em>${(m => m ? 'próxima meta: ' + n(m) + ' (faltan ' + n(m - r.seguidores) + ')' : 'todas las metas cumplidas')([1000, 2500, 5000].find(x => r.seguidores < x))}</em></div>
-      <div class="kpi y"><span>Fundadores (reclamaron)</span><b>${n(r.reclamos.total)}</b><em>+${n(r.reclamos.hoy)} hoy · quedan ${n(Math.max(0, r.meta - r.reclamos.total))} regalos</em></div>
+      <div class="kpi y"><span>Fundadores (reclamaron)</span><b>${n(r.reclamos.total)}</b><em>+${n(r.reclamos.hoy)} hoy · quedan ${n(Math.max(0, r.meta - r.reclamos.total))} regalos · ${n(r.reclamos.compartieron)} lo compartieron</em></div>
       <div class="kpi g"><span>Ventas (Xsolla)</span><b>${usd(r.ventas.usd)}</b><em>${n(r.ventas.n)} paquetes · ${usd(r.ventas.semana)} en 7 días</em></div>
       <div class="kpi p"><span>Compras de ropa</span><b>${n(r.compras.n)}</b><em>${n(r.compras.personas)} personas · ${n(r.coins.gastadas)} coins</em></div>
     </div>
